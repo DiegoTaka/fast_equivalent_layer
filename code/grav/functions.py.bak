@@ -1,9 +1,37 @@
 from __future__ import division
 import numpy as np
-from fatiando.constants import G, SI2MGAL
 from scipy.sparse import diags
 from scipy.linalg import toeplitz
 from numpy.linalg import inv
+
+#: The default thermal diffusivity in :math:`m^2/s`
+THERMAL_DIFFUSIVITY = 0.000001
+
+#: The default thermal diffusivity but in :math:`m^2/year`
+THERMAL_DIFFUSIVITY_YEAR = 31.5576
+
+#: Conversion factor from SI units to Eotvos: :math:`1/s^2 = 10^9\ Eotvos`
+SI2EOTVOS = 1000000000.0
+
+#: Conversion factor from SI units to mGal: :math:`1\ m/s^2 = 10^5\ mGal`
+SI2MGAL = 100000.0
+
+#: The gravitational constant in :math:`m^3 kg^{-1} s^{-1}`
+G = 0.00000000006673
+
+#: Proportionality constant used in the magnetic method in henry/m (SI)
+CM = 10. ** (-7)
+
+#: Conversion factor from tesla to nanotesla
+T2NT = 10. ** (9)
+
+#: The mean earth radius in meters
+MEAN_EARTH_RADIUS = 6378137.0
+
+#: Permeability of free space in :math:`N A^{-2}`
+PERM_FREE_SPACE = 4 * \
+    3.141592653589793115997963468544185161590576171875 * (10 ** -7)
+
 
 def fast_eq(x,y,z,h,shape,data,itmax):
     '''
@@ -106,6 +134,116 @@ def fast_eq_bccb(x,y,z,h,shape,data,itmax):
     gzp = fast_forward_bccb(shape,N,m_new,cev)
 
     return m_new, gzp
+
+def fast_eq_dec(x,y,z,h,shape,data):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a gravity disturbance
+    data through an iterative method [1]. 
+    This implementation uses a fast way to calculate the forward
+    problem at each iteration taking advantage of the BTTB
+    (Block-Toeplitz Toreplitz-Block) structures.
+
+    [1] SIQUEIRA, F. C., OLIVEIRA JR, V. C., BARBOSA, V. C., 2017,
+    Fast iterative equivalent-layer technique for gravity data
+    processing: A method grounded on excess mass constraint",
+    Geophysics, v. 82, n. 4, pp. G57-G69.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    h: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    data: numpy array - the gravity disturbance.
+    potential field at the grid points.
+
+    output
+    m_new: numpy array - final equivalent
+    layer property estimative.
+    gzp: numpy array - the predicted data.
+    '''
+    assert x.size == y.size == z.size == h.size == data.size, 'x, y,\
+    z, h and data must have the same number of elements'
+    #assert h.all() > z.all(), 'The equivalent layer must be beneath\
+	#the observation points'
+    
+    #Calculates the number of data points
+    N = shape[0]*shape[1]
+    
+    #Create first line of sensibility matrix
+    BTTB = bttb(x,y,z,h)
+    
+    #Calculates the eigenvalues of BCCB matrix
+    cev = bccb(shape,N,BTTB)
+
+    w = np.zeros(4*N, dtype='complex128')
+    for i in range (shape[0]):
+        w[shape[1]*(2*i):shape[1]*(2*i+1)] = data[shape[1]*(i):shape[1]*(i+1)]
+
+    w = w.reshape(2*shape[0],2*shape[1]).T
+    rho = np.fft.ifft2(np.fft.fft2(w)/cev)
+    rho = np.ravel(np.real(rho[:shape[1],:shape[0]]).T)
+
+    #Final predicted data
+    gzp = fast_forward_bccb(shape,N,rho,cev)
+
+    return rho, gzp
+
+def fast_eq_dec_wiener(x,y,z,h,shape,data,mu):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a gravity disturbance
+    data through an iterative method [1]. 
+    This implementation uses a fast way to calculate the forward
+    problem at each iteration taking advantage of the BTTB
+    (Block-Toeplitz Toreplitz-Block) structures.
+
+    [1] SIQUEIRA, F. C., OLIVEIRA JR, V. C., BARBOSA, V. C., 2017,
+    Fast iterative equivalent-layer technique for gravity data
+    processing: A method grounded on excess mass constraint",
+    Geophysics, v. 82, n. 4, pp. G57-G69.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    h: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    data: numpy array - the gravity disturbance.
+    potential field at the grid points.
+
+    output
+    m_new: numpy array - final equivalent
+    layer property estimative.
+    gzp: numpy array - the predicted data.
+    '''
+    assert x.size == y.size == z.size == h.size == data.size, 'x, y,\
+    z, h and data must have the same number of elements'
+    #assert h.all() > z.all(), 'The equivalent layer must be beneath\
+	#the observation points'
+    
+    #Calculates the number of data points
+    N = shape[0]*shape[1]
+    
+    #Create first line of sensibility matrix
+    BTTB = bttb(x,y,z,h)
+    
+    #Calculates the eigenvalues of BCCB matrix
+    cev = bccb(shape,N,BTTB)
+
+    w = np.zeros(4*N, dtype='complex128')
+    for i in range (shape[0]):
+        w[shape[1]*(2*i):shape[1]*(2*i+1)] = data[shape[1]*(i):shape[1]*(i+1)]
+
+    w = w.reshape(2*shape[0],2*shape[1]).T
+    rho = np.fft.ifft2((np.fft.fft2(w_wiener)*np.conj(cev_wiener))/(cev_wiener*np.conj(cev_wiener) + mu))
+    rho = np.ravel(np.real(rho[:shape[1],:shape[0]]).T)
+
+    #Final predicted data
+    gzp = fast_forward_bccb(shape,N,rho,cev)
+
+    return rho, gzp
 
 def diagonal(x,y,shape):
     '''

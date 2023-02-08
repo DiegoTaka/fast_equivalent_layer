@@ -135,6 +135,116 @@ def fast_eq_bccb(x,y,z,h,shape,data,itmax):
 
     return m_new, gzp
 
+def fast_eq_dec(x,y,z,h,shape,data):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a gravity disturbance
+    data through an iterative method [1]. 
+    This implementation uses a fast way to calculate the forward
+    problem at each iteration taking advantage of the BTTB
+    (Block-Toeplitz Toreplitz-Block) structures.
+
+    [1] SIQUEIRA, F. C., OLIVEIRA JR, V. C., BARBOSA, V. C., 2017,
+    Fast iterative equivalent-layer technique for gravity data
+    processing: A method grounded on excess mass constraint",
+    Geophysics, v. 82, n. 4, pp. G57-G69.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    h: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    data: numpy array - the gravity disturbance.
+    potential field at the grid points.
+
+    output
+    m_new: numpy array - final equivalent
+    layer property estimative.
+    gzp: numpy array - the predicted data.
+    '''
+    assert x.size == y.size == z.size == h.size == data.size, 'x, y,\
+    z, h and data must have the same number of elements'
+    #assert h.all() > z.all(), 'The equivalent layer must be beneath\
+	#the observation points'
+    
+    #Calculates the number of data points
+    N = shape[0]*shape[1]
+    
+    #Create first line of sensibility matrix
+    BTTB = bttb(x,y,z,h)
+    
+    #Calculates the eigenvalues of BCCB matrix
+    cev = bccb(shape,N,BTTB)
+
+    w = np.zeros(4*N, dtype='complex128')
+    for i in range (shape[0]):
+        w[shape[1]*(2*i):shape[1]*(2*i+1)] = data[shape[1]*(i):shape[1]*(i+1)]
+
+    w = w.reshape(2*shape[0],2*shape[1]).T
+    rho = np.fft.ifft2(np.fft.fft2(w)/cev)
+    rho = np.ravel(np.real(rho[:shape[1],:shape[0]]).T)
+
+    #Final predicted data
+    gzp = fast_forward_bccb(shape,N,rho,cev)
+
+    return rho, gzp
+
+def fast_eq_dec_wiener(x,y,z,h,shape,data,mu):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a gravity disturbance
+    data through an iterative method [1]. 
+    This implementation uses a fast way to calculate the forward
+    problem at each iteration taking advantage of the BTTB
+    (Block-Toeplitz Toreplitz-Block) structures.
+
+    [1] SIQUEIRA, F. C., OLIVEIRA JR, V. C., BARBOSA, V. C., 2017,
+    Fast iterative equivalent-layer technique for gravity data
+    processing: A method grounded on excess mass constraint",
+    Geophysics, v. 82, n. 4, pp. G57-G69.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    h: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    data: numpy array - the gravity disturbance.
+    potential field at the grid points.
+
+    output
+    m_new: numpy array - final equivalent
+    layer property estimative.
+    gzp: numpy array - the predicted data.
+    '''
+    assert x.size == y.size == z.size == h.size == data.size, 'x, y,\
+    z, h and data must have the same number of elements'
+    #assert h.all() > z.all(), 'The equivalent layer must be beneath\
+	#the observation points'
+    
+    #Calculates the number of data points
+    N = shape[0]*shape[1]
+    
+    #Create first line of sensibility matrix
+    BTTB = bttb(x,y,z,h)
+    
+    #Calculates the eigenvalues of BCCB matrix
+    cev = bccb(shape,N,BTTB)
+
+    w = np.zeros(4*N, dtype='complex128')
+    for i in range (shape[0]):
+        w[shape[1]*(2*i):shape[1]*(2*i+1)] = data[shape[1]*(i):shape[1]*(i+1)]
+
+    w = w.reshape(2*shape[0],2*shape[1]).T
+    rho = np.fft.ifft2((np.fft.fft2(w)*np.conj(cev))/(cev*np.conj(cev) + mu))
+    rho = np.ravel(np.real(rho[:shape[1],:shape[0]]).T)
+
+    #Final predicted data
+    gzp = fast_forward_bccb(shape,N,rho,cev)
+
+    return rho, gzp
+
 def diagonal(x,y,shape):
     '''
     Calculates a NxN diagonal matrix given by

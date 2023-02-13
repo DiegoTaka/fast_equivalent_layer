@@ -511,6 +511,81 @@ def ones_cev_mag(Hxx,Hxy,Hxz,Hyy,Hyz,Hzz,shape,N,F,h):
     cev_mag = np.fft.fft2(BCCB)
     return cev_mag
     
+def ones_cev_mag2(Hxx,Hxy,Hxz,Hyy,Hyz,Hzz,shape,N,F,h):
+    '''
+    Calculates the eigenvalues of the BCCB matrix using 
+    only the effect of one equivalent source.
+
+    input
+    shape: tuple - grid size.
+    N: scalar - number of observation points.
+    Hxx,Hxy,Hxz,Hyy,Hyz,Hzz: numpy array - first row of each component of 
+    the second derivatives of 1/r necessary to calculate the BCCB eigenvalues.
+
+    output
+    cev: numpy array - eigenvalues of the BCCB matrix.
+    '''
+    bccb_xx = np.zeros(4*N, dtype='complex128')
+    bccb_xy = np.zeros(4*N, dtype='complex128')
+    bccb_xz = np.zeros(4*N, dtype='complex128')
+    bccb_yy = np.zeros(4*N, dtype='complex128')
+    bccb_yz = np.zeros(4*N, dtype='complex128')
+    bccb_zz = np.zeros(4*N, dtype='complex128')
+    k = 2*shape[0]-1
+
+    for i in range (shape[0]):
+        block_xx = Hxx[shape[1]*(i):shape[1]*(i+1)]
+        block_xy = Hxy[shape[1]*(i):shape[1]*(i+1)]
+        block_xz = -Hxz[shape[1]*(i):shape[1]*(i+1)]
+        block_yy = Hyy[shape[1]*(i):shape[1]*(i+1)]
+        block_yz = -Hyz[shape[1]*(i):shape[1]*(i+1)]
+        block_zz = Hzz[shape[1]*(i):shape[1]*(i+1)]
+        rev_xx = block_xx[::-1]
+        rev_xy = -block_xy[::-1]
+        rev_xz = block_xz[::-1]
+        rev_yy = block_yy[::-1]
+        rev_yz = -block_yz[::-1]
+        rev_zz = block_zz[::-1]
+        bccb_xx[shape[1]*(2*i):shape[1]*(2*i+2)] = np.concatenate((block_xx,
+        0,rev_xx[:-1]), axis=None)
+        bccb_xy[shape[1]*(2*i):shape[1]*(2*i+2)] = np.concatenate((block_xy,
+        0,rev_xy[:-1]), axis=None)
+        bccb_xz[shape[1]*(2*i):shape[1]*(2*i+2)] = np.concatenate((block_xz,
+        0,rev_xz[:-1]), axis=None)
+        bccb_yy[shape[1]*(2*i):shape[1]*(2*i+2)] = np.concatenate((block_yy,
+        0,rev_yy[:-1]), axis=None)
+        bccb_yz[shape[1]*(2*i):shape[1]*(2*i+2)] = np.concatenate((block_yz,
+        0,rev_yz[:-1]), axis=None)
+        bccb_zz[shape[1]*(2*i):shape[1]*(2*i+2)] = np.concatenate((block_zz,
+        0,rev_zz[:-1]), axis=None)
+        if i > 0:
+            bccb_xx[shape[1]*(2*k):shape[1]*(2*k+2)] = bccb_xx[shape[1]*
+            (2*i):shape[1]*(2*i+2)]
+            bccb_xy[shape[1]*(2*k):shape[1]*(2*k+2)] = -bccb_xy[shape[1]*
+            (2*i):shape[1]*(2*i+2)]
+            bccb_xz[shape[1]*(2*k):shape[1]*(2*k+2)] = -bccb_xz[shape[1]*
+            (2*i):shape[1]*(2*i+2)]
+            bccb_yy[shape[1]*(2*k):shape[1]*(2*k+2)] = bccb_yy[shape[1]*
+            (2*i):shape[1]*(2*i+2)]
+            bccb_yz[shape[1]*(2*k):shape[1]*(2*k+2)] = bccb_yz[shape[1]*
+            (2*i):shape[1]*(2*i+2)]
+            bccb_zz[shape[1]*(2*k):shape[1]*(2*k+2)] = bccb_zz[shape[1]*
+            (2*i):shape[1]*(2*i+2)]
+            k -= 1
+
+    cev_xx = np.fft.fft2(bccb_xx.reshape(2*shape[0],2*shape[1]).T)
+    cev_xy = np.fft.fft2(bccb_xy.reshape(2*shape[0],2*shape[1]).T)
+    cev_xz = np.fft.fft2(bccb_xz.reshape(2*shape[0],2*shape[1]).T)
+    cev_yy = np.fft.fft2(bccb_yy.reshape(2*shape[0],2*shape[1]).T)
+    cev_yz = np.fft.fft2(bccb_yz.reshape(2*shape[0],2*shape[1]).T)
+    cev_zz = np.fft.fft2(bccb_zz.reshape(2*shape[0],2*shape[1]).T)
+    
+    cev_mag2 = 100*((F[0]*cev_xx+F[1]*cev_xy+F[2]*cev_xz)*h[0] + (F[0]*
+    cev_xy+F[1]*cev_yy+F[2]*cev_yz)*h[1] + (F[0]*cev_xz+F[1]*
+    cev_yz+F[2]*cev_zz)*h[2])
+
+    return cev_mag2
+    
 def ones_cev_mag_row(Hxx,Hxy,Hxz,Hyy,Hyz,Hzz,shape,N,F,h):
     '''
     Calculates the eigenvalues of the transposed BCCB matrix using 

@@ -356,6 +356,240 @@ def sensibility_matrix(x,y,z,h,N):
     A = A*G*SI2MGAL
     return A
 
+def classic_grav_tensor_xx(x,y,z,zj,N):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a total-field anomaly
+    data by solving a linear inversion problem.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    zj: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    potential field at the grid points.
+    F: numpy array - cosines directions of the main magnetic field.
+    h: numpy array - cosines directions of the body's magnetization.
+    data: numpy array - numpy array - the total-field anomaly 
+    potential field data at the x,y and z grid points.
+
+    output
+    p: numpy array - final equivalent layer property estimative.
+    data: numpy array - the predicted data.
+    '''
+    A = np.empty((N, N), dtype=np.float)
+    for i in range (N):
+        a = (x-x[i])
+        b = (y-y[i])
+        c = (zj-z[i])
+        r = (a*a+b*b+c*c)
+        r3 = r**(-1.5)
+        r5 = r**(2.5)
+        Hxx = -r3+3*(a*a)/r5
+        #Hxy = 3*(a*b)/r5
+        #Hxz = 3*(a*c)/r5
+        #Hyy = -r3+3*(b*b)/r5
+        #Hyz = 3*(b*c)/r5
+        #Hzz = -r3+3*(c*c)/r5
+        A[i] = G * SI2EOTVOS * Hxx
+    return A
+
+def classic_grav_tensor_xy(x,y,z,zj,N):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a total-field anomaly
+    data by solving a linear inversion problem.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    zj: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    potential field at the grid points.
+    F: numpy array - cosines directions of the main magnetic field.
+    h: numpy array - cosines directions of the body's magnetization.
+    data: numpy array - numpy array - the total-field anomaly 
+    potential field data at the x,y and z grid points.
+
+    output
+    p: numpy array - final equivalent layer property estimative.
+    data: numpy array - the predicted data.
+    '''
+    A = np.empty((N, N), dtype=np.float)
+    for i in range (N):
+        a = (x-x[i])
+        b = (y-y[i])
+        c = (zj-z[i])
+        r = (a*a+b*b+c*c)
+        r3 = r**(-1.5)
+        r5 = r**(2.5)
+        #Hxx = -r3+3*(a*a)/r5
+        Hxy = 3*(a*b)/r5
+        #Hxz = 3*(a*c)/r5
+        #Hyy = -r3+3*(b*b)/r5
+        #Hyz = 3*(b*c)/r5
+        #Hzz = -r3+3*(c*c)/r5
+        A[i] = G * SI2EOTVOS * Hxy
+    return A
+
+def classic_grav_tensor_xz(x,y,z,zj,N):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a total-field anomaly
+    data by solving a linear inversion problem.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    zj: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    potential field at the grid points.
+    F: numpy array - cosines directions of the main magnetic field.
+    h: numpy array - cosines directions of the body's magnetization.
+    data: numpy array - numpy array - the total-field anomaly 
+    potential field data at the x,y and z grid points.
+
+    output
+    p: numpy array - final equivalent layer property estimative.
+    data: numpy array - the predicted data.
+    '''
+    A = np.empty((N, N), dtype=np.float)
+    for i in range (N):
+        a = (x-x[i])
+        b = (y-y[i])
+        c = (zj-z[i])
+        r = (a*a+b*b+c*c)
+        r3 = r**(-1.5)
+        r5 = r**(2.5)
+        #Hxx = -r3+3*(a*a)/r5
+        #Hxy = 3*(a*b)/r5
+        Hxz = 3*(a*c)/r5
+        #Hyy = -r3+3*(b*b)/r5
+        #Hyz = 3*(b*c)/r5
+        #Hzz = -r3+3*(c*c)/r5
+        A[i] = G * SI2EOTVOS * Hxz
+    return A
+
+def classic_grav_tensor_yy(x,y,z,zj,N):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a total-field anomaly
+    data by solving a linear inversion problem.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    zj: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    potential field at the grid points.
+    F: numpy array - cosines directions of the main magnetic field.
+    h: numpy array - cosines directions of the body's magnetization.
+    data: numpy array - numpy array - the total-field anomaly 
+    potential field data at the x,y and z grid points.
+
+    output
+    p: numpy array - final equivalent layer property estimative.
+    data: numpy array - the predicted data.
+    '''
+    A = np.empty((N, N), dtype=np.float)
+    for i in range (N):
+        a = (x-x[i])
+        b = (y-y[i])
+        c = (zj-z[i])
+        r = (a*a+b*b+c*c)
+        r3 = r**(-1.5)
+        r5 = r**(2.5)
+        #Hxx = -r3+3*(a*a)/r5
+        #Hxy = 3*(a*b)/r5
+        #Hxz = 3*(a*c)/r5
+        Hyy = -r3+3*(b*b)/r5
+        #Hyz = 3*(b*c)/r5
+        #Hzz = -r3+3*(c*c)/r5
+        A[i] = G * SI2EOTVOS * Hyy
+    return A
+
+def classic_grav_tensor_yz(x,y,z,zj,N):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a total-field anomaly
+    data by solving a linear inversion problem.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    zj: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    potential field at the grid points.
+    F: numpy array - cosines directions of the main magnetic field.
+    h: numpy array - cosines directions of the body's magnetization.
+    data: numpy array - numpy array - the total-field anomaly 
+    potential field data at the x,y and z grid points.
+
+    output
+    p: numpy array - final equivalent layer property estimative.
+    data: numpy array - the predicted data.
+    '''
+    A = np.empty((N, N), dtype=np.float)
+    for i in range (N):
+        a = (x-x[i])
+        b = (y-y[i])
+        c = (zj-z[i])
+        r = (a*a+b*b+c*c)
+        r3 = r**(-1.5)
+        r5 = r**(2.5)
+        #Hxx = -r3+3*(a*a)/r5
+        #Hxy = 3*(a*b)/r5
+        #Hxz = 3*(a*c)/r5
+        #Hyy = -r3+3*(b*b)/r5
+        Hyz = 3*(b*c)/r5
+        #Hzz = -r3+3*(c*c)/r5
+        A[i] = G * SI2EOTVOS * Hyz
+    return A
+
+def classic_grav_tensor_zz(x,y,z,zj,N):
+    '''
+    Calculates the estimate physical property distribution of
+    an equivalent layer that repreduces a total-field anomaly
+    data by solving a linear inversion problem.
+
+    input
+    x, y: numpy array - the x, y coordinates
+    of the grid and equivalent layer points.
+    z: numpy array - the height of observation points.
+    zj: numpy array - the depth of the equivalent layer.
+    shape: tuple - grid size.
+    potential field at the grid points.
+    F: numpy array - cosines directions of the main magnetic field.
+    h: numpy array - cosines directions of the body's magnetization.
+    data: numpy array - numpy array - the total-field anomaly 
+    potential field data at the x,y and z grid points.
+
+    output
+    p: numpy array - final equivalent layer property estimative.
+    data: numpy array - the predicted data.
+    '''
+    A = np.empty((N, N), dtype=np.float)
+    for i in range (N):
+        a = (x-x[i])
+        b = (y-y[i])
+        c = (zj-z[i])
+        r = (a*a+b*b+c*c)
+        r3 = r**(-1.5)
+        r5 = r**(2.5)
+        #Hxx = -r3+3*(a*a)/r5
+        #Hxy = 3*(a*b)/r5
+        #Hxz = 3*(a*c)/r5
+        #Hyy = -r3+3*(b*b)/r5
+        #Hyz = 3*(b*c)/r5
+        Hzz = -r3+3*(c*c)/r5
+        A[i] = G * SI2EOTVOS * Hzz
+    return A
+
 def fast_loop(data,A,diagonal_A,rho0,itmax):
     '''
     Solves the linear inversion through a iterative method.

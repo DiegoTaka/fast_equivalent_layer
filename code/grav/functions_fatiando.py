@@ -29,6 +29,32 @@ MEAN_EARTH_RADIUS = 6378137.0
 PERM_FREE_SPACE = 4 * \
     3.141592653589793115997963468544185161590576171875 * (10 ** -7)
 
+# These are the second derivatives of the V = 1/r function that is used by the
+# magnetic field component, total-field magnetic anomaly, gravity gradients,
+# and the kernel functions.
+def _v_xx(x, y, z, r_sqr, r_5):
+    return (3*x**2 - r_sqr)/r_5
+
+
+def _v_xy(x, y, z, r_sqr, r_5):
+    return 3*x*y/r_5
+
+
+def _v_xz(x, y, z, r_sqr, r_5):
+    return 3*x*z/r_5
+
+
+def _v_yy(x, y, z, r_sqr, r_5):
+    return (3*y**2 - r_sqr)/r_5
+
+
+def _v_yz(x, y, z, r_sqr, r_5):
+    return 3*y*z/r_5
+
+
+def _v_zz(x, y, z, r_sqr, r_5):
+    return (3*z**2 - r_sqr)/r_5
+
 def utils_ang2vec(intensity, inc, dec):
     return np.transpose([intensity * i for i in utils_dircos(inc, dec)])
 
@@ -1440,6 +1466,377 @@ def sphere_gz(xp, yp, zp, spheres, dens=None):
     res *= G*SI2MGAL
     return res
 
+def sphere_gxx(xp, yp, zp, spheres, dens=None):
+    r"""
+    The :math:`g_{xx}` gravity gradient component.
+
+    .. math::
+
+        g_{xx}(x, y, z) = \rho 4 \pi \dfrac{radius^3}{3}
+            \dfrac{3 (x - x')^2 - r^2}{r^5}
+
+    in which :math:`\rho` is the density and
+    :math:`r = \sqrt{(x - x')^2 + (y - y')^2 + (z - z')^2}`.
+
+    The coordinate system of the input parameters is x -> North, y -> East and
+    z -> Down.
+
+    All input values should be in SI and output is in Eotvos.
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates where the field will be calculated
+    * spheres : list of :class:`fatiando.mesher.Sphere`
+        The spheres. Spheres must have the property ``'density'``. The ones
+        that are ``None`` or without a density will be ignored.
+    * dens : float or None
+        If not None, will use this value instead of the ``'density'`` property
+        of the spheres. Use this, e.g., for sensitivity matrix building.
+
+    Returns:
+
+    * res : array
+        The field calculated on xp, yp, zp
+
+    References:
+
+    Blakely, R. J. (1995), Potential Theory in Gravity and Magnetic
+    Applications, Cambridge University Press.
+
+    """
+    res = 0
+    for sphere in spheres:
+        if sphere is None:
+            continue
+        if 'density' not in sphere.props and dens is None:
+            continue
+        if dens is None:
+            density = sphere.props['density']
+        else:
+            density = dens
+        x = sphere.x - xp
+        y = sphere.y - yp
+        z = sphere.z - zp
+        r_sqr = x**2 + y**2 + z**2
+        # This is faster than r5 = r_sqrt**2.5
+        r = np.sqrt(r_sqr)
+        r_5 = r*r*r*r*r
+        volume = 4*np.pi*(sphere.radius**3)/3
+        res += density*volume*_v_xx(x, y, z, r_sqr, r_5)
+    res *= G*SI2EOTVOS
+    return res
+
+
+def sphere_gxy(xp, yp, zp, spheres, dens=None):
+    r"""
+    The :math:`g_{xy}` gravity gradient component.
+
+    .. math::
+
+        g_{xy}(x, y, z) = \rho 4 \pi \dfrac{radius^3}{3}
+            \dfrac{3(x - x')(y - y')}{r^5}
+
+    in which :math:`\rho` is the density and
+    :math:`r = \sqrt{(x - x')^2 + (y - y')^2 + (z - z')^2}`.
+
+    The coordinate system of the input parameters is x -> North, y -> East and
+    z -> Down.
+
+    All input values should be in SI and output is in Eotvos.
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates where the field will be calculated
+    * spheres : list of :class:`fatiando.mesher.Sphere`
+        The spheres. Spheres must have the property ``'density'``. The ones
+        that are ``None`` or without a density will be ignored.
+    * dens : float or None
+        If not None, will use this value instead of the ``'density'`` property
+        of the spheres. Use this, e.g., for sensitivity matrix building.
+
+    Returns:
+
+    * res : array
+        The field calculated on xp, yp, zp
+
+    References:
+
+    Blakely, R. J. (1995), Potential Theory in Gravity and Magnetic
+    Applications, Cambridge University Press.
+
+    """
+    res = 0
+    for sphere in spheres:
+        if sphere is None:
+            continue
+        if 'density' not in sphere.props and dens is None:
+            continue
+        if dens is None:
+            density = sphere.props['density']
+        else:
+            density = dens
+        x = sphere.x - xp
+        y = sphere.y - yp
+        z = sphere.z - zp
+        r_sqr = x**2 + y**2 + z**2
+        # This is faster than r5 = r_sqrt**2.5
+        r = np.sqrt(r_sqr)
+        r_5 = r*r*r*r*r
+        volume = 4*np.pi*(sphere.radius**3)/3
+        res += density*volume*_v_xy(x, y, z, r_sqr, r_5)
+    res *= G*SI2EOTVOS
+    return res
+
+
+def sphere_gxz(xp, yp, zp, spheres, dens=None):
+    r"""
+    The :math:`g_{xz}` gravity gradient component.
+
+    .. math::
+
+        g_{xz}(x, y, z) = \rho 4 \pi \dfrac{radius^3}{3}
+            \dfrac{3(x - x')(z - z')}{r^5}
+
+    in which :math:`\rho` is the density and
+    :math:`r = \sqrt{(x - x')^2 + (y - y')^2 + (z - z')^2}`.
+
+    The coordinate system of the input parameters is x -> North, y -> East and
+    z -> Down.
+
+    All input values should be in SI and output is in Eotvos.
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates where the field will be calculated
+    * spheres : list of :class:`fatiando.mesher.Sphere`
+        The spheres. Spheres must have the property ``'density'``. The ones
+        that are ``None`` or without a density will be ignored.
+    * dens : float or None
+        If not None, will use this value instead of the ``'density'`` property
+        of the spheres. Use this, e.g., for sensitivity matrix building.
+
+    Returns:
+
+    * res : array
+        The field calculated on xp, yp, zp
+
+    References:
+
+    Blakely, R. J. (1995), Potential Theory in Gravity and Magnetic
+    Applications, Cambridge University Press.
+
+    """
+    res = 0
+    for sphere in spheres:
+        if sphere is None:
+            continue
+        if 'density' not in sphere.props and dens is None:
+            continue
+        if dens is None:
+            density = sphere.props['density']
+        else:
+            density = dens
+        x = sphere.x - xp
+        y = sphere.y - yp
+        z = sphere.z - zp
+        r_sqr = x**2 + y**2 + z**2
+        # This is faster than r5 = r_sqrt**2.5
+        r = np.sqrt(r_sqr)
+        r_5 = r*r*r*r*r
+        volume = 4*np.pi*(sphere.radius**3)/3
+        res += density*volume*_v_xz(x, y, z, r_sqr, r_5)
+    res *= G*SI2EOTVOS
+    return res
+
+
+def sphere_gyy(xp, yp, zp, spheres, dens=None):
+    r"""
+    The :math:`g_{yy}` gravity gradient component.
+
+    .. math::
+
+        g_{yy}(x, y, z) = \rho 4 \pi \dfrac{radius^3}{3}
+            \dfrac{3(y - y')^2 - r^2}{r^5}
+
+    in which :math:`\rho` is the density and
+    :math:`r = \sqrt{(x - x')^2 + (y - y')^2 + (z - z')^2}`.
+
+    The coordinate system of the input parameters is x -> North, y -> East and
+    z -> Down.
+
+    All input values should be in SI and output is in Eotvos.
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates where the field will be calculated
+    * spheres : list of :class:`fatiando.mesher.Sphere`
+        The spheres. Spheres must have the property ``'density'``. The ones
+        that are ``None`` or without a density will be ignored.
+    * dens : float or None
+        If not None, will use this value instead of the ``'density'`` property
+        of the spheres. Use this, e.g., for sensitivity matrix building.
+
+    Returns:
+
+    * res : array
+        The field calculated on xp, yp, zp
+
+    References:
+
+    Blakely, R. J. (1995), Potential Theory in Gravity and Magnetic
+    Applications, Cambridge University Press.
+
+    """
+    res = 0
+    for sphere in spheres:
+        if sphere is None:
+            continue
+        if 'density' not in sphere.props and dens is None:
+            continue
+        if dens is None:
+            density = sphere.props['density']
+        else:
+            density = dens
+        x = sphere.x - xp
+        y = sphere.y - yp
+        z = sphere.z - zp
+        r_sqr = x**2 + y**2 + z**2
+        # This is faster than r5 = r_sqrt**2.5
+        r = np.sqrt(r_sqr)
+        r_5 = r*r*r*r*r
+        volume = 4*np.pi*(sphere.radius**3)/3
+        res += density*volume*_v_yy(x, y, z, r_sqr, r_5)
+    res *= G*SI2EOTVOS
+    return res
+
+
+def sphere_gyz(xp, yp, zp, spheres, dens=None):
+    r"""
+    The :math:`g_{yz}` gravity gradient component.
+
+    .. math::
+
+        g_{yz}(x, y, z) = \rho 4 \pi \dfrac{radius^3}{3}
+            \dfrac{3(y - y')(z - z')}{r^5}
+
+    in which :math:`\rho` is the density and
+    :math:`r = \sqrt{(x - x')^2 + (y - y')^2 + (z - z')^2}`.
+
+    The coordinate system of the input parameters is x -> North, y -> East and
+    z -> Down.
+
+    All input values should be in SI and output is in Eotvos.
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates where the field will be calculated
+    * spheres : list of :class:`fatiando.mesher.Sphere`
+        The spheres. Spheres must have the property ``'density'``. The ones
+        that are ``None`` or without a density will be ignored.
+    * dens : float or None
+        If not None, will use this value instead of the ``'density'`` property
+        of the spheres. Use this, e.g., for sensitivity matrix building.
+
+    Returns:
+
+    * res : array
+        The field calculated on xp, yp, zp
+
+    References:
+
+    Blakely, R. J. (1995), Potential Theory in Gravity and Magnetic
+    Applications, Cambridge University Press.
+
+    """
+    res = 0
+    for sphere in spheres:
+        if sphere is None:
+            continue
+        if 'density' not in sphere.props and dens is None:
+            continue
+        if dens is None:
+            density = sphere.props['density']
+        else:
+            density = dens
+        x = sphere.x - xp
+        y = sphere.y - yp
+        z = sphere.z - zp
+        r_sqr = x**2 + y**2 + z**2
+        # This is faster than r5 = r_sqrt**2.5
+        r = np.sqrt(r_sqr)
+        r_5 = r*r*r*r*r
+        volume = 4*np.pi*(sphere.radius**3)/3
+        res += density*volume*_v_yz(x, y, z, r_sqr, r_5)
+    res *= G*SI2EOTVOS
+    return res
+
+
+def sphere_gzz(xp, yp, zp, spheres, dens=None):
+    r"""
+    The :math:`g_{zz}` gravity gradient component.
+
+    .. math::
+
+        g_{zz}(x, y, z) = \rho 4 \pi \dfrac{radius^3}{3}
+            \dfrac{3(z - z')^2 - r^2}{r^5}
+
+    in which :math:`\rho` is the density and
+    :math:`r = \sqrt{(x - x')^2 + (y - y')^2 + (z - z')^2}`.
+
+    The coordinate system of the input parameters is x -> North, y -> East and
+    z -> Down.
+
+    All input values should be in SI and output is in Eotvos.
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates where the field will be calculated
+    * spheres : list of :class:`fatiando.mesher.Sphere`
+        The spheres. Spheres must have the property ``'density'``. The ones
+        that are ``None`` or without a density will be ignored.
+    * dens : float or None
+        If not None, will use this value instead of the ``'density'`` property
+        of the spheres. Use this, e.g., for sensitivity matrix building.
+
+    Returns:
+
+    * res : array
+        The field calculated on xp, yp, zp
+
+    References:
+
+    Blakely, R. J. (1995), Potential Theory in Gravity and Magnetic
+    Applications, Cambridge University Press.
+
+    """
+    res = 0
+    for sphere in spheres:
+        if sphere is None:
+            continue
+        if 'density' not in sphere.props and dens is None:
+            continue
+        if dens is None:
+            density = sphere.props['density']
+        else:
+            density = dens
+        x = sphere.x - xp
+        y = sphere.y - yp
+        z = sphere.z - zp
+        r_sqr = x**2 + y**2 + z**2
+        # This is faster than r5 = r_sqrt**2.5
+        r = np.sqrt(r_sqr)
+        r_5 = r*r*r*r*r
+        volume = 4*np.pi*(sphere.radius**3)/3
+        res += density*volume*_v_zz(x, y, z, r_sqr, r_5)
+    res *= G*SI2EOTVOS
+    return res
+
 def polyprism_gz(xp, yp, zp, prisms):
     r"""
     z component of gravitational acceleration of a polygonal prism.
@@ -1567,3 +1964,249 @@ def _fftfreqs(x, y, shape):
     dy = (y.max() - y.min())/(ny - 1)
     fy = 2*np.pi*np.fft.fftfreq(ny, dy)
     return np.meshgrid(fy, fx)[::-1]
+
+def polyprism_gxx(xp, yp, zp, prisms):
+    r"""
+    xx component of the gravity gradient tensor of a polygonal prism.
+
+    .. note:: The coordinate system of the input parameters is to be
+        x -> North, y -> East and z -> Down.
+
+    .. note:: All input values in SI units and output in Eotvos!
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates of the computation points.
+    * prisms : list of :class:`fatiando.mesher.PolygonalPrism`
+        The model used to calculate the field.
+        Prisms must have the physical property ``'density'`` will be
+        ignored.
+
+    Returns:
+
+    * res : array
+        The effect calculated on the computation points.
+
+    References:
+
+    Plouff, D. , 1976, Gravity and magnetic fields of polygonal prisms and
+    applications to magnetic terrain corrections, Geophysics, 41(4), 727-741,
+    doi:10.1190/1.1440645.
+
+    """
+    if xp.shape != yp.shape != zp.shape:
+        raise ValueError("Input arrays xp, yp, and zp must have same shape!")
+    res = 0
+    for prism in prisms:
+        if prism is None or 'density' not in prism.props:
+            continue
+        density = prism.props['density']
+        res += kernelxx(xp, yp, zp, prism)*density
+    res *= G * SI2EOTVOS
+    return res
+
+def polyprism_gxy(xp, yp, zp, prisms):
+    r"""
+    xy component of the gravity gradient tensor of a polygonal prism.
+
+    .. note:: The coordinate system of the input parameters is to be
+        x -> North, y -> East and z -> Down.
+
+    .. note:: All input values in SI units and output in Eotvos!
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates of the computation points.
+    * prisms : list of :class:`fatiando.mesher.PolygonalPrism`
+        The model used to calculate the field.
+        Prisms must have the physical property ``'density'`` will be
+        ignored.
+
+    Returns:
+
+    * res : array
+        The effect calculated on the computation points.
+
+    References:
+
+    Plouff, D. , 1976, Gravity and magnetic fields of polygonal prisms and
+    applications to magnetic terrain corrections, Geophysics, 41(4), 727-741,
+    doi:10.1190/1.1440645.
+
+    """
+    if xp.shape != yp.shape != zp.shape:
+        raise ValueError("Input arrays xp, yp, and zp must have same shape!")
+    res = 0
+    for prism in prisms:
+        if prism is None or 'density' not in prism.props:
+            continue
+        density = prism.props['density']
+        res += kernelxy(xp, yp, zp, prism)*density
+    res *= G * SI2EOTVOS
+    return res
+
+def polyprism_gxz(xp, yp, zp, prisms):
+    r"""
+    xz component of the gravity gradient tensor of a polygonal prism.
+
+    .. note:: The coordinate system of the input parameters is to be
+        x -> North, y -> East and z -> Down.
+
+    .. note:: All input values in SI units and output in Eotvos!
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates of the computation points.
+    * prisms : list of :class:`fatiando.mesher.PolygonalPrism`
+        The model used to calculate the field.
+        Prisms must have the physical property ``'density'`` will be
+        ignored.
+
+    Returns:
+
+    * res : array
+        The effect calculated on the computation points.
+
+    References:
+
+    Plouff, D. , 1976, Gravity and magnetic fields of polygonal prisms and
+    applications to magnetic terrain corrections, Geophysics, 41(4), 727-741,
+    doi:10.1190/1.1440645.
+
+    """
+    if xp.shape != yp.shape != zp.shape:
+        raise ValueError("Input arrays xp, yp, and zp must have same shape!")
+    res = 0
+    for prism in prisms:
+        if prism is None or 'density' not in prism.props:
+            continue
+        density = prism.props['density']
+        res += kernelxz(xp, yp, zp, prism)*density
+    res *= G * SI2EOTVOS
+    return res
+
+def polyprism_gyy(xp, yp, zp, prisms):
+    r"""
+    yy component of the gravity gradient tensor of a polygonal prism.
+
+    .. note:: The coordinate system of the input parameters is to be
+        x -> North, y -> East and z -> Down.
+
+    .. note:: All input values in SI units and output in Eotvos!
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates of the computation points.
+    * prisms : list of :class:`fatiando.mesher.PolygonalPrism`
+        The model used to calculate the field.
+        Prisms must have the physical property ``'density'`` will be
+        ignored.
+
+    Returns:
+
+    * res : array
+        The effect calculated on the computation points.
+
+    References:
+
+    Plouff, D. , 1976, Gravity and magnetic fields of polygonal prisms and
+    applications to magnetic terrain corrections, Geophysics, 41(4), 727-741,
+    doi:10.1190/1.1440645.
+
+    """
+    if xp.shape != yp.shape != zp.shape:
+        raise ValueError("Input arrays xp, yp, and zp must have same shape!")
+    res = 0
+    for prism in prisms:
+        if prism is None or 'density' not in prism.props:
+            continue
+        density = prism.props['density']
+        res += kernelyy(xp, yp, zp, prism)*density
+    res *= G * SI2EOTVOS
+    return res
+
+def polyprism_gyz(xp, yp, zp, prisms):
+    r"""
+    yz component of the gravity gradient tensor of a polygonal prism.
+
+    .. note:: The coordinate system of the input parameters is to be
+        x -> North, y -> East and z -> Down.
+
+    .. note:: All input values in SI units and output in Eotvos!
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates of the computation points.
+    * prisms : list of :class:`fatiando.mesher.PolygonalPrism`
+        The model used to calculate the field.
+        Prisms must have the physical property ``'density'`` will be
+        ignored.
+
+    Returns:
+
+    * res : array
+        The effect calculated on the computation points.
+
+    References:
+
+    Plouff, D. , 1976, Gravity and magnetic fields of polygonal prisms and
+    applications to magnetic terrain corrections, Geophysics, 41(4), 727-741,
+    doi:10.1190/1.1440645.
+
+    """
+    if xp.shape != yp.shape != zp.shape:
+        raise ValueError("Input arrays xp, yp, and zp must have same shape!")
+    res = 0
+    for prism in prisms:
+        if prism is None or 'density' not in prism.props:
+            continue
+        density = prism.props['density']
+        res += kernelyz(xp, yp, zp, prism)*density
+    res *= G * SI2EOTVOS
+    return res
+
+def polyprism_gzz(xp, yp, zp, prisms):
+    r"""
+    zz component of the gravity gradient tensor of a polygonal prism.
+
+    .. note:: The coordinate system of the input parameters is to be
+        x -> North, y -> East and z -> Down.
+
+    .. note:: All input values in SI units and output in Eotvos!
+
+    Parameters:
+
+    * xp, yp, zp : arrays
+        The x, y, and z coordinates of the computation points.
+    * prisms : list of :class:`fatiando.mesher.PolygonalPrism`
+        The model used to calculate the field.
+        Prisms must have the physical property ``'density'`` will be
+        ignored.
+
+    Returns:
+
+    * res : array
+        The effect calculated on the computation points.
+
+    References:
+
+    Plouff, D. , 1976, Gravity and magnetic fields of polygonal prisms and
+    applications to magnetic terrain corrections, Geophysics, 41(4), 727-741,
+    doi:10.1190/1.1440645.
+
+    """
+    if xp.shape != yp.shape != zp.shape:
+        raise ValueError("Input arrays xp, yp, and zp must have same shape!")
+    res = 0
+    for prism in prisms:
+        if prism is None or 'density' not in prism.props:
+            continue
+        density = prism.props['density']
+        res += kernelzz(xp, yp, zp, prism)*density
+    res *= G * SI2EOTVOS
+    return res

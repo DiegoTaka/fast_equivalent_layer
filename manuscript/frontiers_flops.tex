@@ -1,0 +1,232 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This is just an example/guide for you to refer to when submitting manuscripts to Frontiers, it is not mandatory to use Frontiers .cls files nor frontiers.tex  %
+% This will only generate the Manuscript, the final article will be typeset by Frontiers after acceptance.   
+%                                              %
+%                                                                                                                                                         %
+% When submitting your files, remember to upload this *tex file, the pdf generated with it, the *bib file (if bibliography is not within the *tex) and all the figures.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Version 3.4 Generated 2022/06/14 %%%
+%%% You will need to have the following packages installed: datetime, fmtcount, etoolbox, fcprefix, which are normally inlcuded in WinEdt. %%%
+%%% In http://www.ctan.org/ you can find the packages and how to install them, if necessary. %%%
+%%%  NB logo1.jpg is required in the path in order to correctly compile front page header %%%
+
+\documentclass[utf8]{FrontiersinHarvard} % for articles in journals using the Harvard Referencing Style (Author-Date), for Frontiers Reference Styles by Journal: https://zendesk.frontiersin.org/hc/en-us/articles/360017860337-Frontiers-Reference-Styles-by-Journal
+%\documentclass[utf8]{FrontiersinVancouver} % for articles in journals using the Vancouver Reference Style (Numbered), for Frontiers Reference Styles by Journal: https://zendesk.frontiersin.org/hc/en-us/articles/360017860337-Frontiers-Reference-Styles-by-Journal
+%\documentclass[utf8]{frontiersinFPHY_FAMS} % Vancouver Reference Style (Numbered) for articles in the journals "Frontiers in Physics" and "Frontiers in Applied Mathematics and Statistics" 
+
+%\setcitestyle{square} % for articles in the journals "Frontiers in Physics" and "Frontiers in Applied Mathematics and Statistics" 
+\usepackage{url,hyperref,lineno,microtype,subcaption}
+\usepackage[onehalfspacing]{setspace}
+
+\linenumbers
+
+
+% Leave a blank line between paragraphs instead of using \\
+
+
+\def\keyFont{\fontsize{8}{11}\helveticabold }
+\def\firstAuthorLast{Takahashi {et~al.}} %use et al only if is more than 1 author
+\def\Authors{Diego Takahashi\,$^{1,*}$, André L. A. Reis\,$^{2}$, Vanderlei C. Oliveira Jr.\,$^{1}$ and Valéria C. F. Barbosa\,$^{1}$}
+% Affiliations should be keyed to the author's name with superscript numbers and be listed as follows: Laboratory, Institute, Department, Organization, City, State abbreviation (USA, Canada, Australia), and Country (without detailed address information such as city zip codes or street names).
+% If one of the authors has a change of address, list the new address below the correspondence details using a superscript symbol and use the same symbol to indicate the author in the author list.
+\def\Address{$^{1}$Observatório Nacional, Department of Geophysics, Rio de Janeiro, Brasil\\
+$^{2}$Universidade do Estado do Rio de Janeiro, Department of Applied Geology, Rio de Janeiro, Brasil}
+% The Corresponding Author should be marked with an asterisk
+% Provide the exact contact address (this time including street name and city zip code) and email of the corresponding author
+\def\corrAuthor{Valéria C.F. Barbosa}
+
+\def\corrEmail{valcris@on.br}
+
+\begin{document}
+\onecolumn
+\firstpage{1}
+
+\title {The computation aspects of the equivalent-layer technique: review and perspective} 
+
+\author[\firstAuthorLast ]{\Authors} %This field will be automatically populated
+\address{} %This field will be automatically populated
+\correspondance{} %This field will be automatically populated
+
+\extraAuth{}% If there are more than 1 corresponding author, comment this line and uncomment the next one.
+%\extraAuth{corresponding Author2 \\ Laboratory X2, Institute X2, Department X2, Organization X2, Street X2, City X2 , State XX2 (only USA, Canada and Australia), Zip Code2, X2 Country X2, email2@uni2.edu}
+
+
+\maketitle
+
+
+\begin{abstract}
+
+%%% Leave the Abstract empty if your article does not require one, please see the Summary Table for full details.
+\section{}
+Equivalent-layer technique is a powerful tool for processing potential-field data in the space domain. However, the greatest hindrance for using the equivalent-layer technique is its high computational cost for processing massive data sets. The large amount of computer memory usage to store the full sensitivity matrix combined with the computational time required for matrix-vector multiplications and to solve the resulting linear system, are the main drawbacks that made unfeasible the use of the equivalent-layer technique for a long time. More recently, the advances in computational power propelled the development of methods to overcome the heavy computational cost associated with the equivalent-layer technique. We present a comprehensive review of the computation aspects concerning the equivalent-layer technique addressing how previous works have been dealt with the computational cost of this technique. Historically, the high computational cost of the equivalent-layer technique has been overcome by using a variety of strategies such as: moving data-window scheme, equivalent data concept, wavelet compression, quadtree discretization, reparametrization of the equivalent layer by a piecewise-polynomial function, iterative scheme without solving a system of linear equations and the convolutional equivalent layer using the concept of block-Toeplitz Toeplitz-block (BTTB) matrices. We compute the number of floating-point operations of some of these strategies adopted in the equivalent layer technique to show their effectiveness in reducing the computational demand. Numerically, we also address the stability of some of these strategies used in the equivalent layer technique by comparing with the stability via the classic equivalent-layer technique with the zeroth-order Tikhonov regularization.
+
+\tiny
+ \keyFont{ \section{Keywords:} equivalent layer, gravimetry, fast algorithms, computational cost, stability analysis} %All article types: you may provide up to 8 keywords; at least 5 are mandatory.
+\end{abstract}
+
+\section{Introduction}
+
+\section{Methodology}
+
+\section{Results}
+
+\subsection{Floating-point operations calculation}
+
+To measure the computational effort of the different algorithms to solve the equivalent layer linear system, a non-hardware dependent method can be useful because allow us to do direct comparison between them. Counting the floating-point operations (\textit{flops}), i.e., additions, subtractions, multiplications and divisions is a good way to quantify the amount of work of a given algorithm \citep{golub-vanloan2013}. For example, the number of \textit{flops} necessary to multiply two vectors $\mathbb{R}^{N}$ is $2N$. A common matrix-vector multiplication with dimension $\mathbb{R}^{N \times N}$ and $\mathbb{R}^{N}$, respectively, is $2N^2$ and a multiplication of two matrices $\mathbb{R}^{N \times N}$ is $2N^3$. Figure XX shows the total flops count for the different methods presented in this review with a crescent number of data, ranging from $10,000$ to $1,000,000$. 
+
+\subsubsection{Normal equations using Cholesky algorithm}
+
+\begin{equation}
+	f_{classical} = \dfrac{5}{6} N^3 + 4N^2
+\label{flops_classical}
+\end{equation}
+
+\subsubsection{Window method \citep{leao-silva1989}}
+
+\begin{equation}
+	f_{window} = W\dfrac{5}{6} N_w^3 + 4N_w^2
+\label{flops_leao-silva}
+\end{equation}
+
+\subsubsection{PEL method \citep{oliveirajr-etal2013}}
+
+\begin{equation}
+	f_{pel} = \dfrac{1}{3} H^3 + 2H^2 + 2NN_wH + H^2N + 2HN + 2NP
+\label{flops_pel}
+\end{equation}
+
+\subsubsection{Conjugate gradient least square (CGLS)}
+
+\begin{equation}
+	f_{cgls} = 2N^2 + it(4N^2 + 12N)
+\label{cgls}
+\end{equation}
+
+\subsubsection{Wavelet compression method with CGLS \citep{li-oldenburg2010}}
+
+\begin{equation}
+	f_{wavelet} = 2NC_r + 4N\log_2(N) + it(4N\log_2(N) + 4NC_r + 12C_r)
+\label{wavelet}
+\end{equation}
+
+\subsubsection{Convolutional equivalent layer for gravity data \citep{takahashi2020convolutional}}
+
+This methods replaces the matrix-vector multiplication of the iterative fast-equivalent technique \citep{siqueira-etal2017} by three steps involving a Fourier transform and a inverse Fourier transform, 
+and a Hadamard product of matrices. Considering that the first column of our BCCB matrix has $4N$ elements, the flops count of this method is
+
+\begin{equation}
+	f_{convgrav} = \kappa4N\log_2(4N) + it(27N + \kappa8N\log_2(4N))
+\label{convgrav}
+\end{equation}
+
+In the resultant count we considered a \textit{radix-2} algorithm for the fast Fourier transform and its inverse, which has a $\kappa$ equals to 5 and requires $\kappa4N\log_2(4N)$ flops each. The Hadarmard product of two matrices of $4N$ elements with complex numbers takes $24N$ flops. Note that equation \ref{convgrav} is different from the one presented in \cite{takahashi2020convolutional} simply because we added the eigenvalues calculation in this form. It does not differentiate much in order of magnitude because the iterative part is the most costful.
+
+\subsubsection{Convolutional equivalent layer for magnetic data \citep{takahashi2022convolutional}}
+
+The convolutional equivalent layer for magnetic data uses the same flops count of the main operations as in the gravimetric case, the big difference is the use of the conjugate gradient algorithm to solve the inverse problem.
+It requires a Hadamard product outside of the iterative loop and more matrix-vector vector-vector multiplications inside the loop as seem in equation \ref{cgls}.
+
+\begin{equation}
+	f_{convmag} = \kappa16N\log_2(4N) + 24N + it(\kappa16N\log_2(4N) + 60N)
+\label{convmag}
+\end{equation}
+
+\subsubsection{Deconvolutional method}
+
+The deconvolution method does not require an iterative algorithm, rather it solves the estimative of the physical properties in a single step using the $4N$ eigenvalues of the BCCB matrix as in the convolutional method. It requires a two fast Fourier transform ($\kappa4N\log_2(4N)$), one for the eigenvalues and another for the data transformation, a element by element division ($24N$) and finally, a fast inverse Fourier transform for the final estimative ($\kappa4N\log_2(4N)$).
+
+\begin{equation}
+	f_{deconv} = \kappa12N\log_2(4N) + 24N
+	\label{deconv}
+\end{equation}
+
+Using the deconvolutional method with a Wiener stabilization adds two multiplications of complex elements of the conjugates eigenvalues ($24N$ each) and the sum of $4N$ elements with the stabilization parameter $\mu$
+
+\begin{equation}
+	f_{deconvwiener} = \kappa12N\log_2(4N) + 76N
+	\label{deconvwiener}
+\end{equation}
+
+\subsection{Stability analysis}
+
+For the stability analysis we show the comparison of the normal equations solution with zeroth-order Tikhonov regularization, the convolutional method for gravimetric and magnetic data, the deconvolutional method and the deconvolutional method with different values for the Wiener stabilization. We create $21$ data sets adding a crescent pseudo-random noise to the original data, which varies from $0\%$ to $10\%$ of the maximum anomaly value, in intervals of $0.5\%$. These noises has mean equal to zero and a Gaussian distribution.
+Figure XX shows how the residual between the predicted data and the noise-free data changes as the level of the noise is increased. We can see that for all methods, a linear tendency can be observed as it is expected. The inclination of the straight line is a indicative of the stability of each method. As show in the graph the deconvolutional method is very unstable and it is really necessary to use a stabilization method to have a good parameter estimative. In contrast, a correct value of the stabilization parameter is necessary to not overshoot the smootheness of the solution as it is the case for the well-known zeroth-order Tikhonov regularization. For the example using this gravimetric data, the optimal value for the Wiener stabilization parameter is $\mu = 10^{-9}$. Figure XX shows the comparison of the predicted data for each method with the original data.
+
+For the magnetic data, the Wiener parameter seems to have the best solution for $\mu = 10^{-13}$. Figure XX shows the comparison of the predicted data for each method with the original data.
+
+\section{Discussion and conclusion}
+
+\section*{Conflict of Interest Statement}
+%All financial, commercial or other relationships that might be perceived by the academic community as representing a potential conflict of interest must be disclosed. If no such relationship exists, authors will be asked to confirm the following statement: 
+
+The authors declare that the research was conducted in the absence of any commercial or financial relationships that could be construed as a potential conflict of interest.
+
+\section*{Author Contributions}
+
+The Author Contributions section is mandatory for all articles, including articles by sole authors. If an appropriate statement is not provided on submission, a standard one will be inserted during the production process. The Author Contributions statement must describe the contributions of individual authors referred to by their initials and, in doing so, all authors agree to be accountable for the content of the work. Please see  \href{https://www.frontiersin.org/guidelines/policies-and-publication-ethics#authorship-and-author-responsibilities}{here} for full authorship criteria.
+
+\section*{Funding}
+Diego Takahashi was supported by a Post-doctoral scholarship from CNPq (grant 300809/2022-0) Valéria C.F. Barbosa
+was supported by fellowships from CNPq (grant 309624/2021-5) and FAPERJ (grant 26/202.582/2019). Vanderlei C. Oliveira Jr. was supported by fellowships from CNPq (grant 315768/2020-7) and FAPERJ (grant E-26/202.729/2018). 
+
+\section*{Acknowledgments}
+We thank the brazillian federal agencies CAPES, CNPq, state agency FAPERJ and Observatório Nacional research institute and Universidade do Estado do Rio de Janeiro.
+
+\section*{Data Availability Statement}
+The datasets generated for this study can be found in the frontiers-paper Github repository link: https://github.com/DiegoTaka/frontiers-paper.
+% Please see the availability of data guidelines for more information, at https://www.frontiersin.org/guidelines/policies-and-publication-ethics#materials-and-data-policies
+
+\bibliographystyle{Frontiers-Harvard} %  Many Frontiers journals use the Harvard referencing system (Author-date), to find the style and resources for the journal you are submitting to: https://zendesk.frontiersin.org/hc/en-us/articles/360017860337-Frontiers-Reference-Styles-by-Journal. For Humanities and Social Sciences articles please include page numbers in the in-text citations 
+%\bibliographystyle{Frontiers-Vancouver} % Many Frontiers journals use the numbered referencing system, to find the style and resources for the journal you are submitting to: https://zendesk.frontiersin.org/hc/en-us/articles/360017860337-Frontiers-Reference-Styles-by-Journal
+\bibliography{references}
+
+%%% Make sure to upload the bib file along with the tex file and PDF
+%%% Please see the test.bib file for some examples of references
+
+\section*{Figure captions}
+
+%%% Please be aware that for original research articles we only permit a combined number of 15 figures and tables, one figure with multiple subfigures will count as only one figure.
+%%% Use this if adding the figures directly in the mansucript, if so, please remember to also upload the files when submitting your article
+%%% There is no need for adding the file termination, as long as you indicate where the file is saved. In the examples below the files (logo1.eps and logos.eps) are in the Frontiers LaTeX folder
+%%% If using *.tif files convert them to .jpg or .png
+%%%  NB logo1.eps is required in the path in order to correctly compile front page header %%%
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=10cm]{logo1}% This is a *.eps file
+\end{center}
+\caption{ Enter the caption for your figure here.  Repeat as  necessary for each of your figures}\label{fig:1}
+\end{figure}
+
+\setcounter{figure}{2}
+\setcounter{subfigure}{0}
+\begin{subfigure}
+\setcounter{figure}{2}
+\setcounter{subfigure}{0}
+    \centering
+    \begin{minipage}[b]{0.5\textwidth}
+        \includegraphics[width=\linewidth]{logo1.eps}
+        \caption{This is Subfigure 1.}
+        \label{fig:Subfigure 1}
+    \end{minipage}  
+   
+\setcounter{figure}{2}
+\setcounter{subfigure}{1}
+    \begin{minipage}[b]{0.5\textwidth}
+        \includegraphics[width=\linewidth]{logo2.eps}
+        \caption{This is Subfigure 2.}
+        \label{fig:Subfigure 2}
+    \end{minipage}
+
+\setcounter{figure}{2}
+\setcounter{subfigure}{-1}
+    \caption{Enter the caption for your subfigure here. \textbf{(A)} This is the caption for Subfigure 1. \textbf{(B)} This is the caption for Subfigure 2.}
+    \label{fig: subfigures}
+\end{subfigure}
+
+%%% If you don't add the figures in the LaTeX files, please upload them when submitting the article.
+%%% Frontiers will add the figures at the end of the provisional pdf automatically
+%%% The use of LaTeX coding to draw Diagrams/Figures/Structures should be avoided. They should be external callouts including graphics.
+
+\end{document}

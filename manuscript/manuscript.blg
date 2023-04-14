@@ -1,0 +1,54 @@
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: manuscript.aux
+A level-1 auxiliary file: abstract.aux
+A level-1 auxiliary file: introduction.aux
+A level-1 auxiliary file: methodology.aux
+A level-1 auxiliary file: results.aux
+A level-1 auxiliary file: conclusions.aux
+The style file: Frontiers-Harvard.bst
+Database file #1: references.bib
+Warning--I didn't find a database entry for "takahashi2020convolutional"
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You've used 26 entries,
+            3029 wiz_defined-function locations,
+            785 strings with 8859 characters,
+and the built_in function-call counts, 15649 in all, are:
+= -- 1358
+> -- 619
+< -- 17
++ -- 286
+- -- 166
+* -- 1144
+:= -- 2358
+add.period$ -- 60
+call.type$ -- 26
+change.case$ -- 183
+chr.to.int$ -- 27
+cite$ -- 52
+duplicate$ -- 1068
+empty$ -- 1204
+format.name$ -- 253
+if$ -- 3175
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 237
+newline$ -- 178
+num.names$ -- 104
+pop$ -- 450
+preamble$ -- 1
+purify$ -- 159
+quote$ -- 0
+skip$ -- 463
+stack$ -- 0
+substring$ -- 817
+swap$ -- 510
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 225
+warning$ -- 0
+while$ -- 114
+width$ -- 0
+write$ -- 393
+(There was 1 warning)

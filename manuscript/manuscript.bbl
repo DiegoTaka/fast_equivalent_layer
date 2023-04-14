@@ -1,0 +1,196 @@
+\begin{thebibliography}{26}
+\providecommand{\natexlab}[1]{#1}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\selectlanguage}[1]{\relax}
+\providecommand{\bibAnnoteFile}[1]{%
+  \IfFileExists{#1}{\begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ \input{#1}\end{quotation}}{}}
+\providecommand{\bibAnnote}[2]{%
+  \begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ #2\end{quotation}}
+
+\bibitem[{Aster et~al.(2018)Aster, Borchers, and Thurber}]{aster2018parameter}
+Aster, R.~C., Borchers, B., and Thurber, C.~H. (2018).
+\newblock \emph{Parameter estimation and inverse problems} (Elsevier)
+\bibAnnoteFile{aster2018parameter}
+
+\bibitem[{Barbosa et~al.(1997)Barbosa, Silva, and Medeiros}]{barbosa-etal1997}
+Barbosa, V. C.~F., Silva, J.~B., and Medeiros, W.~E. (1997).
+\newblock Gravity inversion of basement relief using approximate equality
+  constraints on depths.
+\newblock \emph{Geophysics} 62, 1745--1757
+\bibAnnoteFile{barbosa-etal1997}
+
+\bibitem[{Barnes and Lumley(2011)}]{barnes-lumley2011}
+Barnes, G. and Lumley, J. (2011).
+\newblock Processing gravity gradient data.
+\newblock \emph{Geophysics} 76, I33--I47.
+\newblock \doi{10.1190/1.3548548}
+\bibAnnoteFile{barnes-lumley2011}
+
+\bibitem[{Cordell(1992)}]{cordell1992}
+Cordell, L. (1992).
+\newblock A scattered equivalent-source method for interpolation and gridding
+  of potential-field data in three dimensions.
+\newblock \emph{Geophysics} 57, 629--636
+\bibAnnoteFile{cordell1992}
+
+\bibitem[{Dampney(1969)}]{dampney1969}
+Dampney, C. N.~G. (1969).
+\newblock The equivalent source technique.
+\newblock \emph{Geophysics} 34, 39--53.
+\newblock \doi{10.1190/1.1439996}
+\bibAnnoteFile{dampney1969}
+
+\bibitem[{Davis and Li(2011)}]{davis_li2011}
+Davis, K. and Li, Y. (2011).
+\newblock {Fast solution of geophysical inversion using adaptive mesh,
+  space-filling curves and wavelet compression}.
+\newblock \emph{Geophysical Journal International} 185, 157--166.
+\newblock \doi{10.1111/j.1365-246X.2011.04929.x}
+\bibAnnoteFile{davis_li2011}
+
+\bibitem[{Friedman(2001)}]{friedman2001}
+Friedman, J.~H. (2001).
+\newblock Greedy function approximation: a gradient boosting machine.
+\newblock \emph{Annals of statistics} , 1189--1232
+\bibAnnoteFile{friedman2001}
+
+\bibitem[{Friedman(2002)}]{friedman2002}
+Friedman, J.~H. (2002).
+\newblock Stochastic gradient boosting.
+\newblock \emph{Computational statistics and data analysis} 38, 367--378
+\bibAnnoteFile{friedman2002}
+
+\bibitem[{Golub and Loan(2013)}]{golub-vanloan2013}
+Golub, G.~H. and Loan, C. F.~V. (2013).
+\newblock \emph{Matrix Computations ({Johns} {Hopkins} Studies in the
+  Mathematical Sciences)} (Johns Hopkins University Press), 4 edn.
+\bibAnnoteFile{golub-vanloan2013}
+
+\bibitem[{Gusp{\'\i} and Novara(2009)}]{guspi-novara2009}
+Gusp{\'\i}, F. and Novara, I. (2009).
+\newblock Reduction to the pole and transformations of scattered magnetic data
+  using newtonian equivalent sources.
+\newblock \emph{Geophysics} 74, L67--L73
+\bibAnnoteFile{guspi-novara2009}
+
+\bibitem[{Jirigalatu and Ebbing(2019)}]{jirigalatu-ebbing2019}
+Jirigalatu, J. and Ebbing (2019).
+\newblock A fast equivalent source method for airborne gravity gradient data.
+\newblock \emph{Geophysics} 84, G75--G82.
+\newblock \doi{10.1190/GEO2018-0366.1}
+\bibAnnoteFile{jirigalatu-ebbing2019}
+
+\bibitem[{Kellogg(1929)}]{kellogg1929}
+Kellogg, O.~D. (1929).
+\newblock \emph{Foundations of Potential Theory} (Frederick Ungar Publishing
+  Company)
+\bibAnnoteFile{kellogg1929}
+
+\bibitem[{Kennett et~al.(1988)Kennett, Sambridge, and Williamson}]{kennett1988}
+Kennett, B., Sambridge, M., and Williamson, P. (1988).
+\newblock Subspace methods for large inverse problems with multiple parameter
+  classes.
+\newblock \emph{Geophysical Journal International} 94, 237--247
+\bibAnnoteFile{kennett1988}
+
+\bibitem[{Le\~{a}o and Silva(1989)}]{leao-silva1989}
+Le\~{a}o, J. W.~D. and Silva, J. B.~C. (1989).
+\newblock Discrete linear transformations of potential field data.
+\newblock \emph{Geophysics} 54, 497--507.
+\newblock \doi{10.1190/1.1442676}
+\bibAnnoteFile{leao-silva1989}
+
+\bibitem[{Li and Oldenburg(2010)}]{li-oldenburg2010}
+Li, Y. and Oldenburg, D.~W. (2010).
+\newblock Rapid construction of equivalent sources using wavelets.
+\newblock \emph{Geophysics} 75, L51--L59.
+\newblock \doi{10.1190/1.3378764}
+\bibAnnoteFile{li-oldenburg2010}
+
+\bibitem[{Mendon{\c{c}}a(2020)}]{mendoncca2020}
+Mendon{\c{c}}a, C.~A. (2020).
+\newblock Subspace method for solving large-scale equivalent layer and density
+  mapping problems.
+\newblock \emph{Geophysics} 85, G57--G68.
+\newblock \doi{10.1190/geo2019-0302.1}
+\bibAnnoteFile{mendoncca2020}
+
+\bibitem[{Mendon\c{c}a and Silva(1994)}]{mendonca-silva1994}
+Mendon\c{c}a, C.~A. and Silva, J. B.~C. (1994).
+\newblock The equivalent data concept applied to the interpolation of potential
+  field data.
+\newblock \emph{Geophysics} 59, 722--732.
+\newblock \doi{10.1190/1.1443630}
+\bibAnnoteFile{mendonca-silva1994}
+
+\bibitem[{Oldenburg et~al.(1993)Oldenburg, McGillivray, and
+  Ellis}]{oldenburg1993}
+Oldenburg, D., McGillivray, P., and Ellis, R. (1993).
+\newblock Generalized subspace methods for large-scale inverse problems.
+\newblock \emph{Geophysical Journal International} 114, 12--20
+\bibAnnoteFile{oldenburg1993}
+
+\bibitem[{Oliveira{ }Jr. et~al.(2013)Oliveira{ }Jr., Barbosa, and
+  Uieda}]{oliveirajr-etal2013}
+Oliveira{ }Jr., V.~C., Barbosa, V. C.~F., and Uieda, L. (2013).
+\newblock Polynomial equivalent layer.
+\newblock \emph{Geophysics} 78, G1--G13.
+\newblock \doi{10.1190/geo2012-0196.1}
+\bibAnnoteFile{oliveirajr-etal2013}
+
+\bibitem[{Siqueira et~al.(2017)Siqueira, Oliveira{ }Jr, and
+  Barbosa}]{siqueira-etal2017}
+Siqueira, F.~C., Oliveira{ }Jr, V.~C., and Barbosa, V.~C. (2017).
+\newblock Fast iterative equivalent-layer technique for gravity data
+  processing: A method grounded on excess mass constraint.
+\newblock \emph{Geophysics} 82, G57--G69
+\bibAnnoteFile{siqueira-etal2017}
+
+\bibitem[{Skilling and Bryan(1984)}]{skilling-bryan1984}
+Skilling, J. and Bryan, R. (1984).
+\newblock Maximum entropy image reconstruction-general algorithm.
+\newblock \emph{Monthly Notices of the Royal Astronomical Society, Vol. 211,
+  NO. 1, P. 111, 1984} 211, 111
+\bibAnnoteFile{skilling-bryan1984}
+
+\bibitem[{Soler and Uieda(2021)}]{soler-uieda2021}
+Soler, S.~R. and Uieda, L. (2021).
+\newblock {Gradient-boosted equivalent sources}.
+\newblock \emph{Geophysical Journal International} 227, 1768--1783.
+\newblock \doi{10.1093/gji/ggab297}
+\bibAnnoteFile{soler-uieda2021}
+
+\bibitem[{Takahashi et~al.(2022)Takahashi, Oliveira, and
+  Barbosa}]{takahashi2022}
+Takahashi, D., Oliveira, V.~C., and Barbosa, V.~C. (2022).
+\newblock Convolutional equivalent layer for magnetic data processing.
+\newblock \emph{Geophysics} 87, 1--59
+\bibAnnoteFile{takahashi2022}
+
+\bibitem[{Takahashi et~al.(2020)Takahashi, Oliveira~Jr, and
+  Barbosa}]{takahashi2020}
+Takahashi, D., Oliveira~Jr, V.~C., and Barbosa, V.~C. (2020).
+\newblock Convolutional equivalent layer for gravity data processing.
+\newblock \emph{Geophysics} 85, G129--G141
+\bibAnnoteFile{takahashi2020}
+
+\bibitem[{Xia and Sprowl(1991)}]{xia-sprowl1991}
+Xia, J. and Sprowl, D.~R. (1991).
+\newblock Correction of topographic distortion in gravity data.
+\newblock \emph{Geophysics} 56, 537--541
+\bibAnnoteFile{xia-sprowl1991}
+
+\bibitem[{Xia et~al.(1993)Xia, Sprowl, and Adkins-Heljeson}]{xia-etal1993}
+Xia, J., Sprowl, D.~R., and Adkins-Heljeson, D. (1993).
+\newblock Correction of topographic distortions in potential-field data; a fast
+  and accurate approach.
+\newblock \emph{Geophysics} 58, 515--523.
+\newblock \doi{10.1190/1.1443434}
+\bibAnnoteFile{xia-etal1993}
+
+\end{thebibliography}

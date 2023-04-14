@@ -1,5 +1,12 @@
-\section{Results}
+\section{Numerical simulations}
+\label{sec:num_simulations}
 
+We investigated different computational algorithms for inverting gravity disturbances and total-field anomalies. To test the capability of the fast equivalent-layer technique for processing that potential field data, we construct two tests. The first one is a measure of the computational effort by counting the number of floating-point operations (\textit{flops}), such as additions, subtractions, multiplications, and divisions \citep{golub-vanloan2013}. Secondly, we demonstrated the solution stability by using a zeroth-order Tikhonov regularization in different noise levels. Finally, we show two examples of gravity and magnetic data processing.
+
+
+For all applications, we generate a model composed by two spheres (PAREI AQUI - ANDRE)
+%
+%%%%% Diego is writing here
 \subsection{Floating-point operations calculation}
 
 To measure the computational effort of the different algorithms to solve the equivalent layer linear system, a non-hardware dependent method can be useful because allow us to do direct comparison between them. Counting the floating-point operations (\textit{flops}), i.e., additions, subtractions, multiplications and divisions is a good way to quantify the amount of work of a given algorithm \citep{golub-vanloan2013}. For example, the number of \textit{flops} necessary to multiply two vectors $\mathbb{R}^{N}$ is $2N$. A common matrix-vector multiplication with dimension $\mathbb{R}^{N \times N}$ and $\mathbb{R}^{N}$, respectively, is $2N^2$ and a multiplication of two matrices $\mathbb{R}^{N \times N}$ is $2N^3$. Figure XX shows the total flops count for the different methods presented in this review with a crescent number of data, ranging from $10,000$ to $1,000,000$. 
@@ -39,7 +46,7 @@ To measure the computational effort of the different algorithms to solve the equ
 \label{wavelet}
 \end{equation}
 
-\subsubsection{Convolutional equivalent layer for gravity data \citep{takahashi2020convolutional}}
+\subsubsection{Convolutional equivalent layer for gravity data \citep{takahashi2020}}
 
 This methods replaces the matrix-vector multiplication of the iterative fast-equivalent technique \citep{siqueira-etal2017} by three steps involving a Fourier transform and a inverse Fourier transform, 
 and a Hadamard product of matrices. Considering that the first column of our BCCB matrix has $4N$ elements, the flops count of this method is
@@ -51,7 +58,7 @@ and a Hadamard product of matrices. Considering that the first column of our BCC
 
 In the resultant count we considered a \textit{radix-2} algorithm for the fast Fourier transform and its inverse, which has a $\kappa$ equals to 5 and requires $\kappa4N\log_2(4N)$ flops each. The Hadarmard product of two matrices of $4N$ elements with complex numbers takes $24N$ flops. Note that equation \ref{convgrav} is different from the one presented in \cite{takahashi2020convolutional} simply because we added the eigenvalues calculation in this form. It does not differentiate much in order of magnitude because the iterative part is the most costful.
 
-\subsubsection{Convolutional equivalent layer for magnetic data \citep{takahashi2022convolutional}}
+\subsubsection{Convolutional equivalent layer for magnetic data \citep{takahashi2022}}
 
 The convolutional equivalent layer for magnetic data uses the same flops count of the main operations as in the gravimetric case, the big difference is the use of the conjugate gradient algorithm to solve the inverse problem.
 It requires a Hadamard product outside of the iterative loop and more matrix-vector vector-vector multiplications inside the loop as seem in equation \ref{cgls}.

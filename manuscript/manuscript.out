@@ -1,14 +1,23 @@
 \BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [1][-]{section.2}{Methodology}{}% 2
-\BOOKMARK [1][-]{section.3}{Results}{}% 3
-\BOOKMARK [2][-]{subsection.3.1}{Floating-point operations calculation}{section.3}% 4
-\BOOKMARK [3][-]{subsubsection.3.1.1}{Normal equations using Cholesky algorithm}{subsection.3.1}% 5
-\BOOKMARK [3][-]{subsubsection.3.1.2}{Window method leao-silva1989}{subsection.3.1}% 6
-\BOOKMARK [3][-]{subsubsection.3.1.3}{PEL method oliveirajr-etal2013}{subsection.3.1}% 7
-\BOOKMARK [3][-]{subsubsection.3.1.4}{Conjugate gradient least square \(CGLS\)}{subsection.3.1}% 8
-\BOOKMARK [3][-]{subsubsection.3.1.5}{Wavelet compression method with CGLS li-oldenburg2010}{subsection.3.1}% 9
-\BOOKMARK [3][-]{subsubsection.3.1.6}{Convolutional equivalent layer for gravity data takahashi2020convolutional}{subsection.3.1}% 10
-\BOOKMARK [3][-]{subsubsection.3.1.7}{Convolutional equivalent layer for magnetic data takahashi2022convolutional}{subsection.3.1}% 11
-\BOOKMARK [3][-]{subsubsection.3.1.8}{Deconvolutional method}{subsection.3.1}% 12
-\BOOKMARK [2][-]{subsection.3.2}{Stability analysis}{section.3}% 13
-\BOOKMARK [1][-]{section.4}{Discussion and conclusion}{}% 14
+\BOOKMARK [1][-]{section.2}{The Equivalent-Layer Technique}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Fundamentals}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Computational strategies}{section.2}% 4
+\BOOKMARK [3][-]{subsubsection.2.2.1}{The moving data-window scheme}{subsection.2.2}% 5
+\BOOKMARK [3][-]{subsubsection.2.2.2}{The equivalent-data concept}{subsection.2.2}% 6
+\BOOKMARK [3][-]{subsubsection.2.2.3}{The wavelet compression and lower-dimensional subspace}{subsection.2.2}% 7
+\BOOKMARK [3][-]{subsubsection.2.2.4}{The quadtree discretization}{subsection.2.2}% 8
+\BOOKMARK [3][-]{subsubsection.2.2.5}{The reparametrization of the equivalent layer}{subsection.2.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.2.6}{The iterative scheme without solving a linear system}{subsection.2.2}% 10
+\BOOKMARK [3][-]{subsubsection.2.2.7}{The convolutional equivalent layer with BTTB matrices}{subsection.2.2}% 11
+\BOOKMARK [1][-]{section.3}{Numerical simulations}{}% 12
+\BOOKMARK [2][-]{subsection.3.1}{Floating-point operations calculation}{section.3}% 13
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Normal equations using Cholesky algorithm}{subsection.3.1}% 14
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Window method leao-silva1989}{subsection.3.1}% 15
+\BOOKMARK [3][-]{subsubsection.3.1.3}{PEL method oliveirajr-etal2013}{subsection.3.1}% 16
+\BOOKMARK [3][-]{subsubsection.3.1.4}{Conjugate gradient least square \(CGLS\)}{subsection.3.1}% 17
+\BOOKMARK [3][-]{subsubsection.3.1.5}{Wavelet compression method with CGLS li-oldenburg2010}{subsection.3.1}% 18
+\BOOKMARK [3][-]{subsubsection.3.1.6}{Convolutional equivalent layer for gravity data takahashi2020}{subsection.3.1}% 19
+\BOOKMARK [3][-]{subsubsection.3.1.7}{Convolutional equivalent layer for magnetic data takahashi2022}{subsection.3.1}% 20
+\BOOKMARK [3][-]{subsubsection.3.1.8}{Deconvolutional method}{subsection.3.1}% 21
+\BOOKMARK [2][-]{subsection.3.2}{Stability analysis}{section.3}% 22
+\BOOKMARK [1][-]{section.4}{Discussion and conclusion}{}% 23

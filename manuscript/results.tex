@@ -1,12 +1,8 @@
 \section{Numerical simulations}
 \label{sec:num_simulations}
 
-We investigated different computational algorithms for inverting gravity disturbances and total-field anomalies. To test the capability of the fast equivalent-layer technique for processing that potential field data, we construct two tests. The first one is a measure of the computational effort by counting the number of floating-point operations (\textit{flops}), such as additions, subtractions, multiplications, and divisions \citep{golub-vanloan2013}. Secondly, we demonstrated the solution stability by using a zeroth-order Tikhonov regularization in different noise levels. Finally, we show two examples of gravity and magnetic data processing.
-
-
-For all applications, we generate a model composed by two spheres (PAREI AQUI - ANDRE)
-%
-%%%%% Diego is writing here
+We investigated different computational algorithms for inverting gravity disturbances and total-field anomalies. To test the capability of the fast equivalent-layer technique for processing that potential field data, we construct two tests. The first one is a measure of the computational effort by counting the number of floating-point operations (\textit{flops}), such as additions, subtractions, multiplications, and divisions \citep{golub-vanloan2013}. For the results generated we are using $\textit{it} = 50$ for all the iterative methods.
+ 
 \subsection{Floating-point operations calculation}
 
 To measure the computational effort of the different algorithms to solve the equivalent layer linear system, a non-hardware dependent method can be useful because allow us to do direct comparison between them. Counting the floating-point operations (\textit{flops}), i.e., additions, subtractions, multiplications and divisions is a good way to quantify the amount of work of a given algorithm \citep{golub-vanloan2013}. For example, the number of \textit{flops} necessary to multiply two vectors $\mathbb{R}^{N}$ is $2N$. A common matrix-vector multiplication with dimension $\mathbb{R}^{N \times N}$ and $\mathbb{R}^{N}$, respectively, is $2N^2$ and a multiplication of two matrices $\mathbb{R}^{N \times N}$ is $2N^3$. Figure XX shows the total flops count for the different methods presented in this review with a crescent number of data, ranging from $10,000$ to $1,000,000$. 
@@ -57,6 +53,15 @@ For the wavelet method we have calculated a coompression rate $C_r$ of $98\%$ of
 \label{wavelet}
 \end{equation}
 
+\subsubsection{Fast equivalent layer for gravity data \citep{siqueira-etal2017}}
+
+The fast equivalent layer from \cite{siqueira-etal2017} solves the linear system in \textit{it} iterations. The main cost of this method is the matrix-vector multiplication to asses the predicted data ($2N^2$) and three simply element by element vector sum, subtraction and division ($3N$ total)
+
+\begin{equation}
+	f_{siqueira} = it(3N +2N^2)
+	\label{siqueira}
+\end{equation}
+
 \subsubsection{Convolutional equivalent layer for gravity data \citep{takahashi2020}}
 
 This methods replaces the matrix-vector multiplication of the iterative fast-equivalent technique \citep{siqueira-etal2017} by three steps involving a Fourier transform and a inverse Fourier transform, 
@@ -94,10 +99,3 @@ Using the deconvolutional method with a Wiener stabilization adds two multiplica
 	f_{deconvwiener} = \kappa12N\log_2(4N) + 76N
 	\label{deconvwiener}
 \end{equation}
-
-\subsection{Stability analysis}
-
-For the stability analysis we show the comparison of the normal equations solution with zeroth-order Tikhonov regularization, the convolutional method for gravimetric and magnetic data, the deconvolutional method and the deconvolutional method with different values for the Wiener stabilization. We create $21$ data sets adding a crescent pseudo-random noise to the original data, which varies from $0\%$ to $10\%$ of the maximum anomaly value, in intervals of $0.5\%$. These noises has mean equal to zero and a Gaussian distribution.
-Figure XX shows how the residual between the predicted data and the noise-free data changes as the level of the noise is increased. We can see that for all methods, a linear tendency can be observed as it is expected. The inclination of the straight line is a indicative of the stability of each method. As show in the graph the deconvolutional method is very unstable and it is really necessary to use a stabilization method to have a good parameter estimative. In contrast, a correct value of the stabilization parameter is necessary to not overshoot the smootheness of the solution as it is the case for the well-known zeroth-order Tikhonov regularization. For the example using this gravimetric data, the optimal value for the Wiener stabilization parameter is $\mu = 10^{-9}$. Figure XX shows the comparison of the predicted data for each method with the original data.
-
-For the magnetic data, the Wiener parameter seems to have the best solution for $\mu = 10^{-13}$. Figure XX shows the comparison of the predicted data for each method with the original data.

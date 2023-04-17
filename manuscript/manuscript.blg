@@ -14,12 +14,13 @@ A level-1 auxiliary file: conclusions.aux
 Reallocating 'name_of_file' (item size: 1) to 18 items.
 The style file: Frontiers-Harvard.bst
 Reallocating 'name_of_file' (item size: 1) to 11 items.
+Reallocating 'name_of_file' (item size: 1) to 12 items.
+A level-1 auxiliary file: figures.aux
 Database file #1: references.bib
-Warning--I didn't find a database entry for "takahashi2020convolutional"
 Reallocating 'wiz_functions' (item size: 4) to 6000 items.
 You've used 26 entries,
             3029 wiz_defined-function locations,
-            785 strings with 8859 characters,
+            785 strings with 8844 characters,
 and the built_in function-call counts, 15649 in all, are:
 = -- 1358
 > -- 619
@@ -58,4 +59,3 @@ warning$ -- 0
 while$ -- 114
 width$ -- 0
 write$ -- 393
-(There was 1 warning)

@@ -1,0 +1,11 @@
+\section{Synthetic data simulations}
+\label{sec:synthetic_simulations}
+
+For all applications, we generate a model composed by two spheres (PAREI AQUI - ANDRE)
+
+\subsection{Stability analysis}
+
+For the stability analysis we show the comparison of the normal equations solution with zeroth-order Tikhonov regularization, the convolutional method for gravimetric and magnetic data, the deconvolutional method and the deconvolutional method with different values for the Wiener stabilization. We create $21$ data sets adding a crescent pseudo-random noise to the original data, which varies from $0\%$ to $10\%$ of the maximum anomaly value, in intervals of $0.5\%$. These noises has mean equal to zero and a Gaussian distribution.
+Figure XX shows how the residual between the predicted data and the noise-free data changes as the level of the noise is increased. We can see that for all methods, a linear tendency can be observed as it is expected. The inclination of the straight line is a indicative of the stability of each method. As show in the graph the deconvolutional method is very unstable and it is really necessary to use a stabilization method to have a good parameter estimative. In contrast, a correct value of the stabilization parameter is necessary to not overshoot the smootheness of the solution as it is the case for the well-known zeroth-order Tikhonov regularization. For the example using this gravimetric data, the optimal value for the Wiener stabilization parameter is $\mu = 10^{-9}$. Figure XX shows the comparison of the predicted data for each method with the original data.
+
+For the magnetic data, the Wiener parameter seems to have the best solution for $\mu = 10^{-13}$. Figure XX shows the comparison of the predicted data for each method with the original data.

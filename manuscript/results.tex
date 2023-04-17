@@ -11,7 +11,9 @@ For all applications, we generate a model composed by two spheres (PAREI AQUI - 
 
 To measure the computational effort of the different algorithms to solve the equivalent layer linear system, a non-hardware dependent method can be useful because allow us to do direct comparison between them. Counting the floating-point operations (\textit{flops}), i.e., additions, subtractions, multiplications and divisions is a good way to quantify the amount of work of a given algorithm \citep{golub-vanloan2013}. For example, the number of \textit{flops} necessary to multiply two vectors $\mathbb{R}^{N}$ is $2N$. A common matrix-vector multiplication with dimension $\mathbb{R}^{N \times N}$ and $\mathbb{R}^{N}$, respectively, is $2N^2$ and a multiplication of two matrices $\mathbb{R}^{N \times N}$ is $2N^3$. Figure XX shows the total flops count for the different methods presented in this review with a crescent number of data, ranging from $10,000$ to $1,000,000$. 
 
-\subsubsection{Normal equations using Cholesky algorithm}
+\subsubsection{Normal equations using Cholesky decomposition}
+
+The equivalent sources can be estimated directly from solving the normal equations \ref{eq:predicted-data-vector}. In this work we will use the Cholesky decompositions method to calculate the necessary \textit{flops}. In this method it is calculated the lower triangule of $\mathbf{A}^T\mathbf{A}$ ($1/2 N^3$), the Cholesky factor ($1/3 N^3$), a matrix-vector multiplication ($2N^2$) and finally solving the triangular system ($2N^2$), totalizing
 
 \begin{equation}
 	f_{classical} = \dfrac{5}{6} N^3 + 4N^2
@@ -20,19 +22,26 @@ To measure the computational effort of the different algorithms to solve the equ
 
 \subsubsection{Window method \citep{leao-silva1989}}
 
+The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems with much smaller sizes. For our results we are considering a data-window of the same size of wich the authors presented in theirs work ($N_w = 49$) but, calculating with the same number of equivalent sources and not only the one in the middle of the window. We are doing this process for all the other techniques to standardize the resolution of our problem. Using the Cholesky decomposition with this method the \textit{flops} are
+
 \begin{equation}
-	f_{window} = W\dfrac{5}{6} N_w^3 + 4N_w^2
+	f_{window} = N\dfrac{5}{6} N_w^3 + 4N_w^2
 \label{flops_leao-silva}
 \end{equation}
 
 \subsubsection{PEL method \citep{oliveirajr-etal2013}}
 
+The polynomial equivalent layer uses a simliar approach od moving windows from \cite{leao-silva1989}. For this operations calculation we used a first degree polynomial (three variables) and each window contains $1,000$ observed data ($N_s$). Following the steps given in \citep{oliveirajr-etal2013} the total \textit{flops} becomes
+
 \begin{equation}
 	f_{pel} = \dfrac{1}{3} H^3 + 2H^2 + 2NN_wH + H^2N + 2HN + 2NP
 \label{flops_pel}
 \end{equation}
+where $H$ is the number of variable of the polynomial times the number of windows ($3 \times N/1000$).
 
 \subsubsection{Conjugate gradient least square (CGLS)}
+
+The CGLS method is a very stable and fast algorithm for solving linear systems iteratively. Its computational complexity envolves a matrix-vector product outside the loop ($2N^2$), two matrix-vector products inside the loop ($4N^2$) and six vector products inside the loop ($12N$)
 
 \begin{equation}
 	f_{cgls} = 2N^2 + it(4N^2 + 12N)
@@ -40,6 +49,8 @@ To measure the computational effort of the different algorithms to solve the equ
 \end{equation}
 
 \subsubsection{Wavelet compression method with CGLS \citep{li-oldenburg2010}}
+
+For the wavelet method we have calculated a coompression rate $C_r$ of $98\%$ of threshold as the authors in \cite{li-oldenburg2010} used and the wavelet transformation requiring $\log_2(N)$ \textit{flops} each, with its inverse also using the same number of operations. Combined with the conjugate gradient least square necessary steps and iterations, the number of \textit{flops} are
 
 \begin{equation}
 	f_{wavelet} = 2NC_r + 4N\log_2(N) + it(4N\log_2(N) + 4NC_r + 12C_r)
@@ -56,7 +67,7 @@ and a Hadamard product of matrices. Considering that the first column of our BCC
 \label{convgrav}
 \end{equation}
 
-In the resultant count we considered a \textit{radix-2} algorithm for the fast Fourier transform and its inverse, which has a $\kappa$ equals to 5 and requires $\kappa4N\log_2(4N)$ flops each. The Hadarmard product of two matrices of $4N$ elements with complex numbers takes $24N$ flops. Note that equation \ref{convgrav} is different from the one presented in \cite{takahashi2020convolutional} simply because we added the eigenvalues calculation in this form. It does not differentiate much in order of magnitude because the iterative part is the most costful.
+In the resultant count we considered a \textit{radix-2} algorithm for the fast Fourier transform and its inverse, which has a $\kappa$ equals to 5 and requires $\kappa4N\log_2(4N)$ flops each. The Hadarmard product of two matrices of $4N$ elements with complex numbers takes $24N$ flops. Note that equation \ref{convgrav} is different from the one presented in \cite{takahashi2020} because we also added the flops necessary to calculate the  eigenvalues in this form. It does not differentiate much in order of magnitude because the iterative part is the most costful.
 
 \subsubsection{Convolutional equivalent layer for magnetic data \citep{takahashi2022}}
 

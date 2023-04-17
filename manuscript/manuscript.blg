@@ -1,15 +1,22 @@
-This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
+This is BibTeX, Version 0.99d
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: manuscript.aux
+Reallocating 'name_of_file' (item size: 1) to 13 items.
 A level-1 auxiliary file: abstract.aux
+Reallocating 'name_of_file' (item size: 1) to 17 items.
 A level-1 auxiliary file: introduction.aux
+Reallocating 'name_of_file' (item size: 1) to 16 items.
 A level-1 auxiliary file: methodology.aux
+Reallocating 'name_of_file' (item size: 1) to 12 items.
 A level-1 auxiliary file: results.aux
+Reallocating 'name_of_file' (item size: 1) to 16 items.
 A level-1 auxiliary file: conclusions.aux
+Reallocating 'name_of_file' (item size: 1) to 18 items.
 The style file: Frontiers-Harvard.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
 Database file #1: references.bib
 Warning--I didn't find a database entry for "takahashi2020convolutional"
-Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
 You've used 26 entries,
             3029 wiz_defined-function locations,
             785 strings with 8859 characters,

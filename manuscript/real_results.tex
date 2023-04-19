@@ -1,2 +1,45 @@
 \section{Real data application}
 \label{sec:real_data}
+
+Gridded data of 1000x500 (500000 observed points) for both grav and mag. Data is at -900m.
+
+Grav equivalent layer depth is 300 m and 50 iterations of the cgls method was used.
+Mag equivalent layer depth is 0 m and 200 iterations of the cgls method was used.
+
+On an Intel Core i7 7700HQ@2.8 GHz processor in single processing and single-threading modes
+the gravimetric equivalent layer took $9.19$ seconds to estimate the equivalent sources with the convolutional method and $0.51$ seconds with the deconvolutional method. 
+
+The magnetic equivalent layer took $82$ seconds to estimate the equivalent sources with the convolutional method and $0.84$ seconds with the deconvolutional method.
+
+As Carajás area is very large different values of the magnetic main field can be considered. 
+The main field declination was calculated using the tool in the website (for the date 01/01/2014): https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml
+For this application I considered an approximated mid location of the area (latitude $-6.55^{\circ}$ and longitude $-50.75^{\circ})$. The declination is $-19.865^{\circ}$ and the inclination $-7.43915^{\circ}$.
+As the source magnetization is unknown inclination and declination equal to the main field is being used for all the equivalent sources.
+
+Gravimetric case:
+
+Means
+
+0.0005096975472675431 (convolutional method)
+
+0.4582999511463665 (deconvolutional method with wiener $\mu = 10^{-22}$)
+
+Standart deviations
+
+0.15492798729938298 (convolutional method)
+
+1.229507199000529 (deconvolutional method with wiener $\mu = 10^{-22}$)
+\\\\
+Magnetic case:
+
+Means
+
+-0.06404347121632468 (convolutional method)
+
+18.992921718679344 (deconvolutional method with wiener $\mu = 10^{-16}$)
+
+Standart deviations
+
+1.9687559764381535 (convolutional method)
+
+33.641199020925924 (deconvolutional method with wiener $\mu = 10^{-16}$)

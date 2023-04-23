@@ -21,7 +21,7 @@ The equivalent sources can be estimated directly from solving the normal equatio
 The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems with much smaller sizes. For our results we are considering a data-window of the same size of wich the authors presented in theirs work ($N_w = 49$) but, calculating with the same number of equivalent sources and not only the one in the middle of the window. We are doing this process for all the other techniques to standardize the resolution of our problem. Using the Cholesky decomposition with this method the \textit{flops} are
 
 \begin{equation}
-	f_{window} = N\dfrac{5}{6} N_w^3 + 4N_w^2
+	f_{window} = N\dfrac{5}{6} M_w N_w^2 + 4N_w M_w
 \label{flops_leao-silva}
 \end{equation}
 

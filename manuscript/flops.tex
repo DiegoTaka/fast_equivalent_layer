@@ -1,11 +1,11 @@
 \section{Numerical simulations}
 \label{sec:num_simulations}
 
-We investigated different computational algorithms for inverting gravity disturbances and total-field anomalies. To test the capability of the fast equivalent-layer technique for processing that potential field data, we construct two tests. The first one is a measure of the computational effort by counting the number of floating-point operations (\textit{flops}), such as additions, subtractions, multiplications, and divisions \citep{golub-vanloan2013}. For the results generated we are using $\textit{it} = 50$ for all the iterative methods.
+We investigated different computational algorithms for inverting gravity disturbances and total-field anomalies. To test the capability of the fast equivalent-layer technique for processing that potential field data we measure of the computational effort by counting the number of floating-point operations (\textit{flops}), such as additions, subtractions, multiplications, and divisions \citep{golub-vanloan2013} for different number of observation points, ranging from $10,000$ up to $1, 000, 000$. The results generated when using iterative methods are set to $\textit{it} = 50$ for the number of iterations.
  
 \subsection{Floating-point operations calculation}
 
-To measure the computational effort of the different algorithms to solve the equivalent layer linear system, a non-hardware dependent method can be useful because allow us to do direct comparison between them. Counting the floating-point operations (\textit{flops}), i.e., additions, subtractions, multiplications and divisions is a good way to quantify the amount of work of a given algorithm \citep{golub-vanloan2013}. For example, the number of \textit{flops} necessary to multiply two vectors $\mathbb{R}^{N}$ is $2N$. A common matrix-vector multiplication with dimension $\mathbb{R}^{N \times N}$ and $\mathbb{R}^{N}$, respectively, is $2N^2$ and a multiplication of two matrices $\mathbb{R}^{N \times N}$ is $2N^3$. Figure XX shows the total flops count for the different methods presented in this review with a crescent number of data, ranging from $10,000$ to $1,000,000$. 
+To measure the computational effort of the different algorithms to solve the equivalent layer linear system, a non-hardware dependent method can be useful because allow us to do direct comparison between them. Counting the floating-point operations (\textit{flops}), i.e., additions, subtractions, multiplications and divisions is a good way to quantify the amount of work of a given algorithm \citep{golub-vanloan2013}. For example, the number of \textit{flops} necessary to multiply two vectors $\mathbb{R}^{N}$ is $2N$. A common matrix-vector multiplication with dimension $\mathbb{R}^{N \times N}$ and $\mathbb{R}^{N}$, respectively, is $2N^2$ and a multiplication of two matrices $\mathbb{R}^{N \times N}$ is $2N^3$. Figure \ref{fig:1} shows the total flops count for the different methods presented in this review with a crescent number of data, ranging from $10,000$ to $1,000,000$ for the gravity equivalent layer and figure \ref{fig:2} for magnetic data. 
 
 \subsubsection{Normal equations using Cholesky decomposition}
 
@@ -18,7 +18,7 @@ The equivalent sources can be estimated directly from solving the normal equatio
 
 \subsubsection{Window method \citep{leao-silva1989}}
 
-The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems with much smaller sizes. For our results we are considering a data-window of the same size of wich the authors presented in theirs work ($N_w = 49$) but, calculating with the same number of equivalent sources and not only the one in the middle of the window. We are doing this process for all the other techniques to standardize the resolution of our problem. Using the Cholesky decomposition with this method the \textit{flops} are
+The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems with much smaller sizes. For our results we are considering a data-window of the same size of wich the authors presented in theirs work ($N_w = 49$) and the same number of equivalent sources ($M_w = 225$). We are doing this process for all the other techniques to standardize the resolution of our problem. Using the Cholesky decomposition with this method the \textit{flops} are
 
 \begin{equation}
 	f_{window} = N\dfrac{5}{6} M_w N_w^2 + 4N_w M_w
@@ -37,7 +37,7 @@ where $H$ is the number of variable of the polynomial times the number of window
 
 \subsubsection{Conjugate gradient least square (CGLS)}
 
-The CGLS method is a very stable and fast algorithm for solving linear systems iteratively. Its computational complexity envolves a matrix-vector product outside the loop ($2N^2$), two matrix-vector products inside the loop ($4N^2$) and six vector products inside the loop ($12N$)
+The CGLS method is a very stable and fast algorithm for solving linear systems iteratively. Its computational complexity envolves a matrix-vector product outside the loop ($2N^2$), two matrix-vector products inside the loop ($4N^2$) and six vector products inside the loop ($12N$) \citep{aster2018parameter}
 
 \begin{equation}
 	f_{cgls} = 2N^2 + it(4N^2 + 12N)
@@ -46,7 +46,7 @@ The CGLS method is a very stable and fast algorithm for solving linear systems i
 
 \subsubsection{Wavelet compression method with CGLS \citep{li-oldenburg2010}}
 
-For the wavelet method we have calculated a coompression rate $C_r$ of $98\%$ of threshold as the authors in \cite{li-oldenburg2010} used and the wavelet transformation requiring $\log_2(N)$ \textit{flops} each, with its inverse also using the same number of operations. Combined with the conjugate gradient least square necessary steps and iterations, the number of \textit{flops} are
+For the wavelet method we have calculated a coompression rate of $98\%$ ( $C_r = 0.2$ ) for the threshold as the authors in \cite{li-oldenburg2010} used and the wavelet transformation requiring $\log_2(N)$ \textit{flops} each, with its inverse also using the same number of operations. Combined with the conjugate gradient least square necessary steps and iterations, the number of \textit{flops} are
 
 \begin{equation}
 	f_{wavelet} = 2NC_r + 4N\log_2(N) + it(4N\log_2(N) + 4NC_r + 12C_r)

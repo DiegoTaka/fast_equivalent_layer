@@ -18,7 +18,7 @@ The equivalent sources can be estimated directly from solving the normal equatio
 
 \subsubsection{Window method \citep{leao-silva1989}}
 
-The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems with much smaller sizes. For our results we are considering a data-window of the same size of wich the authors presented in theirs work ($N_w = 49$) and the same number of equivalent sources ($M_w = 225$). We are doing this process for all the other techniques to standardize the resolution of our problem. Using the Cholesky decomposition with this method the \textit{flops} are
+The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems with much smaller sizes (equation \ref{eq:p_tk0}). For our results we are considering a data-window of the same size of wich the authors presented in theirs work ($N_w = 49$) and the same number of equivalent sources ($M_w = 225$). We are doing this process for all the other techniques to standardize the resolution of our problem. Using the Cholesky decomposition with this method the \textit{flops} are
 
 \begin{equation}
 	f_{window} = N\dfrac{5}{6} M_w N_w^2 + 4N_w M_w
@@ -27,13 +27,13 @@ The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems wi
 
 \subsubsection{PEL method \citep{oliveirajr-etal2013}}
 
-The polynomial equivalent layer uses a simliar approach od moving windows from \cite{leao-silva1989}. For this operations calculation we used a first degree polynomial (three variables) and each window contains $1,000$ observed data ($N_s$). Following the steps given in \citep{oliveirajr-etal2013} the total \textit{flops} becomes
+The polynomial equivalent layer uses a simliar approach od moving windows from \cite{leao-silva1989}. For this operations calculation (equation \ref{eq:linear_system_pel}) we used a first degree polynomial (two variables) and each window contains $N_s = 1,000$ observed data and $M_s = 1,000$ equivalent sources. Following the steps given in \citep{oliveirajr-etal2013} the total \textit{flops} becomes
 
 \begin{equation}
-	f_{pel} = \dfrac{1}{3} H^3 + 2H^2 + 2NN_wH + H^2N + 2HN + 2NP
+	f_{pel} = \dfrac{1}{3} H^3 + 2H^2 + 2NM_sH + H^2N + 2HN + 2NP
 \label{flops_pel}
 \end{equation}
-where $H$ is the number of variable of the polynomial times the number of windows ($3 \times N/1000$).
+where $H$ is the number of constant coefficients for the first degree polynomial ($P = 3$) times the number of windows  ($P \times N/N_s$).
 
 \subsubsection{Conjugate gradient least square (CGLS)}
 
@@ -46,7 +46,7 @@ The CGLS method is a very stable and fast algorithm for solving linear systems i
 
 \subsubsection{Wavelet compression method with CGLS \citep{li-oldenburg2010}}
 
-For the wavelet method we have calculated a coompression rate of $98\%$ ( $C_r = 0.2$ ) for the threshold as the authors in \cite{li-oldenburg2010} used and the wavelet transformation requiring $\log_2(N)$ \textit{flops} each, with its inverse also using the same number of operations. Combined with the conjugate gradient least square necessary steps and iterations, the number of \textit{flops} are
+For the wavelet method (equation \ref{eq:linear_system_li_oldenburg}) we have calculated a coompression rate of $98\%$ ( $C_r = 0.02$ ) for the threshold as the authors used in \cite{li-oldenburg2010} and the wavelet transformation requiring $\log_2(N)$ \textit{flops} each (equations \ref{eq:A_li_oldenburg} and \ref{eq:pl_system_li_oldenburg}c), with its inverse also using the same number of operations (equation \ref{eq:p_li_oldenburg}). Combined with the conjugate gradient least square necessary steps and iterations, the number of \textit{flops} are
 
 \begin{equation}
 	f_{wavelet} = 2NC_r + 4N\log_2(N) + it(4N\log_2(N) + 4NC_r + 12C_r)
@@ -55,7 +55,7 @@ For the wavelet method we have calculated a coompression rate of $98\%$ ( $C_r =
 
 \subsubsection{Fast equivalent layer for gravity data \citep{siqueira-etal2017}}
 
-The fast equivalent layer from \cite{siqueira-etal2017} solves the linear system in \textit{it} iterations. The main cost of this method is the matrix-vector multiplication to asses the predicted data ($2N^2$) and three simply element by element vector sum, subtraction and division ($3N$ total)
+The fast equivalent layer from \cite{siqueira-etal2017} solves the linear system in \textit{it} iterations. The main cost of this method (equations \ref{eq:linear_system_siqueira},\ref{eq:r_siqueira}, \ref{eq:deltap_siqueira} and \ref{eq:p_siqueira})is the matrix-vector multiplication to asses the predicted data ($2N^2$) and three simply element by element vector sum, subtraction and division ($3N$ total)
 
 \begin{equation}
 	f_{siqueira} = it(3N +2N^2)
@@ -64,8 +64,7 @@ The fast equivalent layer from \cite{siqueira-etal2017} solves the linear system
 
 \subsubsection{Convolutional equivalent layer for gravity data \citep{takahashi2020}}
 
-This methods replaces the matrix-vector multiplication of the iterative fast-equivalent technique \citep{siqueira-etal2017} by three steps involving a Fourier transform and a inverse Fourier transform, 
-and a Hadamard product of matrices. Considering that the first column of our BCCB matrix has $4N$ elements, the flops count of this method is
+This methods replaces the matrix-vector multiplication of the iterative fast-equivalent technique \citep{siqueira-etal2017} by three steps, involving a Fourier transform, an inverse Fourier transform, and a Hadamard product of matrices (equation \ref{eq:DFT-system_takahashi}). Considering that the first column of our BCCB matrix has $4N$ elements, the flops count of this method is
 
 \begin{equation}
 	f_{convgrav} = \kappa4N\log_2(4N) + it(27N + \kappa8N\log_2(4N))
@@ -76,8 +75,8 @@ In the resultant count we considered a \textit{radix-2} algorithm for the fast F
 
 \subsubsection{Convolutional equivalent layer for magnetic data \citep{takahashi2022}}
 
-The convolutional equivalent layer for magnetic data uses the same flops count of the main operations as in the gravimetric case, the big difference is the use of the conjugate gradient algorithm to solve the inverse problem.
-It requires a Hadamard product outside of the iterative loop and more matrix-vector vector-vector multiplications inside the loop as seem in equation \ref{cgls}.
+The convolutional equivalent layer for magnetic data uses the same flops count of the main operations as in the gravimetric case (equation \ref{eq:DFT-system_takahashi}), the difference is the use of the conjugate gradient algorithm to solve the inverse problem.
+It requires a Hadamard product outside of the iterative loop and the matrix-vector and vector-vector multiplications inside the loop as seem in equation \ref{cgls}.
 
 \begin{equation}
 	f_{convmag} = \kappa16N\log_2(4N) + 24N + it(\kappa16N\log_2(4N) + 60N)
@@ -86,14 +85,14 @@ It requires a Hadamard product outside of the iterative loop and more matrix-vec
 
 \subsubsection{Deconvolutional method}
 
-The deconvolution method does not require an iterative algorithm, rather it solves the estimative of the physical properties in a single step using the $4N$ eigenvalues of the BCCB matrix as in the convolutional method. It requires a two fast Fourier transform ($\kappa4N\log_2(4N)$), one for the eigenvalues and another for the data transformation, a element by element division ($24N$) and finally, a fast inverse Fourier transform for the final estimative ($\kappa4N\log_2(4N)$).
+The deconvolution method does not require an iterative algorithm, rather it solves the estimative of the physical properties in a single step using the $4N$ eigenvalues of the BCCB matrix as in the convolutional method. From equation \ref{eq:deconvolution_takahashi} it is possible to deduce this method requires two fast Fourier transform ($\kappa4N\log_2(4N)$), one for the eigenvalues and another for the data transformation, a element by element division ($24N$) and finally, a fast inverse Fourier transform for the final estimative ($\kappa4N\log_2(4N)$).
 
 \begin{equation}
 	f_{deconv} = \kappa12N\log_2(4N) + 24N
 	\label{deconv}
 \end{equation}
 
-Using the deconvolutional method with a Wiener stabilization adds two multiplications of complex elements of the conjugates eigenvalues ($24N$ each) and the sum of $4N$ elements with the stabilization parameter $\mu$
+Using the deconvolutional method with a Wiener stabilization adds two multiplications of complex elements of the conjugates eigenvalues ($24N$ each) and the sum of $4N$ elements with the stabilization parameter $\mu$ as shown in equation \ref{eq:wiener_takahashi}
 
 \begin{equation}
 	f_{deconvwiener} = \kappa12N\log_2(4N) + 76N

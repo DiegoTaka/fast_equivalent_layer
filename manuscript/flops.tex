@@ -9,7 +9,7 @@ To measure the computational effort of the different algorithms to solve the equ
 
 \subsubsection{Normal equations using Cholesky decomposition}
 
-The equivalent sources can be estimated directly from solving the normal equations \ref{eq:predicted-data-vector}. In this work we will use the Cholesky decompositions method to calculate the necessary \textit{flops}. In this method it is calculated the lower triangule of $\mathbf{A}^T\mathbf{A}$ ($1/2 N^3$), the Cholesky factor ($1/3 N^3$), a matrix-vector multiplication ($2N^2$) and finally solving the triangular system ($2N^2$), totalizing
+The equivalent sources can be estimated directly from solving the normal equations \ref{eq:eq:t_data}. In this work we will use the Cholesky decompositions method to calculate the necessary \textit{flops}. In this method it is calculated the lower triangule of $\mathbf{A}^T\mathbf{A}$ ($1/2 N^3$), the Cholesky factor ($1/3 N^3$), a matrix-vector multiplication ($2N^2$) and finally solving the triangular system ($2N^2$), totalizing
 
 \begin{equation}
 	f_{classical} = \dfrac{5}{6} N^3 + 4N^2

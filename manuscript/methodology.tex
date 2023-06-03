@@ -1,67 +1,441 @@
 %% Methodology
-\section{The Equivalent-Layer Technique}
+\section{Fundamentals}
 
-\subsection{Fundamentals}
+%Consider a set of $N$ potential-field observations (gravity or magnetic data) 
+%$d^{o}_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $, 
+%at the $i$th observation point $(x_{i}, y_{i}, z_{i})$ of a Cartesian 
+%coordinate system with $x$-, $y$- and $z$-axis pointing to north, east and down, respectively.
+%Physically, the discrete set of potential-field observations is produced by a unknown source distribution in the subsurface.
+%Mathematically, it represents a discrete set of a harmonic function.
+%
+%A standard way to deal with the classical equivalent-layer technique is approximate the observed potential-field data by the predicted data,
+%which in turn are produced by a fictitious layer of sources, 
+%called equivalent layer.
+%The equivalent layer is located below the observation surface, at depth 
+%$z_0$ ($z_0 > z_i$), and with finite horizontal dimensions being composed by 
+%a finite discrete set of equivalent sources (e.g., point masses, dipoles, or prisms). 
+%Mathematically, this approximation can be written in matrix notation as
+%\begin{equation}
+%	\mathbf{d} = \mathbf{A} \mathbf{p} \: ,
+%	\label{eq:predicted-data-vector}
+%\end{equation}
+%where $\mathbf{d}$ is an $N$-dimensional predicted data vector whose $i$th element, $d_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $, is the 
+%predicted potential-field observation,
+%$\mathbf{p}$ is an $M$-dimensional parameter vector whose $j$th element $p_{j}$
+%can be a physical property of the $j$th equivalent source and $\mathbf{A}$ is the $N \times M$ sensitivity matrix whose  $ij$th element $a_{ij}$ is a  harmonic function.
+%
+%
+%\subsection{Computational strategies}
+%
+%The classical equivalent-layer technique consists of estimating the parameter vector $\mathbf{p}$ from the $N$-dimensional observed data vector 
+%$\mathbf{d^{o}}$ whose $i$th element is defined as the 
+%$d^{o}_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $.
+%Usually, this estimate can be obtained by a regularized least-squares solution 
+%The estimated parameter is stable, fits the observed data and can be used to
+%yield a desired linear transformation of the data, such as interpolation, upward (or downward) continuation, reduction to the pole,  joint processing of
+%gravity gradient data and more.
+%Mathematically, the desired linear transformation of the data can be obtained by
+%\begin{equation}
+%	\hat{\mathbf{t}} = \mathbf{T} \mathbf{p^{\ast}}\: ,
+%	\label{eq:t_data}
+%\end{equation}
+%where $\hat{\mathbf{t}}$ is an $N$-dimensional transformed data vector,
+%$\mathbf{p^{\ast}}$ is an $M$-dimensional estimated parameter vector and
+%$\mathbf{T}$ is the $N \times M$ matrix of Green's functions whose  $ij$th element  is the transformed field at the $i$th observation point produced by the $j$th equivalent source.
+%
+%The biggest hurdle to use the classical equivalent-layer technique 
+%is the computational complexity to handle large datasets 
+%because the sensitivity matrix  $\mathbf{A}$ 
+%(equation \ref{eq:predicted-data-vector}) is dense. 
+%Usually, the estimated parameter vector $\mathbf{p^{\ast}}$
+%requires to solve a large-scale linear inversion which in turn means to deal with some obstacles concerning large computational cost:
+%i)   the large computer memory to store large and full matrices;
+%ii)  the long computation time to mutiply a matrix by a vector; and
+%iii) the long computation time to solve a large linear system of equations.
+%
+%
+%Here, we review some strategies for reducing the computational cost of equivalent-layer technique.
+%These strategies are the following:
 
-Consider a set of $N$ potential-field observations (gravity or magnetic data) 
-$d^{o}_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $, 
-at the $i$th observation point $(x_{i}, y_{i}, z_{i})$ of a Cartesian 
-coordinate system with $x$-, $y$- and $z$-axis pointing to north, east and down, respectively.
-Physically, the discrete set of potential-field observations is produced by a unknown source distribution in the subsurface.
-Mathematically, it represents a discrete set of a harmonic function.
+$d_{i}$
 
-A standard way to deal with the classical equivalent-layer technique is approximate the observed potential-field data by the predicted data,
-which in turn are produced by a fictitious layer of sources, 
-called equivalent layer.
-The equivalent layer is located below the observation surface, at depth 
-$z_0$ ($z_0 > z_i$), and with finite horizontal dimensions being composed by 
-a finite discrete set of equivalent sources (e.g., point masses, dipoles, or prisms). 
-Mathematically, this approximation can be written in matrix notation as
+$(x_{i}, y_{i}, z_{i})$
+
+$i \in \{1:I\}$
+
+approximate $d_{i}$ by a harmonic function
 \begin{equation}
-	\mathbf{d} = \mathbf{A} \mathbf{p} \: ,
-	\label{eq:predicted-data-vector}
+	f_{i} = \sum\limits_{j = 1}^{J} a_{ij} \, p_{j} \: ,
+	\quad i \in \{1:I\} \: ,
+	\label{eq:predicted-data-fi}
 \end{equation}
-where $\mathbf{d}$ is an $N$-dimensional predicted data vector whose $i$th element, $d_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $, is the 
-predicted potential-field observation,
-$\mathbf{p}$ is an $M$-dimensional parameter vector whose $j$th element $p_{j}$
-can be a physical property of the $j$th equivalent source and $\mathbf{A}$ is the $N \times M$ sensitivity matrix whose  $ij$th element $a_{ij}$ is a  harmonic function.
+where,
 
+$p_{j}$
 
-\subsection{Computational strategies}
+$(x_{j}, y_{j}, z_{j})$
 
-The classical equivalent-layer technique consists of estimating the parameter vector $\mathbf{p}$ from the $N$-dimensional observed data vector 
-$\mathbf{d^{o}}$ whose $i$th element is defined as the 
-$d^{o}_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $.
-Usually, this estimate can be obtained by a regularized least-squares solution 
-The estimated parameter is stable, fits the observed data and can be used to
-yield a desired linear transformation of the data, such as interpolation, upward (or downward) continuation, reduction to the pole,  joint processing of
-gravity gradient data and more.
-Mathematically, the desired linear transformation of the data can be obtained by
+$j \in \{1:J\}$
+
 \begin{equation}
-	\hat{\mathbf{t}} = \mathbf{T} \mathbf{p^{\ast}}\: ,
-	\label{eq:t_data}
+	a_{ij} \equiv a(x_{i} - x_{j}, y_{i} - y_{j}, z_{i} - z_{j}) \: ,
+	\quad z_{i} < \min\{z_{j}\} \: , \quad \forall i \in \{1:I\} \: ,
+	\label{eq:harmonic-function-aij}
 \end{equation}
-where $\hat{\mathbf{t}}$ is an $N$-dimensional transformed data vector,
-$\mathbf{p^{\ast}}$ is an $M$-dimensional estimated parameter vector and
-$\mathbf{T}$ is the $N \times M$ matrix of Green's functions whose  $ij$th element  is the transformed field at the $i$th observation point produced by the $j$th equivalent source.
+where $\min\{z_{j}\}$ denotes the minimum $z_{j}$ (or the vertical coordinate of the shallowest equivalent source).
 
-The biggest hurdle to use the classical equivalent-layer technique 
-is the computational complexity to handle large datasets 
-because the sensitivity matrix  $\mathbf{A}$ 
-(equation \ref{eq:predicted-data-vector}) is dense. 
-Usually, the estimated parameter vector $\mathbf{p^{\ast}}$
-requires to solve a large-scale linear inversion which in turn means to deal with some obstacles concerning large computational cost:
-i)   the large computer memory to store large and full matrices;
-ii)  the long computation time to mutiply a matrix by a vector; and
-iii) the long computation time to solve a large linear system of equations.
+\begin{equation}
+	\mathbf{f} = \mathbf{A} \mathbf{p} \: ,
+	\label{eq:predicted-data-vetor}
+\end{equation}
+where $\mathbf{p}$ is a $J \times 1$ vector with $j$-th element $p_{j}$ representing the scalar physical property
+of the $j$-th equivalent source 
+and $\mathbf{A}$ is an $I \times J$ sensitivity matrix with element $a_{ij}$ given by equation \ref{eq:harmonic-function-aij}. 
+
+The equivalent-layer technique consists in solving a linear inverse problem to determine a parameter vector $\mathbf{p}$ 
+leading to a predicted data vector $\mathbf{f}$ (equation \ref{eq:predicted-data-vetor}) \textit{sufficiently close to} the 
+observed data vector $\mathbf{d}$, whose $i$-th element $d_{i}$ is the observed potential field at 
+$(x_{i}, y_{i}, z_{i})$.
+The notion of \textit{closeness} is intrinsically related to the concept of \textit{vector norm} \cite[e.g.,][p. 68]{golub-vanloan2013}
+or \textit{measure of length} \cite[e.g.,][p. 41]{menke2018}.
+Because of that, almost all methods for determining $\mathbf{p}$ actually estimate a parameter 
+vector $\tilde{\mathbf{p}}$ minimizing a goal function
+\begin{equation}
+	\Gamma(\mathbf{p}) = \Phi(\mathbf{p}) + \sqrt{\mu} \: \Theta(\mathbf{p}) \: ,
+	\label{eq:function-Gamma}
+\end{equation}
+which is a combination of particular measures of length $\Phi(\mathbf{p})$ and $\Theta(\mathbf{p})$ given by
+\begin{equation}
+	\Phi(\mathbf{p}) = \| \mathbf{D} \left( \mathbf{d} - \mathbf{f} \right) \|_{2}^{2} \: ,
+	\label{eq:function-Phi}
+\end{equation}
+and
+\begin{equation}
+	\Theta(\mathbf{p}) = \| \mathbf{P} \left( \mathbf{p} - \mathbf{p}_{r} \right) \|_{2}^{2} \: ,
+	\label{eq:function-Theta}
+\end{equation}
+where $\mu$ is a positive scalar controlling the trade-off between them, 
+$\| \cdot \|_{2}$ is the 2-norm (or Euclidean norm), $\mathbf{p}_{r}$ is a $J \times 1$ vector containing reference values
+for $\mathbf{p}$, $\mathbf{D}$ is an $I \times I$ matrix defining the relative importance of each observed datum $d_{i}$
+and $\mathbf{P}$ is a $J \times J$ matrix introducing some prior information about $\mathbf{p}$, such as those associated
+with zeroth-, first- and second-order Tikhonov regularization \cite[e.g.,][p. 104]{aster_etal2019}.
+The parameter vector $\tilde{\mathbf{p}}$ minimizing $\Gamma(\mathbf{p})$ (equation \ref{eq:function-Gamma}) can
+then be written as follows
+\begin{equation}
+	\tilde{\mathbf{p}} = \mathbf{p}_{r} + \mathbf{C} \left( \mathbf{d} - \mathbf{A} \, \mathbf{p}_{r} \right) \: ,
+	\label{eq:vector-p-tilde-general}
+\end{equation}
+where \cite[][p. 62]{menke2018}
+\begin{equation}
+	\mathbf{C} = \left[ \mathbf{A}^{\top} \mathbf{D}^{\top} \mathbf{D} \mathbf{A} + \mu \, \mathbf{P}^{\top}\mathbf{P} \right]^{-1}
+	\mathbf{A}^{\top} \mathbf{D}^{\top} \mathbf{D} \: ,
+	\label{eq:matrix-C-overdetermined}
+\end{equation}
+or, equivalently,
+\begin{equation}
+	\mathbf{C} = \left( \mathbf{P}^{\top}\mathbf{P} \right)^{-1} \mathbf{A}^{\top}
+	\left[ \mathbf{A} \left( \mathbf{P}^{\top}\mathbf{P} \right)^{-1} \mathbf{A}^{\top} + \mu \left( \mathbf{D}^{\top} \mathbf{D} \right)^{-1} \right]^{-1} \: .
+	\label{eq:matrix-C-underdetermined}
+\end{equation}
+Evidently, we have considered that all inverses exist in equations \ref{eq:matrix-C-overdetermined} and \ref{eq:matrix-C-underdetermined}.
+Matrix $\mathbf{C}$ defined by equation \ref{eq:matrix-C-overdetermined} is commonly used for the cases in which $I > J$, i.e., when
+there are more data $d_{i}$ than parameters $p_{j}$ (overdetermined problems).
+On the other hand, for the cases in which there are more parameters than data (underdetermined problems), matrix $\mathbf{C}$ is 
+usually defined according to equation \ref{eq:matrix-C-underdetermined}.
+
+The great majority of equivalent-layer methods use non-null $\mathbf{p}_{r}$, $\mu$, $\mathbf{P}$ and $\mathbf{D}$ 
+(equations \ref{eq:vector-p-tilde-general}--\ref{eq:matrix-C-underdetermined}) to regularize the inverse problem,
+impose some constraint on the estimated parameter vector $\tilde{\mathbf{p}}$ and define weights for the observed data
+according to their (presumed) experimental error.
+Nonetheless, we limit our analysis to the cases in which $\mathbf{p}_{r}$ have null elements, 
+matrices $\mathbf{D}$ and $\mathbf{P}$ are equal to the identity and
+$\mu = 0$ because these terms do not significantly impact the computational performance.
+Hence, we consider that the estimate $\tilde{\mathbf{p}}$ for overdetermined problems ($I > J$) is obtained 
+by solving the linear system
+\begin{equation}
+	\left( \mathbf{A}^{\top}\mathbf{A} \right) \tilde{\mathbf{p}} = \mathbf{A}^{\top} \mathbf{d} \: ,
+	\label{eq:vector-p-tilde-overdetermined}
+\end{equation}
+whereas the solution for underdetermined problems ($I < J$) is obtained in two steps by first solving a linear system
+and then computing a matrix-vector product as follows
+\begin{equation}
+	\begin{split}
+		\left( \mathbf{A} \, \mathbf{A}^{\top} \right) \mathbf{u} &= \mathbf{d} \\
+		\tilde{\mathbf{p}} &= \mathbf{A}^{\top} \mathbf{u}
+	\end{split} \: ,
+	\label{eq:vector-p-tilde-underdetermined}
+\end{equation}
+where $\mathbf{u}$ is a dummy vector.
+Given an estimate $\tilde{\mathbf{p}}$ (equations \ref{eq:vector-p-tilde-overdetermined} and \ref{eq:vector-p-tilde-underdetermined}),
+it is then possible to compute a potential field transformation 
+\begin{equation}
+	\mathbf{t} = \mathbf{B} \tilde{\mathbf{p}} \: ,
+	\label{eq:transformation}
+\end{equation}
+where $\mathbf{t}$ is a $K \times 1$ vector with $k$-th element $t_{k}$ representing the transformed potential field at
+the position $(x_{k}, y_{y}, z_{k})$, $k \in \{1:K\}$, and
+\begin{equation}
+	b_{kj} \equiv b(x_{k} - x_{j}, y_{k} - y_{j}, z_{k} - z_{j}) \: ,
+	\quad z_{k} < \min\{z_{j}\} \: , \quad \forall k \in \{1:K\} \: ,
+	\label{eq:harmonic-function-bkj}
+\end{equation}
+is a harmonic function representing the $kj$-th element of $\mathbf{B}$.
+
+\subsection{Spatial distribution and total number of equivalent sources}
+
+There is no well-established criteria to define the optimum number $J$ or the spatial distribution
+of the equivalent sources. We know that setting an equivalent layer with more (less) sources than potential-field 
+data usually leads to an underdetermined (overdetermined) inverse problem \cite[e.g.,][ p. 52--53]{menke2018}.
+Concerning the spatial distribution of the equivalent sources, the only condition is that they must rely on a 
+surface that is located below and does not cross that containing the potential field data.
+\citet{soler-uieda2021} present a practical discussion about this topic.
+
+From a theoretical point of view, the equivalent layer reproducing a given potential field data set cannot cross the
+true gravity or magnetic sources. This condition is a consequence of recognizing that the equivalent layer is essentially an indirect solution of 
+a boundary value problem of potential theory \citep[e.g.,][]{roy1962,zidarov1965,dampney1969,li_etal_2014,reis-etal2020}.
+In practical applications, however, there is no guarantee that this condition is satisfied. 
+Actually, its is widely known from practical experience \cite[e.g.,][]{gonzalez-etal2022} that the equivalent-layer technique
+works even for the case in which the layer cross the true sources. 
+
+CRITÉRIOS PARA DEFINIR A PROFUNDIDADE DA CAMADA: DAMPNEY (ESPAÇAMENTO DO GRID) E REIS (ESPAÇAMENTO DAS LINHAS)
 
 
-Here, we review some strategies for reducing the computational cost of equivalent-layer technique.
-These strategies are the following:
+\subsection{Sensitivity matrix $\mathbf{A}$}
+
+Generally, the harmonic function $a_{ij}$ (equation \ref{eq:harmonic-function-aij}) is defined in terms of the 
+inverse distance between the observation point $(x_{i}, y_{i}, z_{i})$ and the $j$-th equivalent source at $(x_{j}, y_{j}, z_{j})$,
+\begin{equation}
+	\frac{1}{r_{ij}} \equiv \frac{1}{\sqrt{(x_{i} - x_{j})^{2} + (y_{i} - y_{j})^{2} + (z_{i} - z_{j})^{2}}} \: ,
+	\label{eq:inverse-distance-ij}
+\end{equation}
+or by its partial derivatives of first and second orders, respectively given by
+\begin{equation}
+	\partial_{\alpha} \frac{1}{r_{ij}} \equiv \frac{-(\alpha_{i} - \alpha_{j})}{r_{ij}^{3}} \: ,
+	\quad \alpha \in \{ x, y, z \} \: ,
+	\label{eq:deriv-1-inverse-distance-ij}
+\end{equation}
+and
+\begin{equation}
+	\partial_{\alpha\beta} \frac{1}{r_{ij}} \equiv 
+	\begin{cases}
+		\frac{3 \, (\alpha_{i} - \alpha_{j})^{2}}{r_{ij}^{5}} \: , &\alpha = \beta \: , \\
+		\frac{3 \, (\alpha_{i} - \alpha_{j}) \, (\beta_{i} - \beta_{j})}{r_{ij}^{5}} - \frac{1}{r_{ij}^{3}} \: , &\alpha \ne \beta \: , \\
+	\end{cases}
+	\quad \alpha, \beta \in \{ x, y, z \} \: .
+	\label{eq:deriv-2-inverse-distance-ij}
+\end{equation}
+In this case, the equivalent layer is formed by punctual sources representing monopoles or dipoles
+\cite[e.g.,][]{dampney1969, emilia1973, leao-silva1989, cordell1992, oliveirajr-etal2013, siqueira-etal2017, reis-etal2020, takahashi-etal2020, soler-uieda2021, takahashi-etal2022}.
+Another common approach consists in not defining $a_{ij}$ by using equations \ref{eq:inverse-distance-ij}--\ref{eq:deriv-2-inverse-distance-ij},
+but other harmonic functions obtained by integrating them over the volume of regular prisms 
+\cite[e.g.,][]{li-oldenburg_2010, barnes-lumley_2011, li_etal_2014, jirigalatu-ebbing2019}.
+There are also some less common approaches defining the harmonic function $a_{ij}$ (equation \ref{eq:harmonic-function-aij})
+as the potential field due to plane faces with constant physical property \citep{hansen-miyazaki1984}, doublets \citep{silva1986} or
+by computing the double integration of the inverse distance function with respect to $z$ \citep{guspi-novara2009}.
 
 
+A common assumption for most of the equivalent-layer methods is that the harmonic function $a_{ij}$ 
+(equation \ref{eq:harmonic-function-aij}) is independent on the actual physical relationship between the
+observed potential field and their true sources \cite[e.g.,][]{cordell1992, guspi-novara2009,li_etal_2014}.
+Hence, $a_{ij}$ can be defined according to the problem.
+The only condition imposed to this function is that it decays to zero as the observation point $(x_{i}, y_{i}, z_{i})$
+goes away from the position $(x_{j}, y_{j}, z_{j})$ of the $j$-th equivalent source.
+However, several methods use a function $a_{ij}$ that preserves the physical relationship between the
+observed potential field and their true sources.
+For the case in which the observed potential field is gravity data, $a_{ij}$ is commonly defined as a component of 
+the gravitational field produced at $(x_{i}, y_{i}, z_{i})$ by a point mass or prism located at $(x_{j}, y_{j}, z_{j})$, with unit density.
+On the other hand, $a_{ij}$ is commonly defined as a component of the 
+magnetic induction field produced at $(x_{i}, y_{i}, z_{i})$ by a dipole or prism located at $(x_{j}, y_{j}, z_{j})$,
+with unit magnetization intensity, when the observed potential field is magnetic data.
 
-\subsubsection{The moving data-window scheme}
+For all harmonic functions discussed above, the sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vetor}) 
+is always dense. For scattered potential-field data, $\mathbf{A}$ does not have a well-defined structure, regardless of
+whether the spatial distribution of the equivalent sources is set.
+Nevertheless, for the particular case in which (i) there is a single equivalent source right below each potential-field
+datum and (ii) both data and sources rely on planar and regularly spaced grids, \citet{takahashi-etal2020,takahashi-etal2022}
+show that $\mathbf{A}$ assumes a block-Toeplitz Toeplitz-block (BTTB) structure. In this case, the product of $\mathbf{A}$ and an 
+arbitrary vector can be efficiently computed via 2D fast Fourier transform as a discrete convolution.
+
+\section{Computational strategies}
+
+Two important factors affecting the efficiency of a given matrix algorithm are the 
+storage and amount of required arithmetic. Here, we quantify this last factor by counting flops.
+A flop is a floating point addition, subtraction, multiplication or division \cite[][ p. 12--14]{golub-vanloan2013}.
+
+NÃO SEI SE TÁ BOM AQUI: To investigate the efficiency of equivalent-layer methods, we consider how they
+(i) set up and (ii) solve the linear inverse problem to estimate the physical property distribution on the equivalent layer, 
+as well as (iii) perform potential field transformations (equation \ref{eq:transformation}).
+
+We focus on the overall strategies used by the selected methods
+
+\subsection{Linear system solvers}
+
+Let us first consider the following generic linear system
+\begin{equation}
+	\mathbf{H} \mathbf{v} = \mathbf{h} \: ,
+	\label{eq:square-linear-system-generic}
+\end{equation}
+where $\mathbf{H}$ is a square matrix and $\mathbf{v}$ is a vector of unknowns.
+Here, we set $\mathbf{H} = \mathbf{A}^{\top}\mathbf{A}$ and $\mathbf{h} = \mathbf{A}^{\top}\mathbf{d}$
+for solving the overdetermined system (equation \ref{eq:vector-p-tilde-overdetermined}) or
+$\mathbf{H} = \mathbf{A} \, \mathbf{A}^{\top}$ and $\mathbf{h} = \mathbf{d}$
+for solving the underdetermined system (equation \ref{eq:vector-p-tilde-underdetermined}).
+
+An estimate $\tilde{\mathbf{v}}$ for the unknown vector $\mathbf{v}$ can be obtained by using direct methods, 
+such as LU, Cholesky or QR factorization \cite[][p. 111, 163, 246]{golub-vanloan2013}, or iterative methods, 
+such as Gauss-Seidel, Successive Over-Relaxation (SOR) or Conjugate Gradient
+\cite[][p. 612, 619, 625]{golub-vanloan2013}, for example.
+Here, we briefly discuss the Cholesky factorization and some general aspects of iterative methods.
+
+The Cholesky factorization \cite[][p. 163]{golub-vanloan2013} presumes the existence of an upper triangular matrix $\mathbf{G}$ 
+(the Cholesky factor) such that $\mathbf{H} = \mathbf{G} \, \mathbf{G}^{\top}$. 
+Given $\mathbf{G}$, an estimate $\tilde{\mathbf{v}}$ for the vector of unknowns $\mathbf{v}$ (equation \ref{eq:square-linear-system-generic}) 
+can be obtained by first solving the triangular system 
+\begin{equation}
+	\mathbf{G} \, \mathbf{w} = \mathbf{h} \: ,
+	\label{eq:Cholesky-step-1}
+\end{equation}
+where $\mathbf{w}$ is a dummy vector, and then computing
+\begin{equation}
+	\mathbf{G}^{\top} \mathbf{w} = \tilde{\mathbf{v}} \: .
+	\label{eq:Cholesky-step-2}
+\end{equation}
+
+Iterative methods can be roughly defined as a process that starts with an initial approximation
+$\tilde{\mathbf{v}}_{0}$ and then produces ever-better approximations $\tilde{\mathbf{v}}_{\ell}$
+for the unknown vector $\mathbf{v}$ (equation \ref{eq:square-linear-system-generic}).
+At each iteration, it is necessary to evaluate a predefined convergence criterion (CC).
+If the CC is satisfied, the current approximation is considered as 
+the solution $\tilde{\mathbf{v}}$ of the linear system and the algorithm stops.
+Otherwise, the current approximation $\tilde{\mathbf{v}}_{\ell}$ is used to compute
+a new approximation $\tilde{\mathbf{v}}_{\ell+1}$ and the CC is evaluated again. 
+A pseudo-code for this generic iterative method can be defined as follows:
+\begin{algorithm}
+	%\SetAlgoLined
+	\Input{}
+	$\ell = 0$ \;
+	$\tilde{\mathbf{v}}_{\ell} \gets \tilde{\mathbf{v}}_{0}$ \;
+	Compute auxiliary variables \;
+	\While{CC is not satisfied}{
+		Compute $\tilde{\mathbf{v}}_{\ell+1}$ \;
+		Compute auxiliary variables \;
+		$\tilde{\mathbf{v}}_{\ell} \gets \tilde{\mathbf{v}}_{\ell+1}$ \;
+		$\ell \gets \ell + 1$ \;
+	}
+	$\tilde{\mathbf{v}} \gets \tilde{\mathbf{v}}_{\ell}$
+	\caption{Generic pseudo-code for iterative methods.}
+\end{algorithm}
+
+\subsection{Moving-data windows}
+
+Split the observed data $d_{i}$, $i \in \{1, \dots, I\}$, into $M$ subsets with $I^{m}$ data each, with $m \in \{ 1, \dots, M \}$.
+
+The number of data $I^{m}$ forming the subsets are not necessarily equal to each other.
+
+The data forming a given subset are not necessarily close to each other.
+
+For each subset, we have an $I^{m} \times 1$ observed data vector $\mathbf{d}^{m}$.
+
+Let each subset be approximated by an equivalent layer composed of $J^{m}$ equivalent sources, so that
+its predicted data vector is given by
+\begin{equation}
+	\mathbf{f}^{m} = \mathbf{A}^{m} \mathbf{p}^{m} \: ,
+	\label{eq:predicted-data-subset-m}
+\end{equation}
+where $\mathbf{p}^{m}$ is a $J^{m} \times 1$ vector containing the scalar physical properties of the 
+equivalent sources in the $m$-th subset and
+$\mathbf{A}^{m}$ is an $I^{m} \times J^{m}$ matrix whose elements are computed with equation 
+\ref{eq:harmonic-function-aij} by using only the coordinates of the observed data and equivalent sources
+in the $m$-th subset.
+
+The main advantage of this approach is that the estimated parameter vector $\tilde{\mathbf{p}}$ is not
+obtained by solving the full linear system, but several smaller ones.
+
+
+\cite{leao-silva1989} presented a pioneer work using this approach.
+
+Their method requires a regularly-spaced grid of observed data on a horizontal plane $z_{0}$. 
+
+The data subsets are defined by square windows of $\sqrt{I'} \times \sqrt{I'}$ adjacent points, all of them having the
+same number of points $I'$.
+
+The equivalent sources in the $m$-th data window are located below the observation plane, at a constant vertical distance
+$\Delta z_{0}$. They are arranged on a regular grid of $\sqrt{J'} \times \sqrt{J'}$ adjacent points 
+following the same grid pattern of the observed data. 
+The local grid of sources for all data windows have the same number of elements $J'$.
+Besides, they are vertically aligned, but expands the limits of their corresponding data windows,
+so that $J' > I'$.
+
+Because of this spatial configuration of observed data and equivalent sources, we have that
+$\mathbf{A}^{m} = \mathbf{A}'$ (equation \ref{eq:predicted-data-subset-m}) for all data windows, 
+where $\mathbf{A}'$ is a constant matrix.
+
+By omitting the regularization and normalization strategies used by \cite{leao-silva1989},
+their method consists in combining equations \ref{eq:vector-p-tilde-underdetermined} and 
+\ref{eq:transformation} to directly compute the transformed potential field $t^{m}_{c}$ at the central point of
+each data window as follows:
+\begin{equation}
+	t^{m}_{c} = \left( \mathbf{A}' \mathbf{b}' \right)^{\top} \left[ \mathbf{A}' \, \left( \mathbf{A}' \right)^{\top} \right]^{-1} 
+	\mathbf{d}^{m} \: , \quad m \in \{ 1, \dots, M \} \: ,
+	\label{eq:transformed-field-tmc-LS89}
+\end{equation}
+where $\mathbf{b}'$ is a $J' \times 1$ vector with elements computed by equation 
+\ref{eq:harmonic-function-bkj} by using all equivalent sources in the $m$-th subset and
+only the coordinate of the central point in the $m$-th data window. Due to the presumed spatial configuration of the observed
+data and equivalent sources, $\mathbf{b}'$ is the same for all data windows.
+
+Note that \cite{leao-silva1989} directly compute the transformed potential $t^{m}_{c}$ at the central point of
+each data window without explicitly computing and storing $\mathbf{p}^{m}$ (equation \ref{eq:predicted-data-subset-m}).
+It means that their method allows computing a single potential-field transformation. 
+A different transformation or the same one evaluated at different points require running their method again.
+
+
+PAREI AQUI
+
+\cite{soler-uieda2021}
+
+\subsection{Column update}
+
+\cite{cordell1992}
+
+\cite{guspi-novara2009}
+
+\subsection{Row update}
+
+Algebraic reconstruction techniques (ART) \cite{sluis-vorst1987}
+
+\cite{mendonca-silva1994}
+
+\subsection{Reparameterization}
+
+\cite{barnes-lumley_2011}
+
+\cite{oliveirajr-etal2013}
+
+\cite{mendonca-2020}
+
+\subsection{Wavelet compression}
+
+\cite{li-oldenburg_2010}
+
+\subsection{Iterative methods using the original $\mathbf{A}$}
+
+\cite{xia-sprowl1991}
+
+\cite{xia-etal1993}
+
+\cite{siqueira-etal2017}
+
+\cite{jirigalatu-ebbing2019}
+
+
+\subsection{Discrete convolution}
+
+\cite{takahashi-etal2020}
+
+\cite{takahashi-etal2022}
+
+\section{TEXTO ANTIGO}
 
 \cite{leao-silva1989} reduced the total processing time and memory usage
 of equivalent-layer technique by means of a moving data-window scheme.

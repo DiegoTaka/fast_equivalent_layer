@@ -22,6 +22,9 @@
 \usepackage[onehalfspacing]{setspace}
 \linenumbers
 
+\usepackage[lined,boxed]{algorithm2e}
+\SetKwInOut{Input}{Initialization}
+
 
 % Leave a blank line between paragraphs instead of using \\
 
@@ -56,13 +59,13 @@ $^{2}$Universidade do Estado do Rio de Janeiro, Department of Applied Geology, R
 \maketitle
 
 %%% Manuscript body 
-\include{abstract}
-\include{introduction}
+%\include{abstract}
+%\include{introduction}
 \include{methodology}
 \include{flops}
-\include{synthetic_results}
-\include{real_results}
-\include{conclusions}
+%\include{synthetic_results}
+%\include{real_results}
+%\include{conclusions}
 %%% Final line for the text body
 
 
@@ -89,9 +92,9 @@ The datasets generated for this study can be found in the frontiers-paper Github
 
 \bibliographystyle{Frontiers-Harvard} %  Many Frontiers journals use the Harvard referencing system (Author-date), to find the style and resources for the journal you are submitting to: https://zendesk.frontiersin.org/hc/en-us/articles/360017860337-Frontiers-Reference-Styles-by-Journal. For Humanities and Social Sciences articles please include page numbers in the in-text citations 
 %\bibliographystyle{Frontiers-Vancouver} % Many Frontiers journals use the numbered referencing system, to find the style and resources for the journal you are submitting to: https://zendesk.frontiersin.org/hc/en-us/articles/360017860337-Frontiers-Reference-Styles-by-Journal
-\bibliography{references}
+\bibliography{used-references}
 
-\include{figures}
+%\include{figures}
 
 %%% Make sure to upload the bib file along with the tex file and PDF
 %%% Please see the test.bib file for some examples of references

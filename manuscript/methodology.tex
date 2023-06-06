@@ -57,17 +57,17 @@
 %Here, we review some strategies for reducing the computational cost of equivalent-layer technique.
 %These strategies are the following:
 
-$d_{i}$
+$d^{o}_{i}$
 
 $(x_{i}, y_{i}, z_{i})$
 
-$i \in \{1:I\}$
+$i \in \{1:D\}$
 
-approximate $d_{i}$ by a harmonic function
+approximate $d^{o}_{i}$ by a harmonic function
 \begin{equation}
-	f_{i} = \sum\limits_{j = 1}^{J} a_{ij} \, p_{j} \: ,
-	\quad i \in \{1:I\} \: ,
-	\label{eq:predicted-data-fi}
+	d^{p}_{i} = \sum\limits_{j = 1}^{P} g_{ij} \, p_{j} \: ,
+	\quad i \in \{1:D\} \: ,
+	\label{eq:predicted-data-dp-i}
 \end{equation}
 where,
 
@@ -75,73 +75,217 @@ $p_{j}$
 
 $(x_{j}, y_{j}, z_{j})$
 
-$j \in \{1:J\}$
+$j \in \{1:P\}$
 
 \begin{equation}
-	a_{ij} \equiv a(x_{i} - x_{j}, y_{i} - y_{j}, z_{i} - z_{j}) \: ,
-	\quad z_{i} < \min\{z_{j}\} \: , \quad \forall i \in \{1:I\} \: ,
-	\label{eq:harmonic-function-aij}
+	g_{ij} \equiv g(x_{i} - x_{j}, y_{i} - y_{j}, z_{i} - z_{j}) \: ,
+	\quad z_{i} < \min\{z_{j}\} \: , \quad \forall i \in \{1:D\} \: ,
+	\label{eq:harmonic-function-g-ij}
 \end{equation}
 where $\min\{z_{j}\}$ denotes the minimum $z_{j}$ (or the vertical coordinate of the shallowest equivalent source).
 
 \begin{equation}
-	\mathbf{f} = \mathbf{A} \mathbf{p} \: ,
-	\label{eq:predicted-data-vetor}
+	\mathbf{d}_{p} = \mathbf{G} \mathbf{p} \: ,
+	\label{eq:predicted-data-vector}
 \end{equation}
-where $\mathbf{p}$ is a $J \times 1$ vector with $j$-th element $p_{j}$ representing the scalar physical property
+where $\mathbf{p}$ is a $P \times 1$ vector with $j$-th element $p_{j}$ representing the scalar physical property
 of the $j$-th equivalent source 
-and $\mathbf{A}$ is an $I \times J$ sensitivity matrix with element $a_{ij}$ given by equation \ref{eq:harmonic-function-aij}. 
+and $\mathbf{G}$ is a $D \times P$ matrix with element $g_{ij}$ given by equation \ref{eq:harmonic-function-g-ij}. 
 
 The equivalent-layer technique consists in solving a linear inverse problem to determine a parameter vector $\mathbf{p}$ 
-leading to a predicted data vector $\mathbf{f}$ (equation \ref{eq:predicted-data-vetor}) \textit{sufficiently close to} the 
-observed data vector $\mathbf{d}$, whose $i$-th element $d_{i}$ is the observed potential field at 
-$(x_{i}, y_{i}, z_{i})$.
+leading to a predicted data vector $\mathbf{d}_{p}$ (equation \ref{eq:predicted-data-vector}) \textit{sufficiently close to} the 
+observed data vector $\mathbf{d}_{o}$, whose $i$-th element $d^{o}_{i}$ is the observed potential field at $(x_{i}, y_{i}, z_{i})$.
 The notion of \textit{closeness} is intrinsically related to the concept of \textit{vector norm} \cite[e.g.,][p. 68]{golub-vanloan2013}
 or \textit{measure of length} \cite[e.g.,][p. 41]{menke2018}.
 Because of that, almost all methods for determining $\mathbf{p}$ actually estimate a parameter 
-vector $\tilde{\mathbf{p}}$ minimizing a goal function
+vector $\tilde{\mathbf{p}}$ minimizing a length measure of the difference between $\mathbf{d}_{p}$ and $\mathbf{d}_{o}$
+(see subsection \ref{subsec:general-formulation}).
+Given an estimate $\tilde{\mathbf{p}}$, it is then possible to compute a potential field transformation 
 \begin{equation}
-	\Gamma(\mathbf{p}) = \Phi(\mathbf{p}) + \sqrt{\mu} \: \Theta(\mathbf{p}) \: ,
+	\mathbf{d}_{t} = \mathbf{T} \tilde{\mathbf{p}} \: ,
+	\label{eq:transformation}
+\end{equation}
+where $\mathbf{d}_{t}$ is a $T \times 1$ vector with $k$-th element $d^{t}_{k}$ representing the transformed potential field at
+the position $(x_{k}, y_{y}, z_{k})$, $k \in \{1:T\}$, and
+\begin{equation}
+	t_{kj} \equiv t(x_{k} - x_{j}, y_{k} - y_{j}, z_{k} - z_{j}) \: ,
+	\quad z_{k} < \min\{z_{j}\} \: , \quad \forall k \in \{1:T\} \: ,
+	\label{eq:harmonic-function-t-kj}
+\end{equation}
+is a harmonic function representing the $kj$-th element of the $T \times P$ matrix $\mathbf{T}$.
+
+\subsection{Spatial distribution and total number of equivalent sources}
+\label{subsec:spatial-distribution-sources}
+
+There is no well-established criteria to define the optimum number $P$ or the spatial distribution
+of the equivalent sources. We know that setting an equivalent layer with more (less) sources than potential-field 
+data usually leads to an underdetermined (overdetermined) inverse problem \cite[e.g.,][ p. 52--53]{menke2018}.
+Concerning the spatial distribution of the equivalent sources, the only condition is that they must rely on a 
+surface that is located below and does not cross that containing the potential field data.
+\citet{soler-uieda2021} present a practical discussion about this topic.
+
+From a theoretical point of view, the equivalent layer reproducing a given potential field data set cannot cross the
+true gravity or magnetic sources. This condition is a consequence of recognizing that the equivalent layer is essentially an indirect solution of 
+a boundary value problem of potential theory \citep[e.g.,][]{roy1962,zidarov1965,dampney1969,li_etal_2014,reis-etal2020}.
+In practical applications, however, there is no guarantee that this condition is satisfied. 
+Actually, its is widely known from practical experience \cite[e.g.,][]{gonzalez-etal2022} that the equivalent-layer technique
+works even for the case in which the layer cross the true sources. 
+
+CRITÉRIOS PARA DEFINIR A PROFUNDIDADE DA CAMADA: DAMPNEY (ESPAÇAMENTO DO GRID) E REIS (ESPAÇAMENTO DAS LINHAS)
+
+\subsection{Sensitivity matrix $\mathbf{A}$}
+\label{subsec:sensitivity-matrix}
+
+Generally, the harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij}) is defined in terms of the 
+inverse distance between the observation point $(x_{i}, y_{i}, z_{i})$ and the $j$-th equivalent source at $(x_{j}, y_{j}, z_{j})$,
+\begin{equation}
+	\frac{1}{r_{ij}} \equiv \frac{1}{\sqrt{(x_{i} - x_{j})^{2} + (y_{i} - y_{j})^{2} + (z_{i} - z_{j})^{2}}} \: ,
+	\label{eq:inverse-distance-ij}
+\end{equation}
+or by its partial derivatives of first and second orders, respectively given by
+\begin{equation}
+	\partial_{\alpha} \frac{1}{r_{ij}} \equiv \frac{-(\alpha_{i} - \alpha_{j})}{r_{ij}^{3}} \: ,
+	\quad \alpha \in \{ x, y, z \} \: ,
+	\label{eq:deriv-1-inverse-distance-ij}
+\end{equation}
+and
+\begin{equation}
+	\partial_{\alpha\beta} \frac{1}{r_{ij}} \equiv 
+	\begin{cases}
+		\frac{3 \, (\alpha_{i} - \alpha_{j})^{2}}{r_{ij}^{5}} \: , &\alpha = \beta \: , \\
+		\frac{3 \, (\alpha_{i} - \alpha_{j}) \, (\beta_{i} - \beta_{j})}{r_{ij}^{5}} - \frac{1}{r_{ij}^{3}} \: , &\alpha \ne \beta \: , \\
+	\end{cases}
+	\quad \alpha, \beta \in \{ x, y, z \} \: .
+	\label{eq:deriv-2-inverse-distance-ij}
+\end{equation}
+In this case, the equivalent layer is formed by punctual sources representing monopoles or dipoles
+\cite[e.g.,][]{dampney1969, emilia1973, leao-silva1989, cordell1992, oliveirajr-etal2013, siqueira-etal2017, reis-etal2020, takahashi-etal2020, soler-uieda2021, takahashi-etal2022}.
+Another common approach consists in not defining $g_{ij}$ by using equations \ref{eq:inverse-distance-ij}--\ref{eq:deriv-2-inverse-distance-ij},
+but other harmonic functions obtained by integrating them over the volume of regular prisms 
+\cite[e.g.,][]{li-oldenburg_2010, barnes-lumley_2011, li_etal_2014, jirigalatu-ebbing2019}.
+There are also some less common approaches defining the harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij})
+as the potential field due to plane faces with constant physical property \citep{hansen-miyazaki1984}, doublets \citep{silva1986} or
+by computing the double integration of the inverse distance function with respect to $z$ \citep{guspi-novara2009}.
+
+A common assumption for most of the equivalent-layer methods is that the harmonic function $g_{ij}$ 
+(equation \ref{eq:harmonic-function-g-ij}) is independent on the actual physical relationship between the
+observed potential field and their true sources \cite[e.g.,][]{cordell1992, guspi-novara2009,li_etal_2014}.
+Hence, $g_{ij}$ can be defined according to the problem.
+The only condition imposed to this function is that it decays to zero as the observation point $(x_{i}, y_{i}, z_{i})$
+goes away from the position $(x_{j}, y_{j}, z_{j})$ of the $j$-th equivalent source.
+However, several methods use a function $g_{ij}$ that preserves the physical relationship between the
+observed potential field and their true sources.
+For the case in which the observed potential field is gravity data, $g_{ij}$ is commonly defined as a component of 
+the gravitational field produced at $(x_{i}, y_{i}, z_{i})$ by a point mass or prism located at $(x_{j}, y_{j}, z_{j})$, with unit density.
+On the other hand, $g_{ij}$ is commonly defined as a component of the 
+magnetic induction field produced at $(x_{i}, y_{i}, z_{i})$ by a dipole or prism located at $(x_{j}, y_{j}, z_{j})$,
+with unit magnetization intensity, when the observed potential field is magnetic data.
+
+For all harmonic functions discussed above, the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
+is always dense. For scattered potential-field data, $\mathbf{G}$ does not have a well-defined structure, regardless of
+whether the spatial distribution of the equivalent sources is set.
+Nevertheless, for the particular case in which (i) there is a single equivalent source right below each potential-field
+datum and (ii) both data and sources rely on planar and regularly spaced grids, \citet{takahashi-etal2020,takahashi-etal2022}
+show that $\mathbf{G}$ assumes a block-Toeplitz Toeplitz-block (BTTB) structure. In this case, the product of $\mathbf{G}$ and an 
+arbitrary vector can be efficiently computed via 2D fast Fourier transform as a discrete convolution.
+
+\subsection{General formulation}
+\label{subsec:general-formulation}
+
+A general formulation for almost all equivalent-layer methods can be achieved by first considering that
+the $P \times 1$ parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) can be reparameterized 
+into a $Q \times 1$ vector $\mathbf{q}$ according to:
+\begin{equation}
+	\mathbf{p} = \mathbf{H} \, \mathbf{q} \: ,
+	\label{eq:reparameterization}
+\end{equation}
+where $\mathbf{H}$ is a $P \times Q$ matrix.
+This reparameterization is usually defined with $Q << P$ to reduce the original number of parameters.
+The predicted data vector $\mathbf{d}_{p}$ (equation \ref{eq:predicted-data-vector}) can then be
+rewritten as follows:
+\begin{equation}
+	\mathbf{d}_{p} = \mathbf{G} \, \mathbf{H} \, \mathbf{q} \: .
+	\label{eq:predicted-data-vetor-reparameterized}
+\end{equation}
+
+Then, the problem of estimating a parameter vector $\tilde{\mathbf{p}}$ minimizing a length 
+measure of the difference between $\mathbf{d}_{p}$ (equation \ref{eq:predicted-data-vector}) and $\mathbf{d}_{o}$
+is replaced by that of estimating an auxiliary vector $\tilde{\mathbf{q}}$ minimizing the goal function
+\begin{equation}
+	\Gamma(\mathbf{q}) = \Phi(\mathbf{q}) + \mu \: \Theta(\mathbf{q}) \: ,
 	\label{eq:function-Gamma}
 \end{equation}
-which is a combination of particular measures of length $\Phi(\mathbf{p})$ and $\Theta(\mathbf{p})$ given by
+which is a combination of particular measures of length given by
 \begin{equation}
-	\Phi(\mathbf{p}) = \| \mathbf{D} \left( \mathbf{d} - \mathbf{f} \right) \|_{2}^{2} \: ,
+	\Phi(\mathbf{q}) = \| \mathbf{W}_{d} \left( \mathbf{d}_{o} - \mathbf{G} \, \mathbf{H} \, \mathbf{q} \right) \|_{2}^{2} \: ,
 	\label{eq:function-Phi}
 \end{equation}
 and
 \begin{equation}
-	\Theta(\mathbf{p}) = \| \mathbf{P} \left( \mathbf{p} - \mathbf{p}_{r} \right) \|_{2}^{2} \: ,
+	\Theta(\mathbf{q}) = \| \mathbf{W}_{q} \, \left( \mathbf{q} - \mathbf{q}_{a} \right) \|_{2}^{2} \: ,
 	\label{eq:function-Theta}
 \end{equation}
-where $\mu$ is a positive scalar controlling the trade-off between them, 
-$\| \cdot \|_{2}$ is the 2-norm (or Euclidean norm), $\mathbf{p}_{r}$ is a $J \times 1$ vector containing reference values
-for $\mathbf{p}$, $\mathbf{D}$ is an $I \times I$ matrix defining the relative importance of each observed datum $d_{i}$
-and $\mathbf{P}$ is a $J \times J$ matrix introducing some prior information about $\mathbf{p}$, such as those associated
-with zeroth-, first- and second-order Tikhonov regularization \cite[e.g.,][p. 104]{aster_etal2019}.
-The parameter vector $\tilde{\mathbf{p}}$ minimizing $\Gamma(\mathbf{p})$ (equation \ref{eq:function-Gamma}) can
-then be written as follows
+where $\mu$ is a positive scalar controlling the trade-off between $\Phi(\mathbf{q})$ and $\Theta(\mathbf{q})$; 
+$\| \cdot \|_{2}$ is the 2-norm (or Euclidean norm);
+$\mathbf{W}_{q}$ is a matrix imposing prior information on $\mathbf{q}$ given by
 \begin{equation}
-	\tilde{\mathbf{p}} = \mathbf{p}_{r} + \mathbf{C} \left( \mathbf{d} - \mathbf{A} \, \mathbf{p}_{r} \right) \: ,
-	\label{eq:vector-p-tilde-general}
+	\mathbf{W}_{q} = \mathbf{W}_{p} \, \mathbf{H} \: ,
+	\label{eq:weighting-matrix-q}
 \end{equation}
-where \cite[][p. 62]{menke2018}
+with $\mathbf{W}_{p}$ being a matrix imposing prior information on $\mathbf{p}$;
+$\mathbf{q}_{a}$ is a $Q \times 1$ vector of reference values for $\mathbf{q}$ satisfying
 \begin{equation}
-	\mathbf{C} = \left[ \mathbf{A}^{\top} \mathbf{D}^{\top} \mathbf{D} \mathbf{A} + \mu \, \mathbf{P}^{\top}\mathbf{P} \right]^{-1}
-	\mathbf{A}^{\top} \mathbf{D}^{\top} \mathbf{D} \: ,
-	\label{eq:matrix-C-overdetermined}
+	\mathbf{p}_{a} = \mathbf{H} \, \mathbf{q}_{a} \: ,
+	\label{eq:reparameterization-reference}
 \end{equation}
-or, equivalently,
+with $\mathbf{p}_{a}$ being a $P \times 1$ vector containing reference values
+for the original parameter vector $\mathbf{p}$ and 
+$\mathbf{W}_{d}$ is an $D \times D$ matrix defining the relative importance of each observed datum $d^{o}_{i}$.
+After obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization}) minimizing
+$\Gamma(\mathbf{q})$ (equation \ref{eq:function-Gamma}), the estimate $\tilde{\mathbf{p}}$ for the original parameter vector 
+(equation \ref{eq:predicted-data-vector}) is computed by 
 \begin{equation}
-	\mathbf{C} = \left( \mathbf{P}^{\top}\mathbf{P} \right)^{-1} \mathbf{A}^{\top}
-	\left[ \mathbf{A} \left( \mathbf{P}^{\top}\mathbf{P} \right)^{-1} \mathbf{A}^{\top} + \mu \left( \mathbf{D}^{\top} \mathbf{D} \right)^{-1} \right]^{-1} \: .
-	\label{eq:matrix-C-underdetermined}
+	\tilde{\mathbf{p}} = \mathbf{H} \, \tilde{\mathbf{q}} \: .
+	\label{eq:vector-p-tilde}
 \end{equation}
-Evidently, we have considered that all inverses exist in equations \ref{eq:matrix-C-overdetermined} and \ref{eq:matrix-C-underdetermined}.
-Matrix $\mathbf{C}$ defined by equation \ref{eq:matrix-C-overdetermined} is commonly used for the cases in which $I > J$, i.e., when
-there are more data $d_{i}$ than parameters $p_{j}$ (overdetermined problems).
-On the other hand, for the cases in which there are more parameters than data (underdetermined problems), matrix $\mathbf{C}$ is 
-usually defined according to equation \ref{eq:matrix-C-underdetermined}.
+
+The reparameterized vector $\tilde{\mathbf{q}}$ is obtained by first computing the gradient of $\Gamma(\mathbf{q})$,
+\begin{equation}
+	\boldsymbol{\nabla} \Gamma(\mathbf{q}) = 
+	-2 \, \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \left(\mathbf{d}_{o} - \mathbf{d}_{p} \right) +
+	2 \, \mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p}\mathbf{H} \left( \mathbf{q} - \mathbf{q}_{a} \right) \: .
+	\label{eq:gradient-Gamma}
+\end{equation}
+Then, by considering that $\boldsymbol{\nabla} \Gamma(\tilde{\mathbf{q}}) = \mathbf{0}$ (equation \ref{eq:gradient-Gamma}),
+where $\mathbf{0}$ is a vector of zeros, as well as adding and subtracting the term
+$\left( \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \mathbf{G} \, \mathbf{H} \right) \mathbf{q}_{a}$,
+we obtain
+\begin{equation}
+	\tilde{\mathbf{q}} = \mathbf{q}_{a} + \mathbf{B} \left( \mathbf{d}_{o} - \mathbf{G} \, \mathbf{H} \, \mathbf{q}_{a} \right) \: ,
+	\label{eq:vector-q-tilde}
+\end{equation}
+where 
+\begin{equation}
+	\mathbf{B} = \left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \, \mathbf{G} \, \mathbf{H} + 
+	\mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
+	\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \: ,
+	\label{eq:matrix-B-overdetermined}
+\end{equation}
+or, equivalently \cite[][p. 62]{menke2018},
+\begin{equation}
+	\mathbf{B} = \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
+	\mathbf{H}^{\top} \mathbf{G}^{\top}
+	\left[ \mathbf{G} \, \mathbf{H} \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1} 
+	\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \left( \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \right)^{-1} \right]^{-1} \: .
+	\label{eq:matrix-B-underdetermined}
+\end{equation}
+Evidently, we have considered that all inverses exist in equations \ref{eq:matrix-B-overdetermined} and \ref{eq:matrix-B-underdetermined}.
+Matrix $\mathbf{B}$ defined by equation \ref{eq:matrix-B-overdetermined} is commonly used for the cases in which $D > P$, i.e., when
+there are more data $d^{o}_{i}$ than parameters $p_{j}$ (overdetermined problems).
+On the other hand, for the cases in which there are more parameters than data (underdetermined problems), matrix $\mathbf{B}$ is 
+usually defined according to equation \ref{eq:matrix-B-underdetermined}.
+
+PAREI AQUI
 
 The great majority of equivalent-layer methods use non-null $\mathbf{p}_{r}$, $\mu$, $\mathbf{P}$ and $\mathbf{D}$ 
 (equations \ref{eq:vector-p-tilde-general}--\ref{eq:matrix-C-underdetermined}) to regularize the inverse problem,
@@ -166,109 +310,6 @@ and then computing a matrix-vector product as follows
 	\label{eq:vector-p-tilde-underdetermined}
 \end{equation}
 where $\mathbf{u}$ is a dummy vector.
-Given an estimate $\tilde{\mathbf{p}}$ (equations \ref{eq:vector-p-tilde-overdetermined} and \ref{eq:vector-p-tilde-underdetermined}),
-it is then possible to compute a potential field transformation 
-\begin{equation}
-	\mathbf{t} = \mathbf{B} \tilde{\mathbf{p}} \: ,
-	\label{eq:transformation}
-\end{equation}
-where $\mathbf{t}$ is a $K \times 1$ vector with $k$-th element $t_{k}$ representing the transformed potential field at
-the position $(x_{k}, y_{y}, z_{k})$, $k \in \{1:K\}$, and
-\begin{equation}
-	b_{kj} \equiv b(x_{k} - x_{j}, y_{k} - y_{j}, z_{k} - z_{j}) \: ,
-	\quad z_{k} < \min\{z_{j}\} \: , \quad \forall k \in \{1:K\} \: ,
-	\label{eq:harmonic-function-bkj}
-\end{equation}
-is a harmonic function representing the $kj$-th element of $\mathbf{B}$.
-
-\subsection{Spatial distribution and total number of equivalent sources}
-
-There is no well-established criteria to define the optimum number $J$ or the spatial distribution
-of the equivalent sources. We know that setting an equivalent layer with more (less) sources than potential-field 
-data usually leads to an underdetermined (overdetermined) inverse problem \cite[e.g.,][ p. 52--53]{menke2018}.
-Concerning the spatial distribution of the equivalent sources, the only condition is that they must rely on a 
-surface that is located below and does not cross that containing the potential field data.
-\citet{soler-uieda2021} present a practical discussion about this topic.
-
-From a theoretical point of view, the equivalent layer reproducing a given potential field data set cannot cross the
-true gravity or magnetic sources. This condition is a consequence of recognizing that the equivalent layer is essentially an indirect solution of 
-a boundary value problem of potential theory \citep[e.g.,][]{roy1962,zidarov1965,dampney1969,li_etal_2014,reis-etal2020}.
-In practical applications, however, there is no guarantee that this condition is satisfied. 
-Actually, its is widely known from practical experience \cite[e.g.,][]{gonzalez-etal2022} that the equivalent-layer technique
-works even for the case in which the layer cross the true sources. 
-
-CRITÉRIOS PARA DEFINIR A PROFUNDIDADE DA CAMADA: DAMPNEY (ESPAÇAMENTO DO GRID) E REIS (ESPAÇAMENTO DAS LINHAS)
-
-
-\subsection{Sensitivity matrix $\mathbf{A}$}
-
-Generally, the harmonic function $a_{ij}$ (equation \ref{eq:harmonic-function-aij}) is defined in terms of the 
-inverse distance between the observation point $(x_{i}, y_{i}, z_{i})$ and the $j$-th equivalent source at $(x_{j}, y_{j}, z_{j})$,
-\begin{equation}
-	\frac{1}{r_{ij}} \equiv \frac{1}{\sqrt{(x_{i} - x_{j})^{2} + (y_{i} - y_{j})^{2} + (z_{i} - z_{j})^{2}}} \: ,
-	\label{eq:inverse-distance-ij}
-\end{equation}
-or by its partial derivatives of first and second orders, respectively given by
-\begin{equation}
-	\partial_{\alpha} \frac{1}{r_{ij}} \equiv \frac{-(\alpha_{i} - \alpha_{j})}{r_{ij}^{3}} \: ,
-	\quad \alpha \in \{ x, y, z \} \: ,
-	\label{eq:deriv-1-inverse-distance-ij}
-\end{equation}
-and
-\begin{equation}
-	\partial_{\alpha\beta} \frac{1}{r_{ij}} \equiv 
-	\begin{cases}
-		\frac{3 \, (\alpha_{i} - \alpha_{j})^{2}}{r_{ij}^{5}} \: , &\alpha = \beta \: , \\
-		\frac{3 \, (\alpha_{i} - \alpha_{j}) \, (\beta_{i} - \beta_{j})}{r_{ij}^{5}} - \frac{1}{r_{ij}^{3}} \: , &\alpha \ne \beta \: , \\
-	\end{cases}
-	\quad \alpha, \beta \in \{ x, y, z \} \: .
-	\label{eq:deriv-2-inverse-distance-ij}
-\end{equation}
-In this case, the equivalent layer is formed by punctual sources representing monopoles or dipoles
-\cite[e.g.,][]{dampney1969, emilia1973, leao-silva1989, cordell1992, oliveirajr-etal2013, siqueira-etal2017, reis-etal2020, takahashi-etal2020, soler-uieda2021, takahashi-etal2022}.
-Another common approach consists in not defining $a_{ij}$ by using equations \ref{eq:inverse-distance-ij}--\ref{eq:deriv-2-inverse-distance-ij},
-but other harmonic functions obtained by integrating them over the volume of regular prisms 
-\cite[e.g.,][]{li-oldenburg_2010, barnes-lumley_2011, li_etal_2014, jirigalatu-ebbing2019}.
-There are also some less common approaches defining the harmonic function $a_{ij}$ (equation \ref{eq:harmonic-function-aij})
-as the potential field due to plane faces with constant physical property \citep{hansen-miyazaki1984}, doublets \citep{silva1986} or
-by computing the double integration of the inverse distance function with respect to $z$ \citep{guspi-novara2009}.
-
-
-A common assumption for most of the equivalent-layer methods is that the harmonic function $a_{ij}$ 
-(equation \ref{eq:harmonic-function-aij}) is independent on the actual physical relationship between the
-observed potential field and their true sources \cite[e.g.,][]{cordell1992, guspi-novara2009,li_etal_2014}.
-Hence, $a_{ij}$ can be defined according to the problem.
-The only condition imposed to this function is that it decays to zero as the observation point $(x_{i}, y_{i}, z_{i})$
-goes away from the position $(x_{j}, y_{j}, z_{j})$ of the $j$-th equivalent source.
-However, several methods use a function $a_{ij}$ that preserves the physical relationship between the
-observed potential field and their true sources.
-For the case in which the observed potential field is gravity data, $a_{ij}$ is commonly defined as a component of 
-the gravitational field produced at $(x_{i}, y_{i}, z_{i})$ by a point mass or prism located at $(x_{j}, y_{j}, z_{j})$, with unit density.
-On the other hand, $a_{ij}$ is commonly defined as a component of the 
-magnetic induction field produced at $(x_{i}, y_{i}, z_{i})$ by a dipole or prism located at $(x_{j}, y_{j}, z_{j})$,
-with unit magnetization intensity, when the observed potential field is magnetic data.
-
-For all harmonic functions discussed above, the sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vetor}) 
-is always dense. For scattered potential-field data, $\mathbf{A}$ does not have a well-defined structure, regardless of
-whether the spatial distribution of the equivalent sources is set.
-Nevertheless, for the particular case in which (i) there is a single equivalent source right below each potential-field
-datum and (ii) both data and sources rely on planar and regularly spaced grids, \citet{takahashi-etal2020,takahashi-etal2022}
-show that $\mathbf{A}$ assumes a block-Toeplitz Toeplitz-block (BTTB) structure. In this case, the product of $\mathbf{A}$ and an 
-arbitrary vector can be efficiently computed via 2D fast Fourier transform as a discrete convolution.
-
-\section{Computational strategies}
-
-Two important factors affecting the efficiency of a given matrix algorithm are the 
-storage and amount of required arithmetic. Here, we quantify this last factor by counting flops.
-A flop is a floating point addition, subtraction, multiplication or division \cite[][ p. 12--14]{golub-vanloan2013}.
-
-NÃO SEI SE TÁ BOM AQUI: To investigate the efficiency of equivalent-layer methods, we consider how they
-(i) set up and (ii) solve the linear inverse problem to estimate the physical property distribution on the equivalent layer, 
-as well as (iii) perform potential field transformations (equation \ref{eq:transformation}).
-
-We focus on the overall strategies used by the selected methods
-
-\subsection{Linear system solvers}
 
 Let us first consider the following generic linear system
 \begin{equation}
@@ -326,17 +367,31 @@ A pseudo-code for this generic iterative method can be defined as follows:
 	\caption{Generic pseudo-code for iterative methods.}
 \end{algorithm}
 
+
+\section{Computational strategies}
+
+Two important factors affecting the efficiency of a given matrix algorithm are the 
+storage and amount of required arithmetic. Here, we quantify this last factor by counting flops.
+A flop is a floating point addition, subtraction, multiplication or division \cite[][ p. 12--14]{golub-vanloan2013}.
+
+NÃO SEI SE TÁ BOM AQUI: To investigate the efficiency of equivalent-layer methods, we consider how they
+(i) set up and (ii) solve the linear inverse problem to estimate the physical property distribution on the equivalent layer, 
+as well as (iii) perform potential field transformations (equation \ref{eq:transformation}).
+
+We focus on the overall strategies used by the selected methods
+
 \subsection{Moving-data windows}
 
-Split the observed data $d_{i}$, $i \in \{1, \dots, I\}$, into $M$ subsets with $I^{m}$ data each, with $m \in \{ 1, \dots, M \}$.
+Split the observed data $d_{i}$, $i \in \{1, \dots, I\}$, into $M$ overlapping subsets (or data windows) 
+formed by $I^{m}$ data each, $m \in \{ 1, \dots, M \}$.
 
-The number of data $I^{m}$ forming the subsets are not necessarily equal to each other.
+The number of data $I^{m}$ forming the data windows are not necessarily equal to each other.
 
-The data forming a given subset are not necessarily close to each other.
+The data forming a given window are usually adjacent to each other.
 
-For each subset, we have an $I^{m} \times 1$ observed data vector $\mathbf{d}^{m}$.
+Each window has an $I^{m} \times 1$ observed data vector $\mathbf{d}^{m}$.
 
-Let each subset be approximated by an equivalent layer composed of $J^{m}$ equivalent sources, so that
+Let each data window be approximated by a local equivalent layer composed of $J^{m}$ sources, so that
 its predicted data vector is given by
 \begin{equation}
 	\mathbf{f}^{m} = \mathbf{A}^{m} \mathbf{p}^{m} \: ,
@@ -351,12 +406,11 @@ in the $m$-th subset.
 The main advantage of this approach is that the estimated parameter vector $\tilde{\mathbf{p}}$ is not
 obtained by solving the full linear system, but several smaller ones.
 
-
 \cite{leao-silva1989} presented a pioneer work using this approach.
 
 Their method requires a regularly-spaced grid of observed data on a horizontal plane $z_{0}$. 
 
-The data subsets are defined by square windows of $\sqrt{I'} \times \sqrt{I'}$ adjacent points, all of them having the
+The data windows are defined by square local grids of $\sqrt{I'} \times \sqrt{I'}$ adjacent points, all of them having the
 same number of points $I'$.
 
 The equivalent sources in the $m$-th data window are located below the observation plane, at a constant vertical distance
@@ -384,15 +438,51 @@ where $\mathbf{b}'$ is a $J' \times 1$ vector with elements computed by equation
 only the coordinate of the central point in the $m$-th data window. Due to the presumed spatial configuration of the observed
 data and equivalent sources, $\mathbf{b}'$ is the same for all data windows.
 
+Their method can be outlined by the following pseudo-code:
+\begin{algorithm}
+	%\SetAlgoLined
+	\Input{}
+	Set the $\mathbf{d}^{m}$ for each data window, $m \in \{ 1, \dots, M \}$ \;
+	Set the constant depth $z_{0} + \Delta z_{0}$ for all equivalent sources \;
+	Compute the vector $\mathbf{b}'$ associated with the desired potential-field transformation \;
+	Compute the matrix $\mathbf{A}'$ \;
+	Compute $\left( \mathbf{A}' \mathbf{b}' \right)^{\top} \left[ \mathbf{A}' \, \left( \mathbf{A}' \right)^{\top} \right]^{-1}$ \;
+	$\ell = 1$ \;
+	\While{$\ell < M$}{
+		Compute $t^{m}_{c}$ (equation \ref{eq:transformed-field-tmc-LS89}) \;
+		$\ell \gets \ell + 1$ \;
+	}
+	\caption{Generic pseudo-code for the method proposed by \cite{leao-silva1989}.}
+	\label{alg:LS89}
+\end{algorithm}
+
 Note that \cite{leao-silva1989} directly compute the transformed potential $t^{m}_{c}$ at the central point of
 each data window without explicitly computing and storing $\mathbf{p}^{m}$ (equation \ref{eq:predicted-data-subset-m}).
 It means that their method allows computing a single potential-field transformation. 
-A different transformation or the same one evaluated at different points require running their method again.
+A different transformation or the same one evaluated at different points require running their moving-data window method again.
+
+\cite{soler-uieda2021} generalized the method proposed by \cite{leao-silva1989} for irregularly spaced data on an undulating surface.
+
+The overall steps of their method are defined by the following pseudo-code:
+\begin{algorithm}
+	%\SetAlgoLined
+	\Input{}
+	Set the $\mathbf{d}^{m}$ for each data window, $m \in \{ 1, \dots, M \}$ \;
+	Set the depth scheme for all equivalent sources \;
+	Compute the vector $\mathbf{b}'$ associated with the desired potential-field transformation \;
+	Compute the matrix $\mathbf{A}'$ \;
+	Compute $\left( \mathbf{A}' \mathbf{b}' \right)^{\top} \left[ \mathbf{A}' \, \left( \mathbf{A}' \right)^{\top} \right]^{-1}$ \;
+	$\ell = 1$ \;
+	\While{$\ell < M$}{
+		Compute $t^{m}_{c}$ (equation \ref{eq:transformed-field-tmc-LS89}) \;
+		$\ell \gets \ell + 1$ \;
+	}
+	\caption{Generic pseudo-code for the method proposed by \cite{soler-uieda2021}.}
+	\label{alg:SU21}
+\end{algorithm}
 
 
 PAREI AQUI
-
-\cite{soler-uieda2021}
 
 \subsection{Column update}
 

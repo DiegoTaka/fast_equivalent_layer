@@ -258,13 +258,21 @@ The reparameterized vector $\tilde{\mathbf{q}}$ is obtained by first computing t
 \end{equation}
 Then, by considering that $\boldsymbol{\nabla} \Gamma(\tilde{\mathbf{q}}) = \mathbf{0}$ (equation \ref{eq:gradient-Gamma}),
 where $\mathbf{0}$ is a vector of zeros, as well as adding and subtracting the term
-$\left( \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \mathbf{G} \, \mathbf{H} \right) \mathbf{q}_{a}$,
+$\left( \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \mathbf{G} \, \mathbf{H} \right) \mathbf{q}_{a}$ ,
 we obtain
 \begin{equation}
-	\tilde{\mathbf{q}} = \mathbf{q}_{a} + \mathbf{B} \left( \mathbf{d}_{o} - \mathbf{G} \, \mathbf{H} \, \mathbf{q}_{a} \right) \: ,
+	\tilde{\boldsymbol{\delta}}_{q} = \mathbf{B} \, \tilde{\boldsymbol{\delta}}_{d} \: ,
 	\label{eq:vector-q-tilde}
 \end{equation}
 where 
+\begin{equation}
+	\tilde{\boldsymbol{\delta}}_{q} = \tilde{\mathbf{q}} - \mathbf{q}_{a} \: ,
+	\label{eq:delta-q-tilde}
+\end{equation}
+\begin{equation}
+	\tilde{\boldsymbol{\delta}}_{d} = \mathbf{d}_{o} - \mathbf{G} \, \mathbf{H} \, \mathbf{q}_{a} \: ,
+	\label{eq:delta-d}
+\end{equation}
 \begin{equation}
 	\mathbf{B} = \left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \, \mathbf{G} \, \mathbf{H} + 
 	\mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
@@ -280,92 +288,89 @@ or, equivalently \cite[][p. 62]{menke2018},
 	\label{eq:matrix-B-underdetermined}
 \end{equation}
 Evidently, we have considered that all inverses exist in equations \ref{eq:matrix-B-overdetermined} and \ref{eq:matrix-B-underdetermined}.
+
 Matrix $\mathbf{B}$ defined by equation \ref{eq:matrix-B-overdetermined} is commonly used for the cases in which $D > P$, i.e., when
 there are more data $d^{o}_{i}$ than parameters $p_{j}$ (overdetermined problems).
-On the other hand, for the cases in which there are more parameters than data (underdetermined problems), matrix $\mathbf{B}$ is 
-usually defined according to equation \ref{eq:matrix-B-underdetermined}.
-
-PAREI AQUI
-
-The great majority of equivalent-layer methods use non-null $\mathbf{p}_{r}$, $\mu$, $\mathbf{P}$ and $\mathbf{D}$ 
-(equations \ref{eq:vector-p-tilde-general}--\ref{eq:matrix-C-underdetermined}) to regularize the inverse problem,
-impose some constraint on the estimated parameter vector $\tilde{\mathbf{p}}$ and define weights for the observed data
-according to their (presumed) experimental error.
-Nonetheless, we limit our analysis to the cases in which $\mathbf{p}_{r}$ have null elements, 
-matrices $\mathbf{D}$ and $\mathbf{P}$ are equal to the identity and
-$\mu = 0$ because these terms do not significantly impact the computational performance.
-Hence, we consider that the estimate $\tilde{\mathbf{p}}$ for overdetermined problems ($I > J$) is obtained 
-by solving the linear system
+In this case, we consider that the estimate $\tilde{\mathbf{q}}$ is obtained by solving the following linear system
+for $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}):
 \begin{equation}
-	\left( \mathbf{A}^{\top}\mathbf{A} \right) \tilde{\mathbf{p}} = \mathbf{A}^{\top} \mathbf{d} \: ,
-	\label{eq:vector-p-tilde-overdetermined}
+	\left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \, \mathbf{G} \, \mathbf{H} + 
+	\mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right) 
+	\tilde{\boldsymbol{\delta}}_{q} = 
+	\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \: 
+	\tilde{\boldsymbol{\delta}}_{d} \: .
+	\label{eq:vector-q-tilde-overdetermined}
 \end{equation}
-whereas the solution for underdetermined problems ($I < J$) is obtained in two steps by first solving a linear system
-and then computing a matrix-vector product as follows
+On the other hand, for the cases in which $D < P$ (underdetermined problems), matrix $\mathbf{B}$ is 
+usually defined according to equation \ref{eq:matrix-B-underdetermined}. In this case, we consider that the 
+the estimate $\tilde{\mathbf{q}}$ is obtained in two steps, which consists in first solving a linear system 
+for a dummy vector $\mathbf{u}$ and then computing a matrix-vector product as follows:
 \begin{equation}
 	\begin{split}
-		\left( \mathbf{A} \, \mathbf{A}^{\top} \right) \mathbf{u} &= \mathbf{d} \\
-		\tilde{\mathbf{p}} &= \mathbf{A}^{\top} \mathbf{u}
-	\end{split} \: ,
-	\label{eq:vector-p-tilde-underdetermined}
-\end{equation}
-where $\mathbf{u}$ is a dummy vector.
-
-Let us first consider the following generic linear system
-\begin{equation}
-	\mathbf{H} \mathbf{v} = \mathbf{h} \: ,
-	\label{eq:square-linear-system-generic}
-\end{equation}
-where $\mathbf{H}$ is a square matrix and $\mathbf{v}$ is a vector of unknowns.
-Here, we set $\mathbf{H} = \mathbf{A}^{\top}\mathbf{A}$ and $\mathbf{h} = \mathbf{A}^{\top}\mathbf{d}$
-for solving the overdetermined system (equation \ref{eq:vector-p-tilde-overdetermined}) or
-$\mathbf{H} = \mathbf{A} \, \mathbf{A}^{\top}$ and $\mathbf{h} = \mathbf{d}$
-for solving the underdetermined system (equation \ref{eq:vector-p-tilde-underdetermined}).
-
-An estimate $\tilde{\mathbf{v}}$ for the unknown vector $\mathbf{v}$ can be obtained by using direct methods, 
-such as LU, Cholesky or QR factorization \cite[][p. 111, 163, 246]{golub-vanloan2013}, or iterative methods, 
-such as Gauss-Seidel, Successive Over-Relaxation (SOR) or Conjugate Gradient
-\cite[][p. 612, 619, 625]{golub-vanloan2013}, for example.
-Here, we briefly discuss the Cholesky factorization and some general aspects of iterative methods.
-
-The Cholesky factorization \cite[][p. 163]{golub-vanloan2013} presumes the existence of an upper triangular matrix $\mathbf{G}$ 
-(the Cholesky factor) such that $\mathbf{H} = \mathbf{G} \, \mathbf{G}^{\top}$. 
-Given $\mathbf{G}$, an estimate $\tilde{\mathbf{v}}$ for the vector of unknowns $\mathbf{v}$ (equation \ref{eq:square-linear-system-generic}) 
-can be obtained by first solving the triangular system 
-\begin{equation}
-	\mathbf{G} \, \mathbf{w} = \mathbf{h} \: ,
-	\label{eq:Cholesky-step-1}
-\end{equation}
-where $\mathbf{w}$ is a dummy vector, and then computing
-\begin{equation}
-	\mathbf{G}^{\top} \mathbf{w} = \tilde{\mathbf{v}} \: .
-	\label{eq:Cholesky-step-2}
+		\left[ \mathbf{G} \, \mathbf{H} \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1} 
+		\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \left( \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \right)^{-1} \right] \,  
+		\mathbf{u} = \tilde{\boldsymbol{\delta}}_{d} \\
+		\tilde{\mathbf{q}} = \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
+		\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{u}
+	\end{split} \: .
+	\label{eq:vector-q-tilde-underdetermined}
 \end{equation}
 
-Iterative methods can be roughly defined as a process that starts with an initial approximation
-$\tilde{\mathbf{v}}_{0}$ and then produces ever-better approximations $\tilde{\mathbf{v}}_{\ell}$
-for the unknown vector $\mathbf{v}$ (equation \ref{eq:square-linear-system-generic}).
-At each iteration, it is necessary to evaluate a predefined convergence criterion (CC).
-If the CC is satisfied, the current approximation is considered as 
-the solution $\tilde{\mathbf{v}}$ of the linear system and the algorithm stops.
-Otherwise, the current approximation $\tilde{\mathbf{v}}_{\ell}$ is used to compute
-a new approximation $\tilde{\mathbf{v}}_{\ell+1}$ and the CC is evaluated again. 
-A pseudo-code for this generic iterative method can be defined as follows:
-\begin{algorithm}
-	%\SetAlgoLined
-	\Input{}
-	$\ell = 0$ \;
-	$\tilde{\mathbf{v}}_{\ell} \gets \tilde{\mathbf{v}}_{0}$ \;
-	Compute auxiliary variables \;
-	\While{CC is not satisfied}{
-		Compute $\tilde{\mathbf{v}}_{\ell+1}$ \;
-		Compute auxiliary variables \;
-		$\tilde{\mathbf{v}}_{\ell} \gets \tilde{\mathbf{v}}_{\ell+1}$ \;
-		$\ell \gets \ell + 1$ \;
-	}
-	$\tilde{\mathbf{v}} \gets \tilde{\mathbf{v}}_{\ell}$
-	\caption{Generic pseudo-code for iterative methods.}
-\end{algorithm}
+%Let us first consider the following generic linear system
+%\begin{equation}
+%	\mathbf{H} \mathbf{v} = \mathbf{h} \: ,
+%	\label{eq:square-linear-system-generic}
+%\end{equation}
+%where $\mathbf{H}$ is a square matrix and $\mathbf{v}$ is a vector of unknowns.
+%Here, we set $\mathbf{H} = \mathbf{A}^{\top}\mathbf{A}$ and $\mathbf{h} = \mathbf{A}^{\top}\mathbf{d}$
+%for solving the overdetermined system (equation \ref{eq:vector-p-tilde-overdetermined}) or
+%$\mathbf{H} = \mathbf{A} \, \mathbf{A}^{\top}$ and $\mathbf{h} = \mathbf{d}$
+%for solving the underdetermined system (equation \ref{eq:vector-p-tilde-underdetermined}).
+%
+%An estimate $\tilde{\mathbf{v}}$ for the unknown vector $\mathbf{v}$ can be obtained by using direct methods, 
+%such as LU, Cholesky or QR factorization \cite[][p. 111, 163, 246]{golub-vanloan2013}, or iterative methods, 
+%such as Gauss-Seidel, Successive Over-Relaxation (SOR) or Conjugate Gradient
+%\cite[][p. 612, 619, 625]{golub-vanloan2013}, for example.
+%Here, we briefly discuss the Cholesky factorization and some general aspects of iterative methods.
+%
+%The Cholesky factorization \cite[][p. 163]{golub-vanloan2013} presumes the existence of an upper triangular matrix $\mathbf{G}$ 
+%(the Cholesky factor) such that $\mathbf{H} = \mathbf{G} \, \mathbf{G}^{\top}$. 
+%Given $\mathbf{G}$, an estimate $\tilde{\mathbf{v}}$ for the vector of unknowns $\mathbf{v}$ (equation \ref{eq:square-linear-system-generic}) 
+%can be obtained by first solving the triangular system 
+%\begin{equation}
+%	\mathbf{G} \, \mathbf{w} = \mathbf{h} \: ,
+%	\label{eq:Cholesky-step-1}
+%\end{equation}
+%where $\mathbf{w}$ is a dummy vector, and then computing
+%\begin{equation}
+%	\mathbf{G}^{\top} \mathbf{w} = \tilde{\mathbf{v}} \: .
+%	\label{eq:Cholesky-step-2}
+%\end{equation}
+%
+%Iterative methods can be roughly defined as a process that starts with an initial approximation
+%$\tilde{\mathbf{v}}_{0}$ and then produces ever-better approximations $\tilde{\mathbf{v}}_{\ell}$
+%for the unknown vector $\mathbf{v}$ (equation \ref{eq:square-linear-system-generic}).
+%At each iteration, it is necessary to evaluate a predefined convergence criterion (CC).
+%If the CC is satisfied, the current approximation is considered as 
+%the solution $\tilde{\mathbf{v}}$ of the linear system and the algorithm stops.
+%Otherwise, the current approximation $\tilde{\mathbf{v}}_{\ell}$ is used to compute
+%a new approximation $\tilde{\mathbf{v}}_{\ell+1}$ and the CC is evaluated again. 
+%A pseudo-code for this generic iterative method can be defined as follows:
+%\begin{algorithm}
+%	%\SetAlgoLined
+%	\Input{}
+%	$\ell = 0$ \;
+%	$\tilde{\mathbf{v}}_{\ell} \gets \tilde{\mathbf{v}}_{0}$ \;
+%	Compute auxiliary variables \;
+%	\While{CC is not satisfied}{
+%		Compute $\tilde{\mathbf{v}}_{\ell+1}$ \;
+%		Compute auxiliary variables \;
+%		$\tilde{\mathbf{v}}_{\ell} \gets \tilde{\mathbf{v}}_{\ell+1}$ \;
+%		$\ell \gets \ell + 1$ \;
+%	}
+%	$\tilde{\mathbf{v}} \gets \tilde{\mathbf{v}}_{\ell}$
+%	\caption{Generic pseudo-code for iterative methods.}
+%\end{algorithm}
 
 
 \section{Computational strategies}
@@ -382,25 +387,25 @@ We focus on the overall strategies used by the selected methods
 
 \subsection{Moving-data windows}
 
-Split the observed data $d_{i}$, $i \in \{1, \dots, I\}$, into $M$ overlapping subsets (or data windows) 
-formed by $I^{m}$ data each, $m \in \{ 1, \dots, M \}$.
+Split the observed data $d^{o}_{i}$, $i \in \{1, \dots, D\}$, into $M$ overlapping subsets (or data windows) 
+formed by $D^{m}$ data each, $m \in \{ 1, \dots, M \}$.
 
-The number of data $I^{m}$ forming the data windows are not necessarily equal to each other.
+The number of data $D^{m}$ forming the data windows are not necessarily equal to each other.
 
 The data forming a given window are usually adjacent to each other.
 
-Each window has an $I^{m} \times 1$ observed data vector $\mathbf{d}^{m}$.
+Each window has an $D^{m} \times 1$ observed data vector $\mathbf{d}_{o}^{m}$.
 
-Let each data window be approximated by a local equivalent layer composed of $J^{m}$ sources, so that
+Let each data window be approximated by a local equivalent layer composed of $P^{m}$ sources, so that
 its predicted data vector is given by
 \begin{equation}
-	\mathbf{f}^{m} = \mathbf{A}^{m} \mathbf{p}^{m} \: ,
+	\mathbf{d}_{p}^{m} = \mathbf{G}^{m} \mathbf{p}^{m} \: ,
 	\label{eq:predicted-data-subset-m}
 \end{equation}
-where $\mathbf{p}^{m}$ is a $J^{m} \times 1$ vector containing the scalar physical properties of the 
+where $\mathbf{p}^{m}$ is a $P^{m} \times 1$ vector containing the scalar physical properties of the 
 equivalent sources in the $m$-th subset and
-$\mathbf{A}^{m}$ is an $I^{m} \times J^{m}$ matrix whose elements are computed with equation 
-\ref{eq:harmonic-function-aij} by using only the coordinates of the observed data and equivalent sources
+$\mathbf{G}^{m}$ is an $D^{m} \times P^{m}$ matrix whose elements are computed with equation 
+\ref{eq:harmonic-function-g-ij} by using only the coordinates of the observed data and equivalent sources
 in the $m$-th subset.
 
 The main advantage of this approach is that the estimated parameter vector $\tilde{\mathbf{p}}$ is not
@@ -410,19 +415,21 @@ obtained by solving the full linear system, but several smaller ones.
 
 Their method requires a regularly-spaced grid of observed data on a horizontal plane $z_{0}$. 
 
-The data windows are defined by square local grids of $\sqrt{I'} \times \sqrt{I'}$ adjacent points, all of them having the
-same number of points $I'$.
+The data windows are defined by square local grids of $\sqrt{D'} \times \sqrt{D'}$ adjacent points, all of them having the
+same number of points $D'$.
 
 The equivalent sources in the $m$-th data window are located below the observation plane, at a constant vertical distance
-$\Delta z_{0}$. They are arranged on a regular grid of $\sqrt{J'} \times \sqrt{J'}$ adjacent points 
+$\Delta z_{0}$. They are arranged on a regular grid of $\sqrt{P'} \times \sqrt{P'}$ adjacent points 
 following the same grid pattern of the observed data. 
-The local grid of sources for all data windows have the same number of elements $J'$.
+The local grid of sources for all data windows have the same number of elements $P'$.
 Besides, they are vertically aligned, but expands the limits of their corresponding data windows,
-so that $J' > I'$.
+so that $D' < P'$.
 
 Because of this spatial configuration of observed data and equivalent sources, we have that
-$\mathbf{A}^{m} = \mathbf{A}'$ (equation \ref{eq:predicted-data-subset-m}) for all data windows, 
-where $\mathbf{A}'$ is a constant matrix.
+$\mathbf{G}^{m} = \mathbf{G}'$ (equation \ref{eq:predicted-data-subset-m}) for all data windows, 
+where $\mathbf{G}'$ is a constant matrix.
+
+PAREI AQUI - PORQUE ALMOÇAR É PRECISO
 
 By omitting the regularization and normalization strategies used by \cite{leao-silva1989},
 their method consists in combining equations \ref{eq:vector-p-tilde-underdetermined} and 

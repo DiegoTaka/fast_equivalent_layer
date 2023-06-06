@@ -57,17 +57,17 @@
 %Here, we review some strategies for reducing the computational cost of equivalent-layer technique.
 %These strategies are the following:
 
-$d^{o}_{i}$
+$d_{i}$
 
 $(x_{i}, y_{i}, z_{i})$
 
 $i \in \{1:D\}$
 
-approximate $d^{o}_{i}$ by a harmonic function
+approximate $d_{i}$ by a harmonic function
 \begin{equation}
-	d^{p}_{i} = \sum\limits_{j = 1}^{P} g_{ij} \, p_{j} \: ,
+	f_{i} = \sum\limits_{j = 1}^{P} g_{ij} \, p_{j} \: ,
 	\quad i \in \{1:D\} \: ,
-	\label{eq:predicted-data-dp-i}
+	\label{eq:predicted-data-f-i}
 \end{equation}
 where,
 
@@ -85,7 +85,7 @@ $j \in \{1:P\}$
 where $\min\{z_{j}\}$ denotes the minimum $z_{j}$ (or the vertical coordinate of the shallowest equivalent source).
 
 \begin{equation}
-	\mathbf{d}_{p} = \mathbf{G} \mathbf{p} \: ,
+	\mathbf{f} = \mathbf{G} \mathbf{p} \: ,
 	\label{eq:predicted-data-vector}
 \end{equation}
 where $\mathbf{p}$ is a $P \times 1$ vector with $j$-th element $p_{j}$ representing the scalar physical property
@@ -93,26 +93,26 @@ of the $j$-th equivalent source
 and $\mathbf{G}$ is a $D \times P$ matrix with element $g_{ij}$ given by equation \ref{eq:harmonic-function-g-ij}. 
 
 The equivalent-layer technique consists in solving a linear inverse problem to determine a parameter vector $\mathbf{p}$ 
-leading to a predicted data vector $\mathbf{d}_{p}$ (equation \ref{eq:predicted-data-vector}) \textit{sufficiently close to} the 
-observed data vector $\mathbf{d}_{o}$, whose $i$-th element $d^{o}_{i}$ is the observed potential field at $(x_{i}, y_{i}, z_{i})$.
+leading to a predicted data vector $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) \textit{sufficiently close to} the 
+observed data vector $\mathbf{d}$, whose $i$-th element $d_{i}$ is the observed potential field at $(x_{i}, y_{i}, z_{i})$.
 The notion of \textit{closeness} is intrinsically related to the concept of \textit{vector norm} \cite[e.g.,][p. 68]{golub-vanloan2013}
 or \textit{measure of length} \cite[e.g.,][p. 41]{menke2018}.
 Because of that, almost all methods for determining $\mathbf{p}$ actually estimate a parameter 
-vector $\tilde{\mathbf{p}}$ minimizing a length measure of the difference between $\mathbf{d}_{p}$ and $\mathbf{d}_{o}$
+vector $\tilde{\mathbf{p}}$ minimizing a length measure of the difference between $\mathbf{f}$ and $\mathbf{d}$
 (see subsection \ref{subsec:general-formulation}).
 Given an estimate $\tilde{\mathbf{p}}$, it is then possible to compute a potential field transformation 
 \begin{equation}
-	\mathbf{d}_{t} = \mathbf{T} \tilde{\mathbf{p}} \: ,
+	\mathbf{t} = \mathbf{A} \tilde{\mathbf{p}} \: ,
 	\label{eq:transformation}
 \end{equation}
-where $\mathbf{d}_{t}$ is a $T \times 1$ vector with $k$-th element $d^{t}_{k}$ representing the transformed potential field at
+where $\mathbf{t}$ is a $T \times 1$ vector with $k$-th element $t_{k}$ representing the transformed potential field at
 the position $(x_{k}, y_{y}, z_{k})$, $k \in \{1:T\}$, and
 \begin{equation}
-	t_{kj} \equiv t(x_{k} - x_{j}, y_{k} - y_{j}, z_{k} - z_{j}) \: ,
+	a_{kj} \equiv a(x_{k} - x_{j}, y_{k} - y_{j}, z_{k} - z_{j}) \: ,
 	\quad z_{k} < \min\{z_{j}\} \: , \quad \forall k \in \{1:T\} \: ,
-	\label{eq:harmonic-function-t-kj}
+	\label{eq:harmonic-function-a-kj}
 \end{equation}
-is a harmonic function representing the $kj$-th element of the $T \times P$ matrix $\mathbf{T}$.
+is a harmonic function representing the $kj$-th element of the $T \times P$ matrix $\mathbf{A}$.
 
 \subsection{Spatial distribution and total number of equivalent sources}
 \label{subsec:spatial-distribution-sources}
@@ -133,7 +133,7 @@ works even for the case in which the layer cross the true sources.
 
 CRITÉRIOS PARA DEFINIR A PROFUNDIDADE DA CAMADA: DAMPNEY (ESPAÇAMENTO DO GRID) E REIS (ESPAÇAMENTO DAS LINHAS)
 
-\subsection{Sensitivity matrix $\mathbf{A}$}
+\subsection{Matrix $\mathbf{G}$}
 \label{subsec:sensitivity-matrix}
 
 Generally, the harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij}) is defined in terms of the 
@@ -192,24 +192,23 @@ arbitrary vector can be efficiently computed via 2D fast Fourier transform as a 
 \subsection{General formulation}
 \label{subsec:general-formulation}
 
-A general formulation for almost all equivalent-layer methods can be achieved by first considering that
-the $P \times 1$ parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) can be reparameterized 
+A general formulation for almost all equivalent-layer methods can be achieved by first considering 
+that the $P \times 1$ parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) can be reparameterized 
 into a $Q \times 1$ vector $\mathbf{q}$ according to:
 \begin{equation}
 	\mathbf{p} = \mathbf{H} \, \mathbf{q} \: ,
 	\label{eq:reparameterization}
 \end{equation}
 where $\mathbf{H}$ is a $P \times Q$ matrix.
-This reparameterization is usually defined with $Q << P$ to reduce the original number of parameters.
-The predicted data vector $\mathbf{d}_{p}$ (equation \ref{eq:predicted-data-vector}) can then be
+The predicted data vector $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) can then be
 rewritten as follows:
 \begin{equation}
-	\mathbf{d}_{p} = \mathbf{G} \, \mathbf{H} \, \mathbf{q} \: .
+	\mathbf{f} = \mathbf{G} \, \mathbf{H} \, \mathbf{q} \: .
 	\label{eq:predicted-data-vetor-reparameterized}
 \end{equation}
 
 Then, the problem of estimating a parameter vector $\tilde{\mathbf{p}}$ minimizing a length 
-measure of the difference between $\mathbf{d}_{p}$ (equation \ref{eq:predicted-data-vector}) and $\mathbf{d}_{o}$
+measure of the difference between $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) and $\mathbf{d}$
 is replaced by that of estimating an auxiliary vector $\tilde{\mathbf{q}}$ minimizing the goal function
 \begin{equation}
 	\Gamma(\mathbf{q}) = \Phi(\mathbf{q}) + \mu \: \Theta(\mathbf{q}) \: ,
@@ -217,12 +216,12 @@ is replaced by that of estimating an auxiliary vector $\tilde{\mathbf{q}}$ minim
 \end{equation}
 which is a combination of particular measures of length given by
 \begin{equation}
-	\Phi(\mathbf{q}) = \| \mathbf{W}_{d} \left( \mathbf{d}_{o} - \mathbf{G} \, \mathbf{H} \, \mathbf{q} \right) \|_{2}^{2} \: ,
+	\Phi(\mathbf{q}) = \| \mathbf{W}_{d} \left( \mathbf{d} - \mathbf{G} \, \mathbf{H} \, \mathbf{q} \right) \|_{2}^{2} \: ,
 	\label{eq:function-Phi}
 \end{equation}
 and
 \begin{equation}
-	\Theta(\mathbf{q}) = \| \mathbf{W}_{q} \, \left( \mathbf{q} - \mathbf{q}_{a} \right) \|_{2}^{2} \: ,
+	\Theta(\mathbf{q}) = \| \mathbf{W}_{q} \, \left( \mathbf{q} - \bar{\mathbf{q}} \right) \|_{2}^{2} \: ,
 	\label{eq:function-Theta}
 \end{equation}
 where $\mu$ is a positive scalar controlling the trade-off between $\Phi(\mathbf{q})$ and $\Theta(\mathbf{q})$; 
@@ -233,14 +232,14 @@ $\mathbf{W}_{q}$ is a matrix imposing prior information on $\mathbf{q}$ given by
 	\label{eq:weighting-matrix-q}
 \end{equation}
 with $\mathbf{W}_{p}$ being a matrix imposing prior information on $\mathbf{p}$;
-$\mathbf{q}_{a}$ is a $Q \times 1$ vector of reference values for $\mathbf{q}$ satisfying
+$\bar{\mathbf{q}}$ is a $Q \times 1$ vector of reference values for $\mathbf{q}$ satisfying
 \begin{equation}
-	\mathbf{p}_{a} = \mathbf{H} \, \mathbf{q}_{a} \: ,
+	\bar{\mathbf{p}} = \mathbf{H} \, \bar{\mathbf{q}} \: ,
 	\label{eq:reparameterization-reference}
 \end{equation}
-with $\mathbf{p}_{a}$ being a $P \times 1$ vector containing reference values
-for the original parameter vector $\mathbf{p}$ and 
-$\mathbf{W}_{d}$ is an $D \times D$ matrix defining the relative importance of each observed datum $d^{o}_{i}$.
+with $\bar{\mathbf{p}}$ being a $P \times 1$ vector containing reference values
+for the original parameter vector $\mathbf{p}$; and 
+$\mathbf{W}_{d}$ is a $D \times D$ matrix defining the relative importance of each observed datum $d_{i}$.
 After obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization}) minimizing
 $\Gamma(\mathbf{q})$ (equation \ref{eq:function-Gamma}), the estimate $\tilde{\mathbf{p}}$ for the original parameter vector 
 (equation \ref{eq:predicted-data-vector}) is computed by 
@@ -252,13 +251,13 @@ $\Gamma(\mathbf{q})$ (equation \ref{eq:function-Gamma}), the estimate $\tilde{\m
 The reparameterized vector $\tilde{\mathbf{q}}$ is obtained by first computing the gradient of $\Gamma(\mathbf{q})$,
 \begin{equation}
 	\boldsymbol{\nabla} \Gamma(\mathbf{q}) = 
-	-2 \, \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \left(\mathbf{d}_{o} - \mathbf{d}_{p} \right) +
-	2 \, \mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p}\mathbf{H} \left( \mathbf{q} - \mathbf{q}_{a} \right) \: .
+	-2 \, \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \left(\mathbf{d} - \mathbf{f} \right) +
+	2 \, \mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p}\mathbf{H} \left( \mathbf{q} - \bar{\mathbf{q}} \right) \: .
 	\label{eq:gradient-Gamma}
 \end{equation}
 Then, by considering that $\boldsymbol{\nabla} \Gamma(\tilde{\mathbf{q}}) = \mathbf{0}$ (equation \ref{eq:gradient-Gamma}),
 where $\mathbf{0}$ is a vector of zeros, as well as adding and subtracting the term
-$\left( \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \mathbf{G} \, \mathbf{H} \right) \mathbf{q}_{a}$ ,
+$\left( \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \mathbf{G} \, \mathbf{H} \right) \bar{\mathbf{q}}$ ,
 we obtain
 \begin{equation}
 	\tilde{\boldsymbol{\delta}}_{q} = \mathbf{B} \, \tilde{\boldsymbol{\delta}}_{d} \: ,
@@ -266,11 +265,11 @@ we obtain
 \end{equation}
 where 
 \begin{equation}
-	\tilde{\boldsymbol{\delta}}_{q} = \tilde{\mathbf{q}} - \mathbf{q}_{a} \: ,
+	\tilde{\boldsymbol{\delta}}_{q} = \tilde{\mathbf{q}} - \bar{\mathbf{q}} \: ,
 	\label{eq:delta-q-tilde}
 \end{equation}
 \begin{equation}
-	\tilde{\boldsymbol{\delta}}_{d} = \mathbf{d}_{o} - \mathbf{G} \, \mathbf{H} \, \mathbf{q}_{a} \: ,
+	\tilde{\boldsymbol{\delta}}_{d} = \mathbf{d} - \mathbf{G} \, \mathbf{H} \, \bar{\mathbf{q}} \: ,
 	\label{eq:delta-d}
 \end{equation}
 \begin{equation}
@@ -290,7 +289,7 @@ or, equivalently \cite[][p. 62]{menke2018},
 Evidently, we have considered that all inverses exist in equations \ref{eq:matrix-B-overdetermined} and \ref{eq:matrix-B-underdetermined}.
 
 Matrix $\mathbf{B}$ defined by equation \ref{eq:matrix-B-overdetermined} is commonly used for the cases in which $D > P$, i.e., when
-there are more data $d^{o}_{i}$ than parameters $p_{j}$ (overdetermined problems).
+there are more data than parameters (overdetermined problems).
 In this case, we consider that the estimate $\tilde{\mathbf{q}}$ is obtained by solving the following linear system
 for $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}):
 \begin{equation}
@@ -299,7 +298,7 @@ for $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}):
 	\tilde{\boldsymbol{\delta}}_{q} = 
 	\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \: 
 	\tilde{\boldsymbol{\delta}}_{d} \: .
-	\label{eq:vector-q-tilde-overdetermined}
+	\label{eq:delta-q-tilde-overdetermined}
 \end{equation}
 On the other hand, for the cases in which $D < P$ (underdetermined problems), matrix $\mathbf{B}$ is 
 usually defined according to equation \ref{eq:matrix-B-underdetermined}. In this case, we consider that the 
@@ -310,11 +309,13 @@ for a dummy vector $\mathbf{u}$ and then computing a matrix-vector product as fo
 		\left[ \mathbf{G} \, \mathbf{H} \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1} 
 		\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \left( \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \right)^{-1} \right] \,  
 		\mathbf{u} = \tilde{\boldsymbol{\delta}}_{d} \\
-		\tilde{\mathbf{q}} = \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
+		\tilde{\boldsymbol{\delta}}_{q} = \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
 		\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{u}
 	\end{split} \: .
-	\label{eq:vector-q-tilde-underdetermined}
+	\label{eq:delta-q-tilde-underdetermined}
 \end{equation}
+After obtaining $\tilde{\boldsymbol{\delta}}_{q}$ (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}),
+the estimate $\tilde{\mathbf{q}}$ is computed with equation \ref{eq:delta-q-tilde}.
 
 %Let us first consider the following generic linear system
 %\begin{equation}
@@ -387,19 +388,19 @@ We focus on the overall strategies used by the selected methods
 
 \subsection{Moving-data windows}
 
-Split the observed data $d^{o}_{i}$, $i \in \{1, \dots, D\}$, into $M$ overlapping subsets (or data windows) 
+Split the observed data $d_{i}$, $i \in \{1, \dots, D\}$, into $M$ overlapping subsets (or data windows) 
 formed by $D^{m}$ data each, $m \in \{ 1, \dots, M \}$.
 
 The number of data $D^{m}$ forming the data windows are not necessarily equal to each other.
 
 The data forming a given window are usually adjacent to each other.
 
-Each window has an $D^{m} \times 1$ observed data vector $\mathbf{d}_{o}^{m}$.
+Each window has an $D^{m} \times 1$ observed data vector $\mathbf{d}^{m}$.
 
 Let each data window be approximated by a local equivalent layer composed of $P^{m}$ sources, so that
 its predicted data vector is given by
 \begin{equation}
-	\mathbf{d}_{p}^{m} = \mathbf{G}^{m} \mathbf{p}^{m} \: ,
+	\mathbf{f}^{m} = \mathbf{G}^{m} \mathbf{p}^{m} \: ,
 	\label{eq:predicted-data-subset-m}
 \end{equation}
 where $\mathbf{p}^{m}$ is a $P^{m} \times 1$ vector containing the scalar physical properties of the 
@@ -426,26 +427,32 @@ Besides, they are vertically aligned, but expands the limits of their correspond
 so that $D' < P'$.
 
 Because of this spatial configuration of observed data and equivalent sources, we have that
-$\mathbf{G}^{m} = \mathbf{G}'$ (equation \ref{eq:predicted-data-subset-m}) for all data windows, 
-where $\mathbf{G}'$ is a constant matrix.
+$\mathbf{G}^{m} = \mathbf{G}'$ (equation \ref{eq:predicted-data-subset-m}) for all data windows 
+(i.e., $\forall \: m \in \{1,\dots,M\}$), where $\mathbf{G}'$ is a $D' \times P'$ constant matrix.
 
-PAREI AQUI - PORQUE ALMOÇAR É PRECISO
-
-By omitting the regularization and normalization strategies used by \cite{leao-silva1989},
-their method consists in combining equations \ref{eq:vector-p-tilde-underdetermined} and 
-\ref{eq:transformation} to directly compute the transformed potential field $t^{m}_{c}$ at the central point of
-each data window as follows:
+By omitting the normalization strategy used by \cite{leao-silva1989}, their method consists in 
+directly computing the transformed potential field $t^{m}_{c}$ at the central point $(x^{m}_{c}, y^{m}_{c}, z_{0} + \Delta z_{0})$ 
+of each data window as follows:
 \begin{equation}
-	t^{m}_{c} = \left( \mathbf{A}' \mathbf{b}' \right)^{\top} \left[ \mathbf{A}' \, \left( \mathbf{A}' \right)^{\top} \right]^{-1} 
+	t^{m}_{c} = \left( \mathbf{G}' \mathbf{a}' \right)^{\top} \left[ \mathbf{G}' \, \left( \mathbf{G}' \right)^{\top} \right]^{-1} 
 	\mathbf{d}^{m} \: , \quad m \in \{ 1, \dots, M \} \: ,
 	\label{eq:transformed-field-tmc-LS89}
 \end{equation}
-where $\mathbf{b}'$ is a $J' \times 1$ vector with elements computed by equation 
-\ref{eq:harmonic-function-bkj} by using all equivalent sources in the $m$-th subset and
-only the coordinate of the central point in the $m$-th data window. Due to the presumed spatial configuration of the observed
-data and equivalent sources, $\mathbf{b}'$ is the same for all data windows.
+where $\mathbf{a}'$ is a $P' \times 1$ vector with elements computed by equation 
+\ref{eq:harmonic-function-a-kj} by using all equivalent sources in the $m$-th subset and
+only the coordinate of the central point in the $m$-th data window.
+Due to the presumed spatial configuration of the observed 
+data and equivalent sources, $\mathbf{a}'$ is the same for all data windows.
+Note that equation \ref{eq:transformed-field-tmc-LS89} combines the potential-field transformation
+(equation \ref{eq:transformation}) with the solution of the undetermined problem
+(equation \ref{eq:delta-q-tilde-underdetermined}) for the particular case in which 
+$\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P'}$ (equations \ref{eq:reparameterization} and \ref{eq:weighting-matrix-q}),
+$\mathbf{W}_{d} = \mathbf{I}_{D'}$, $\bar{p} = \mathbf{0}$ 
+(equations \ref{eq:reparameterization-reference}, \ref{eq:delta-q-tilde} and \ref{eq:delta-d}) 
+where $\mathbf{I}_{P'}$ and $\mathbf{I}_{D'}$ are identity matrices 
+of order $P'$ and $D'$, respectively, and $\mathbf{0}$ is a vector of zeros. 
 
-Their method can be outlined by the following pseudo-code:
+The method proposed by \cite{leao-silva1989} can be outlined by the following pseudo-code:
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
@@ -470,6 +477,8 @@ A different transformation or the same one evaluated at different points require
 
 \cite{soler-uieda2021} generalized the method proposed by \cite{leao-silva1989} for irregularly spaced data on an undulating surface.
 
+PAREI AQUI
+
 The overall steps of their method are defined by the following pseudo-code:
 \begin{algorithm}
 	%\SetAlgoLined
@@ -488,8 +497,6 @@ The overall steps of their method are defined by the following pseudo-code:
 	\label{alg:SU21}
 \end{algorithm}
 
-
-PAREI AQUI
 
 \subsection{Column update}
 

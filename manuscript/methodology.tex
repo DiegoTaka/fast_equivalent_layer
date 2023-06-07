@@ -57,33 +57,26 @@
 %Here, we review some strategies for reducing the computational cost of equivalent-layer technique.
 %These strategies are the following:
 
-$d_{i}$
-
-$(x_{i}, y_{i}, z_{i})$
-
-$i \in \{1:D\}$
-
-approximate $d_{i}$ by a harmonic function
+Let $\mathbf{d}$ be a $D \times 1$ vector, whose $i$-th element $d_{i}$ is the observed potential
+field at the position $(x_{i}, y_{i}, z_{i})$, $i \in \{1:D\}$.
+Consider that $d_{i}$ can be satisfactorily approximated by a harmonic function
 \begin{equation}
 	f_{i} = \sum\limits_{j = 1}^{P} g_{ij} \, p_{j} \: ,
 	\quad i \in \{1:D\} \: ,
 	\label{eq:predicted-data-f-i}
 \end{equation}
-where,
-
-$p_{j}$
-
-$(x_{j}, y_{j}, z_{j})$
-
-$j \in \{1:P\}$
-
+where, $p_{j}$ represents the scalar physical property of a virtual source (i.e., monopole, dipole, prism) located
+at $(x_{j}, y_{j}, z_{j})$, $j \in \{1:P\}$ and 
 \begin{equation}
 	g_{ij} \equiv g(x_{i} - x_{j}, y_{i} - y_{j}, z_{i} - z_{j}) \: ,
 	\quad z_{i} < \min\{z_{j}\} \: , \quad \forall i \in \{1:D\} \: ,
 	\label{eq:harmonic-function-g-ij}
 \end{equation}
-where $\min\{z_{j}\}$ denotes the minimum $z_{j}$ (or the vertical coordinate of the shallowest equivalent source).
-
+is a harmonic function, where $\min\{z_{j}\}$ denotes the minimum $z_{j}$, or the vertical coordinate of the 
+shallowest virtual source.
+These virtual sources are called \textit{equivalent sources} and they form an \textit{equivalent layer}.
+In matrix notation, the potential field produced by all equivalent sources at all points 
+$(x_{i}, y_{i}, z_{i})$, $i \in \{1:D\}$, is given by:
 \begin{equation}
 	\mathbf{f} = \mathbf{G} \mathbf{p} \: ,
 	\label{eq:predicted-data-vector}
@@ -216,22 +209,21 @@ is replaced by that of estimating an auxiliary vector $\tilde{\mathbf{q}}$ minim
 \end{equation}
 which is a combination of particular measures of length given by
 \begin{equation}
-	\Phi(\mathbf{q}) = \| \mathbf{W}_{d} \left( \mathbf{d} - \mathbf{G} \, \mathbf{H} \, \mathbf{q} \right) \|_{2}^{2} \: ,
+	\Phi(\mathbf{q}) = \left( \mathbf{d} - \mathbf{f} \right)^{\top}\mathbf{W}_{d}\left( \mathbf{d} - \mathbf{f} \right) \: ,
 	\label{eq:function-Phi}
 \end{equation}
 and
 \begin{equation}
-	\Theta(\mathbf{q}) = \| \mathbf{W}_{q} \, \left( \mathbf{q} - \bar{\mathbf{q}} \right) \|_{2}^{2} \: ,
+	\Theta(\mathbf{q}) = \left( \mathbf{q} - \bar{\mathbf{q}} \right)^{\top}\mathbf{W}_{q}\left( \mathbf{q} - \bar{\mathbf{q}} \right) \: ,
 	\label{eq:function-Theta}
 \end{equation}
 where $\mu$ is a positive scalar controlling the trade-off between $\Phi(\mathbf{q})$ and $\Theta(\mathbf{q})$; 
-$\| \cdot \|_{2}$ is the 2-norm (or Euclidean norm);
-$\mathbf{W}_{q}$ is a matrix imposing prior information on $\mathbf{q}$ given by
+$\mathbf{W}_{q}$ is a $Q \times Q$ symmetric matrix imposing prior information on $\mathbf{q}$ given by
 \begin{equation}
-	\mathbf{W}_{q} = \mathbf{W}_{p} \, \mathbf{H} \: ,
+	\mathbf{W}_{q} = \mathbf{H}^{\top} \mathbf{W}_{p} \, \mathbf{H} \: ,
 	\label{eq:weighting-matrix-q}
 \end{equation}
-with $\mathbf{W}_{p}$ being a matrix imposing prior information on $\mathbf{p}$;
+with $\mathbf{W}_{p}$ being a $P \times P$ symmetric matrix imposing prior information on $\mathbf{p}$;
 $\bar{\mathbf{q}}$ is a $Q \times 1$ vector of reference values for $\mathbf{q}$ satisfying
 \begin{equation}
 	\bar{\mathbf{p}} = \mathbf{H} \, \bar{\mathbf{q}} \: ,
@@ -239,7 +231,7 @@ $\bar{\mathbf{q}}$ is a $Q \times 1$ vector of reference values for $\mathbf{q}$
 \end{equation}
 with $\bar{\mathbf{p}}$ being a $P \times 1$ vector containing reference values
 for the original parameter vector $\mathbf{p}$; and 
-$\mathbf{W}_{d}$ is a $D \times D$ matrix defining the relative importance of each observed datum $d_{i}$.
+$\mathbf{W}_{d}$ is a $D \times D$ symmetric matrix defining the relative importance of each observed datum $d_{i}$.
 After obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization}) minimizing
 $\Gamma(\mathbf{q})$ (equation \ref{eq:function-Gamma}), the estimate $\tilde{\mathbf{p}}$ for the original parameter vector 
 (equation \ref{eq:predicted-data-vector}) is computed by 
@@ -251,13 +243,13 @@ $\Gamma(\mathbf{q})$ (equation \ref{eq:function-Gamma}), the estimate $\tilde{\m
 The reparameterized vector $\tilde{\mathbf{q}}$ is obtained by first computing the gradient of $\Gamma(\mathbf{q})$,
 \begin{equation}
 	\boldsymbol{\nabla} \Gamma(\mathbf{q}) = 
-	-2 \, \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \left(\mathbf{d} - \mathbf{f} \right) +
-	2 \, \mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p}\mathbf{H} \left( \mathbf{q} - \bar{\mathbf{q}} \right) \: .
+	-2 \, \mathbf{H}^{\top}\mathbf{G}^{\top} \mathbf{W}_{d} \left(\mathbf{d} - \mathbf{f} \right) +
+	2 \, \mu \, \mathbf{W}_{q} \left( \mathbf{q} - \bar{\mathbf{q}} \right) \: .
 	\label{eq:gradient-Gamma}
 \end{equation}
 Then, by considering that $\boldsymbol{\nabla} \Gamma(\tilde{\mathbf{q}}) = \mathbf{0}$ (equation \ref{eq:gradient-Gamma}),
 where $\mathbf{0}$ is a vector of zeros, as well as adding and subtracting the term
-$\left( \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d}^{\top} \mathbf{W}_{d} \mathbf{G} \, \mathbf{H} \right) \bar{\mathbf{q}}$ ,
+$\left( \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d} \mathbf{G} \, \mathbf{H} \right) \bar{\mathbf{q}}$ ,
 we obtain
 \begin{equation}
 	\tilde{\boldsymbol{\delta}}_{q} = \mathbf{B} \, \tilde{\boldsymbol{\delta}}_{d} \: ,
@@ -273,17 +265,16 @@ where
 	\label{eq:delta-d}
 \end{equation}
 \begin{equation}
-	\mathbf{B} = \left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \, \mathbf{G} \, \mathbf{H} + 
-	\mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
-	\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \: ,
+	\mathbf{B} = \left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d} \, \mathbf{G} \, \mathbf{H} + 
+	\mu \, \mathbf{W}_{q} \right)^{-1}
+	\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d} \: ,
 	\label{eq:matrix-B-overdetermined}
 \end{equation}
 or, equivalently \cite[][p. 62]{menke2018},
 \begin{equation}
-	\mathbf{B} = \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
-	\mathbf{H}^{\top} \mathbf{G}^{\top}
-	\left[ \mathbf{G} \, \mathbf{H} \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1} 
-	\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \left( \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \right)^{-1} \right]^{-1} \: .
+	\mathbf{B} = \mathbf{W}_{q}^{-1} \, \mathbf{H}^{\top} \mathbf{G}^{\top}
+	\left( \mathbf{G} \, \mathbf{H} \, \mathbf{W}_{q}^{-1} \,
+	\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \mathbf{W}_{d}^{-1} \right)^{-1} \: .
 	\label{eq:matrix-B-underdetermined}
 \end{equation}
 Evidently, we have considered that all inverses exist in equations \ref{eq:matrix-B-overdetermined} and \ref{eq:matrix-B-underdetermined}.
@@ -293,10 +284,10 @@ there are more data than parameters (overdetermined problems).
 In this case, we consider that the estimate $\tilde{\mathbf{q}}$ is obtained by solving the following linear system
 for $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}):
 \begin{equation}
-	\left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \, \mathbf{G} \, \mathbf{H} + 
-	\mu \, \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right) 
+	\left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d} \, \mathbf{G} \, \mathbf{H} + 
+	\mu \, \mathbf{W}_{q} \right) 
 	\tilde{\boldsymbol{\delta}}_{q} = 
-	\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \: 
+	\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d} \: 
 	\tilde{\boldsymbol{\delta}}_{d} \: .
 	\label{eq:delta-q-tilde-overdetermined}
 \end{equation}
@@ -306,10 +297,10 @@ the estimate $\tilde{\mathbf{q}}$ is obtained in two steps, which consists in fi
 for a dummy vector $\mathbf{u}$ and then computing a matrix-vector product as follows:
 \begin{equation}
 	\begin{split}
-		\left[ \mathbf{G} \, \mathbf{H} \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1} 
-		\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \left( \mathbf{W}_{d}^{\top} \mathbf{W}_{d} \right)^{-1} \right] \,  
+		\left( \mathbf{G} \, \mathbf{H} \, \mathbf{W}_{q}^{-1} \,
+		\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \, \mathbf{W}_{d}^{-1} \right) \,  
 		\mathbf{u} = \tilde{\boldsymbol{\delta}}_{d} \\
-		\tilde{\boldsymbol{\delta}}_{q} = \left( \mathbf{H}^{\top}\mathbf{W}_{p}^{\top}\mathbf{W}_{p} \, \mathbf{H} \right)^{-1}
+		\tilde{\boldsymbol{\delta}}_{q} = \mathbf{W}_{q}^{-1}
 		\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{u}
 	\end{split} \: .
 	\label{eq:delta-q-tilde-underdetermined}
@@ -386,28 +377,78 @@ as well as (iii) perform potential field transformations (equation \ref{eq:trans
 
 We focus on the overall strategies used by the selected methods
 
-\subsection{Moving-data windows}
+\subsection{Notation}
 
-Split the observed data $d_{i}$, $i \in \{1, \dots, D\}$, into $M$ overlapping subsets (or data windows) 
-formed by $D^{m}$ data each, $m \in \{ 1, \dots, M \}$.
+Here, we use a notation inspired on that presented by \cite[][p. 4]{vanloan1992}.
+
+Subvectors of $\mathbf{d}$, for example, are specified by $\mathbf{d}[\mathbf{i}]$, where $\mathbf{i}$ is a
+list of integer numbers that ``pick out'' the elements of $\mathbf{d}$ forming the subvector $\mathbf{d}[\mathbf{i}]$.
+For example, $\mathbf{i} = (1, 6, 4, 6)$ gives the subvector $\mathbf{d}[\mathbf{i}] = [ d_{1} \:\: d_{6} \:\: d_{4} \:\: d_{6} ]^{\top} $.
+Note that the list $\mathbf{i}$ of indices may be sorted or not and it may also have repeated indices.
+
+We may define regular lists of indices by using the colon notation. For example, 
+\begin{equation*}
+	\begin{split}
+		\mathbf{i} = (3:8) &\Leftrightarrow \mathbf{d}[3:8] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{8} ]^{\top} \\
+		\mathbf{i} = (:8) &\Leftrightarrow \mathbf{d}[:8] = [ d_{1} \:\: d_{2} \:\: \dots \:\: d_{7} ]^{\top} \\
+		\mathbf{i} = (3:) &\Leftrightarrow \mathbf{d}[3:] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{D} ]^{\top} \\
+	\end{split} \quad ,
+\end{equation*}
+where $D$ is the number of elements forming $\mathbf{d}$.
+
+The notation above can also be used to define submatrices. For example, $\mathbf{i} = (2, 7, 4, 6)$ and $\mathbf{j} = (1, 3, 8)$
+lead to the submatrix
+\begin{equation*}
+	\mathbf{G}[\mathbf{i}, \mathbf{j}] = \begin{bmatrix}
+		g_{21} & g_{23} & g_{28} \\
+		g_{71} & g_{73} & g_{78} \\
+		g_{41} & g_{43} & g_{48} \\
+		g_{61} & g_{63} & g_{68} 
+	\end{bmatrix} \: .
+\end{equation*}
+The $i$-th row and the $j$-th column of $\mathbf{G}$ can be defined respectively by $\mathbf{G}[i,:]$ and $\mathbf{G}[:,j]$.
+Finally, we may use the colon notation to define the following submatrix of $\mathbf{G}$:
+\begin{equation*}
+	\mathbf{G}[2:5,3:7] = \begin{bmatrix}
+		g_{23} & g_{24} & g_{25} & g_{26} & g_{27} \\
+		g_{33} & g_{34} & g_{35} & g_{36} & g_{37} \\
+		g_{43} & g_{44} & g_{45} & g_{46} & g_{47} \\
+		g_{53} & g_{54} & g_{55} & g_{56} & g_{57}
+	\end{bmatrix} \: .
+\end{equation*}
+
+\subsection{Moving windows}
+
+Split the observed data $d_{i}$, $i \in \{1 : D\}$, into $M$ overlapping subsets (or data windows) 
+formed by $D^{m}$ data each, $m \in \{ 1 : M \}$.
+
+The data inside the $m$-th window have indices defined by an integer list $\mathbf{i}^{m}$ having $D^{m}$ elements.
 
 The number of data $D^{m}$ forming the data windows are not necessarily equal to each other.
 
 The data forming a given window are usually adjacent to each other.
 
-Each window has an $D^{m} \times 1$ observed data vector $\mathbf{d}^{m}$.
+Each data window has a $D^{m} \times 1$ observed data vector $\mathbf{d}^{m} \equiv \mathbf{d}[\mathbf{i}^{m}]$.
 
-Let each data window be approximated by a local equivalent layer composed of $P^{m}$ sources, so that
-its predicted data vector is given by
+Define a set of $P$ equivalent sources with scalar physical property $p_{j}$, $j \in \{1:P\}$.
+
+Split the equivalent sources into $M$ overlapping subsets (or source windows) 
+formed by $P^{m}$ data each, $m \in \{ 1 : M \}$.
+
+The sources inside the $m$-th window have indices defined by an integer list $\mathbf{j}^{m}$ having $P^{m}$ elements.
+
+Each source window has a $P^{m} \times 1$ parameter vector $\mathbf{p}^{m} \equiv \mathbf{p}[\mathbf{j}^{m}]$.
+
+The $m$-th source window is located right below the corresponding $m$-th data window. 
+
+Let each $\mathbf{d}^{m}$ be approximated by 
 \begin{equation}
 	\mathbf{f}^{m} = \mathbf{G}^{m} \mathbf{p}^{m} \: ,
-	\label{eq:predicted-data-subset-m}
+	\label{eq:predicted-data-window-m}
 \end{equation}
-where $\mathbf{p}^{m}$ is a $P^{m} \times 1$ vector containing the scalar physical properties of the 
-equivalent sources in the $m$-th subset and
-$\mathbf{G}^{m}$ is an $D^{m} \times P^{m}$ matrix whose elements are computed with equation 
-\ref{eq:harmonic-function-g-ij} by using only the coordinates of the observed data and equivalent sources
-in the $m$-th subset.
+where $\mathbf{G}^{m} \equiv \mathbf{G}[\mathbf{i}^{m}, \mathbf{j}^{m}]$ is a submatrix of $\mathbf{G}$ (equation \ref{eq:predicted-data-vector})
+formed by the elements computed with equation \ref{eq:harmonic-function-g-ij} by considering only the 
+data and equivalent sources located inside the window $m$-th.
 
 The main advantage of this approach is that the estimated parameter vector $\tilde{\mathbf{p}}$ is not
 obtained by solving the full linear system, but several smaller ones.
@@ -427,18 +468,20 @@ Besides, they are vertically aligned, but expands the limits of their correspond
 so that $D' < P'$.
 
 Because of this spatial configuration of observed data and equivalent sources, we have that
-$\mathbf{G}^{m} = \mathbf{G}'$ (equation \ref{eq:predicted-data-subset-m}) for all data windows 
-(i.e., $\forall \: m \in \{1,\dots,M\}$), where $\mathbf{G}'$ is a $D' \times P'$ constant matrix.
+$\mathbf{G}^{m} = \mathbf{G}'$ (equation \ref{eq:predicted-data-window-m}) for all data windows 
+(i.e., $\forall \: m \in \{1 : M\}$), where $\mathbf{G}'$ is a $D' \times P'$ constant matrix.
 
 By omitting the normalization strategy used by \cite{leao-silva1989}, their method consists in 
 directly computing the transformed potential field $t^{m}_{c}$ at the central point $(x^{m}_{c}, y^{m}_{c}, z_{0} + \Delta z_{0})$ 
 of each data window as follows:
 \begin{equation}
-	t^{m}_{c} = \left( \mathbf{G}' \mathbf{a}' \right)^{\top} \left[ \mathbf{G}' \, \left( \mathbf{G}' \right)^{\top} \right]^{-1} 
-	\mathbf{d}^{m} \: , \quad m \in \{ 1, \dots, M \} \: ,
+	t^{m}_{c} = \left( \mathbf{G}' \mathbf{a}' \right)^{\top} 
+	\left[ \mathbf{G}' \, \left( \mathbf{G}' \right)^{\top} + \mu \, \mathbf{I}_{D'} \right]^{-1} 
+	\mathbf{d}^{m} \: , \quad m \in \{ 1 : M \} \: ,
 	\label{eq:transformed-field-tmc-LS89}
 \end{equation}
-where $\mathbf{a}'$ is a $P' \times 1$ vector with elements computed by equation 
+where $\mathbf{I}_{D'}$ is the identity matrix of order $D'$ and
+$\mathbf{a}'$ is a $P' \times 1$ vector with elements computed by equation 
 \ref{eq:harmonic-function-a-kj} by using all equivalent sources in the $m$-th subset and
 only the coordinate of the central point in the $m$-th data window.
 Due to the presumed spatial configuration of the observed 
@@ -447,56 +490,89 @@ Note that equation \ref{eq:transformed-field-tmc-LS89} combines the potential-fi
 (equation \ref{eq:transformation}) with the solution of the undetermined problem
 (equation \ref{eq:delta-q-tilde-underdetermined}) for the particular case in which 
 $\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P'}$ (equations \ref{eq:reparameterization} and \ref{eq:weighting-matrix-q}),
-$\mathbf{W}_{d} = \mathbf{I}_{D'}$, $\bar{p} = \mathbf{0}$ 
-(equations \ref{eq:reparameterization-reference}, \ref{eq:delta-q-tilde} and \ref{eq:delta-d}) 
+$\mathbf{W}_{d} = \mathbf{I}_{D'}$ (equation \ref{eq:function-Phi}), $\bar{p} = \mathbf{0}$ 
+(equation \ref{eq:reparameterization-reference}), 
 where $\mathbf{I}_{P'}$ and $\mathbf{I}_{D'}$ are identity matrices 
 of order $P'$ and $D'$, respectively, and $\mathbf{0}$ is a vector of zeros. 
 
-The method proposed by \cite{leao-silva1989} can be outlined by the following pseudo-code:
+The method proposed by \cite{leao-silva1989} can be outlined by the Algorithm \ref{alg:LS89}.
+Note that \cite{leao-silva1989} directly compute the transformed potential $t^{m}_{c}$ at the central point of
+each data window without explicitly computing and storing $\mathbf{p}^{m}$ (equation \ref{eq:predicted-data-window-m}).
+It means that their method allows computing a single potential-field transformation. 
+A different transformation or the same one evaluated at different points require running their moving-data window method again.
+
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
-	Set the $\mathbf{d}^{m}$ for each data window, $m \in \{ 1, \dots, M \}$ \;
+	Set the indices $\mathbf{i}^{m}$ for each data window, $m \in \{ 1 : M \}$ \;
+	Set the indices $\mathbf{j}^{m}$ for each source window, $m \in \{ 1 : M \}$ \;
 	Set the constant depth $z_{0} + \Delta z_{0}$ for all equivalent sources \;
-	Compute the vector $\mathbf{b}'$ associated with the desired potential-field transformation \;
-	Compute the matrix $\mathbf{A}'$ \;
-	Compute $\left( \mathbf{A}' \mathbf{b}' \right)^{\top} \left[ \mathbf{A}' \, \left( \mathbf{A}' \right)^{\top} \right]^{-1}$ \;
-	$\ell = 1$ \;
-	\While{$\ell < M$}{
+	Compute the vector $\mathbf{a}'$ associated with the desired potential-field transformation \;
+	Compute the matrix $\mathbf{G}'$ \;
+	Compute $\left( \mathbf{G}' \mathbf{a}' \right)^{\top} 
+	\left[ \mathbf{G}' \, \left( \mathbf{G}' \right)^{\top} + \mu \, \mathbf{I}_{D'} \right]^{-1}$ \;
+	$m = 1$ \;
+	\While{$m < M$}{
 		Compute $t^{m}_{c}$ (equation \ref{eq:transformed-field-tmc-LS89}) \;
-		$\ell \gets \ell + 1$ \;
+		$m \gets m + 1$ \;
 	}
 	\caption{Generic pseudo-code for the method proposed by \cite{leao-silva1989}.}
 	\label{alg:LS89}
 \end{algorithm}
 
-Note that \cite{leao-silva1989} directly compute the transformed potential $t^{m}_{c}$ at the central point of
-each data window without explicitly computing and storing $\mathbf{p}^{m}$ (equation \ref{eq:predicted-data-subset-m}).
-It means that their method allows computing a single potential-field transformation. 
-A different transformation or the same one evaluated at different points require running their moving-data window method again.
-
 \cite{soler-uieda2021} generalized the method proposed by \cite{leao-silva1989} for irregularly spaced data on an undulating surface.
 
-PAREI AQUI
+A direct consequence of this generalization is that a different matrix $\mathbf{G}^{m}$ (equation \ref{eq:predicted-data-window-m}) must be
+computed for each window.
 
-The overall steps of their method are defined by the following pseudo-code:
+Differently from \cite{leao-silva1989}, \cite{soler-uieda2021} store the computed $\tilde{\mathbf{p}}^{m}$ for all windows and
+subsequently use them to compute a desired potential-field transformation (equation \ref{eq:transformation}) as the superposed
+effect of all windows.
+
+The computed $\tilde{\mathbf{p}}^{m}$ for all windows are combined to form a single $P \times 1$ vector $\tilde{\mathbf{p}}$,
+which is an estimate for original parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}).
+
+For each data window, \cite{soler-uieda2021} solve a overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) 
+for $\tilde{\mathbf{p}}^{m}$ by using 
+$\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P^{m}}$ (equations \ref{eq:reparameterization} and \ref{eq:weighting-matrix-q}),
+$\mathbf{W}^{m}_{d}$ (equation \ref{eq:function-Phi}) equal to a diagonal matrix of weights for the data inside the $m$-th window
+and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so that
+\begin{equation}
+	\left[ \left( \mathbf{G}^{m} \right)^{\top} \mathbf{W}^{m}_{d} \, \mathbf{G}^{m} + 
+	\mu \, \mathbf{I}_{P'} \right] 
+	\tilde{\mathbf{p}}^{m} = 
+	\left( \mathbf{G}^{m} \right)^{\top} \mathbf{W}^{m}_{d} \: 
+	\mathbf{d}^{m} \: .
+	\label{eq:p-tilde-m-SU21}
+\end{equation}
+
+The overall steps of their method are defined by the Algorithm \ref{alg:SU21}.
+Note that Algorithm \ref{alg:SU21} starts with a residuals vector $\mathbf{r}$ that is iteratively updated.
+At each iteration, the potential field predicted a source window is computed at all observation points and removed from the
+residuals vector $\mathbf{r}$.
+
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
-	Set the $\mathbf{d}^{m}$ for each data window, $m \in \{ 1, \dots, M \}$ \;
-	Set the depth scheme for all equivalent sources \;
-	Compute the vector $\mathbf{b}'$ associated with the desired potential-field transformation \;
-	Compute the matrix $\mathbf{A}'$ \;
-	Compute $\left( \mathbf{A}' \mathbf{b}' \right)^{\top} \left[ \mathbf{A}' \, \left( \mathbf{A}' \right)^{\top} \right]^{-1}$ \;
-	$\ell = 1$ \;
-	\While{$\ell < M$}{
-		Compute $t^{m}_{c}$ (equation \ref{eq:transformed-field-tmc-LS89}) \;
-		$\ell \gets \ell + 1$ \;
+	Set the indices $\mathbf{i}^{m}$ for each data window, $m \in \{ 1 : M \}$ \;
+	Set the indices $\mathbf{j}^{m}$ for each source window, $m \in \{ 1 : M \}$ \;
+	Set the depth of all equivalent sources \;
+	Set a $D \times 1$ residuals vector $\mathbf{r} = \mathbf{d}$ \;
+	Set a $P \times 1$ vector $\tilde{\mathbf{p}} = \mathbf{0}$ \;
+	$m = 1$ \;
+	\While{$m < M$}{
+		Set the matrix $\mathbf{W}^{m}_{d}$ \;	
+		Compute the matrix $\mathbf{G}^{m}$ \;
+		Compute $\tilde{\mathbf{p}}^{m}$ (equation \ref{eq:p-tilde-m-SU21}) \;
+		$\tilde{\mathbf{p}}[\mathbf{j}^{m}] \gets \tilde{\mathbf{p}}[\mathbf{j}^{m}] + \tilde{\mathbf{p}}^{m}$ \;
+		$\mathbf{r} \gets \mathbf{r} - \mathbf{G}[:,\mathbf{j}^{m}] \, \tilde{\mathbf{p}}^{m}$ \;
+		$m \gets m + 1$ \;
 	}
 	\caption{Generic pseudo-code for the method proposed by \cite{soler-uieda2021}.}
 	\label{alg:SU21}
 \end{algorithm}
 
+PAREI AQUI - APARENTEMENTE, A COLON NOTATION VAI SER UMA MÃO NA RODA
 
 \subsection{Column update}
 
@@ -522,7 +598,7 @@ Algebraic reconstruction techniques (ART) \cite{sluis-vorst1987}
 
 \cite{li-oldenburg_2010}
 
-\subsection{Iterative methods using the original $\mathbf{A}$}
+\subsection{Iterative methods using the original $\mathbf{G}$}
 
 \cite{xia-sprowl1991}
 

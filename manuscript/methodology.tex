@@ -308,74 +308,21 @@ for a dummy vector $\mathbf{u}$ and then computing a matrix-vector product as fo
 After obtaining $\tilde{\boldsymbol{\delta}}_{q}$ (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}),
 the estimate $\tilde{\mathbf{q}}$ is computed with equation \ref{eq:delta-q-tilde}.
 
-%Let us first consider the following generic linear system
-%\begin{equation}
-%	\mathbf{H} \mathbf{v} = \mathbf{h} \: ,
-%	\label{eq:square-linear-system-generic}
-%\end{equation}
-%where $\mathbf{H}$ is a square matrix and $\mathbf{v}$ is a vector of unknowns.
-%Here, we set $\mathbf{H} = \mathbf{A}^{\top}\mathbf{A}$ and $\mathbf{h} = \mathbf{A}^{\top}\mathbf{d}$
-%for solving the overdetermined system (equation \ref{eq:vector-p-tilde-overdetermined}) or
-%$\mathbf{H} = \mathbf{A} \, \mathbf{A}^{\top}$ and $\mathbf{h} = \mathbf{d}$
-%for solving the underdetermined system (equation \ref{eq:vector-p-tilde-underdetermined}).
-%
-%An estimate $\tilde{\mathbf{v}}$ for the unknown vector $\mathbf{v}$ can be obtained by using direct methods, 
-%such as LU, Cholesky or QR factorization \cite[][p. 111, 163, 246]{golub-vanloan2013}, or iterative methods, 
-%such as Gauss-Seidel, Successive Over-Relaxation (SOR) or Conjugate Gradient
-%\cite[][p. 612, 619, 625]{golub-vanloan2013}, for example.
-%Here, we briefly discuss the Cholesky factorization and some general aspects of iterative methods.
-%
-%The Cholesky factorization \cite[][p. 163]{golub-vanloan2013} presumes the existence of an upper triangular matrix $\mathbf{G}$ 
-%(the Cholesky factor) such that $\mathbf{H} = \mathbf{G} \, \mathbf{G}^{\top}$. 
-%Given $\mathbf{G}$, an estimate $\tilde{\mathbf{v}}$ for the vector of unknowns $\mathbf{v}$ (equation \ref{eq:square-linear-system-generic}) 
-%can be obtained by first solving the triangular system 
-%\begin{equation}
-%	\mathbf{G} \, \mathbf{w} = \mathbf{h} \: ,
-%	\label{eq:Cholesky-step-1}
-%\end{equation}
-%where $\mathbf{w}$ is a dummy vector, and then computing
-%\begin{equation}
-%	\mathbf{G}^{\top} \mathbf{w} = \tilde{\mathbf{v}} \: .
-%	\label{eq:Cholesky-step-2}
-%\end{equation}
-%
-%Iterative methods can be roughly defined as a process that starts with an initial approximation
-%$\tilde{\mathbf{v}}_{0}$ and then produces ever-better approximations $\tilde{\mathbf{v}}_{\ell}$
-%for the unknown vector $\mathbf{v}$ (equation \ref{eq:square-linear-system-generic}).
-%At each iteration, it is necessary to evaluate a predefined convergence criterion (CC).
-%If the CC is satisfied, the current approximation is considered as 
-%the solution $\tilde{\mathbf{v}}$ of the linear system and the algorithm stops.
-%Otherwise, the current approximation $\tilde{\mathbf{v}}_{\ell}$ is used to compute
-%a new approximation $\tilde{\mathbf{v}}_{\ell+1}$ and the CC is evaluated again. 
-%A pseudo-code for this generic iterative method can be defined as follows:
-%\begin{algorithm}
-%	%\SetAlgoLined
-%	\Input{}
-%	$\ell = 0$ \;
-%	$\tilde{\mathbf{v}}_{\ell} \gets \tilde{\mathbf{v}}_{0}$ \;
-%	Compute auxiliary variables \;
-%	\While{CC is not satisfied}{
-%		Compute $\tilde{\mathbf{v}}_{\ell+1}$ \;
-%		Compute auxiliary variables \;
-%		$\tilde{\mathbf{v}}_{\ell} \gets \tilde{\mathbf{v}}_{\ell+1}$ \;
-%		$\ell \gets \ell + 1$ \;
-%	}
-%	$\tilde{\mathbf{v}} \gets \tilde{\mathbf{v}}_{\ell}$
-%	\caption{Generic pseudo-code for iterative methods.}
-%\end{algorithm}
-
-
 \section{Computational strategies}
+
+COMEÇAR EXPLICANDO AS LIMITAÇÕES DA SOLUÇÃO OBTIDA PELA FORMULAÇÃO GERAL
 
 Two important factors affecting the efficiency of a given matrix algorithm are the 
 storage and amount of required arithmetic. Here, we quantify this last factor by counting flops.
 A flop is a floating point addition, subtraction, multiplication or division \cite[][ p. 12--14]{golub-vanloan2013}.
 
-NÃO SEI SE TÁ BOM AQUI: To investigate the efficiency of equivalent-layer methods, we consider how they
-(i) set up and (ii) solve the linear inverse problem to estimate the physical property distribution on the equivalent layer, 
-as well as (iii) perform potential field transformations (equation \ref{eq:transformation}).
-
-We focus on the overall strategies used by the selected methods
+To investigate the efficiency of equivalent-layer methods, we consider how they:
+\begin{itemize}
+	\item[(i)] set up the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined});
+	\item[(ii)] solve the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined});
+	\item[(iii)] perform potential-field transformations (equation \ref{eq:transformation}).
+\end{itemize}
+We focus on the overall strategies used by the selected methods.
 
 \subsection{Notation for subvectors and submatrices}
 
@@ -395,8 +342,8 @@ We may also define regular lists of indices by using the colon notation. For exa
 \end{equation*}
 where $D$ is the number of elements forming $\mathbf{d}$.
 
-The notation above can also be used to define submatrices. For example, $\mathbf{i} = (2, 7, 4, 6)$ and $\mathbf{j} = (1, 3, 8)$
-lead to the submatrix
+The notation above can also be used to define submatrices of the $D \times P$ matrix $\mathbf{G}$. 
+For example, $\mathbf{i} = (2, 7, 4, 6)$ and $\mathbf{j} = (1, 3, 8)$ lead to the submatrix
 \begin{equation*}
 	\mathbf{G}[\mathbf{i}, \mathbf{j}] = \begin{bmatrix}
 		g_{21} & g_{23} & g_{28} \\
@@ -407,8 +354,9 @@ lead to the submatrix
 \end{equation*}
 Note that, in this case, the lists $\mathbf{i}$ and $\mathbf{j}$ ``pick out'', respectively, the rows and columns
 of $\mathbf{G}$ that form the submatrix $\mathbf{G}[\mathbf{i}, \mathbf{j}]$.
-The $i$-th row and the $j$-th column of $\mathbf{G}$ can be defined respectively by $\mathbf{G}[i,:]$ and $\mathbf{G}[:,j]$.
-Finally, we may use the colon notation to define the following submatrix of $\mathbf{G}$:
+The $i$-th row of $\mathbf{G}$ is given by the $1 \times P$ vector $\mathbf{G}[i,:]$.
+Similarly, the $D \times 1$ vector $\mathbf{G}[:,j]$ represents the $j$-th column.
+Finally, we may use the colon notation to define the following submatrix:
 \begin{equation*}
 	\mathbf{G}[2:5,3:7] = \begin{bmatrix}
 		g_{23} & g_{24} & g_{25} & g_{26} & g_{27} \\
@@ -613,9 +561,68 @@ and oscillates within a narrowing envelope for the subsequent iterations.
 
 \subsection{Row update}
 
-Algebraic reconstruction techniques (ART) \cite{sluis-vorst1987}
+\cite{mendonca-silva1994} proposes an algebraic reconstruction technique (ART) \cite[e.g.,][p. 58]{sluis-vorst1987}
 
-\cite{mendonca-silva1994}
+Define a regular grid of $P$ equivalent sources on a horizontal plane $z_{0}$
+
+Consider that
+\begin{equation}
+	\mathbf{d} = \begin{bmatrix}
+		\mathbf{d}_{e} \\ \mathbf{d}_{r}
+	\end{bmatrix} \: , \quad 
+	\mathbf{G} = \begin{bmatrix}
+		\mathbf{G}_{e} \\ \mathbf{R}_{r}
+	\end{bmatrix} \: ,
+	\label{eq:partitioned-d-G-MS94}
+\end{equation}
+where $\mathbf{d}_{e}$ and $\mathbf{d}_{r}$ are $D_{e} \times 1$ and $D_{r} \times 1$ vectors and
+$\mathbf{G}_{e}$ and $\mathbf{G}_{r}$ are $D_{e} \times P$ and $D_{r} \times P$ matrices, respectively.
+
+Let $\tilde{\mathbf{p}}$ be the $P \times 1$ parameter vector obtained by solving the underdetermined problem 
+(equation \ref{eq:delta-q-tilde-underdetermined}) by using only the data in $\mathbf{d}_{e}$ 
+for the particular case in which $\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P}$ (equations \ref{eq:reparameterization} and \ref{eq:weighting-matrix-q}),
+$\mathbf{W}_{d} = \mathbf{I}_{D_{e}}$ (equation \ref{eq:function-Phi}) and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}).
+In this case,
+\begin{equation}
+	\begin{split}
+		\left(\mathbf{G}_{e} \, \mathbf{G}_{e}^{\top} + \mu \, \mathbf{I}_{D_{e}} \right) \mathbf{u} = \mathbf{d}_{e} \\
+		\tilde{\mathbf{p}} = \mathbf{G}_{e}^{\top} \mathbf{u}
+	\end{split} \quad .
+	\label{eq:p-tilde-MS94}
+\end{equation}
+
+\cite{mendonca-silva1994} presume that the estimated parameter vector $\tilde{\mathbf{p}}$ obtained from equation \ref{eq:p-tilde-MS94}
+leads to a $D_{r} \times 1$ residuals vector
+\begin{equation}
+	\mathbf{r} = \mathbf{d}_{r} - \mathbf{G}_{r} \tilde{\mathbf{p}} 
+	\label{eq:residuals-MS94}
+\end{equation}
+having a maximum absolute value $a_{m} \le \epsilon$, where $\epsilon$ is a predefined tolerance.
+
+PAREI AQUI NESSE PORQUINHO CARAMELADO
+
+\begin{algorithm}
+	%\SetAlgoLined
+	\Input{}
+	Set a regular grid of $P$ equivalent sources at a horizontal plane $z_{0}$ \;
+	Set a tolerance $\epsilon$ \;
+	Define the index $i_{m}$ of the datum having maximum absolute value in $\mathbf{d}$ \;
+	Define the list of indices $\mathbf{i}_{r}$ of the remaining data in $\mathbf{d}$ \;
+	Define $\mathbf{d}_{e} = \left[ \mathbf{d}[i_{m}] \right] $ \;
+	Compute $\tilde{\mathbf{p}}$ (equation \ref{eq:p-tilde-MS94}) \;
+	Compute $\mathbf{r} = \mathbf{d} - \mathbf{G}[\mathbf{i}_{r}, :]^{\top} \tilde{\mathbf{p}}$ \;
+	Define the maximum absolute value $a_{m}$ in $\mathbf{r}$ \; 
+	\While{$(a_{m} > \epsilon)$}{
+		Define the index $i_{m}$ of the maximum absolute value $a_{m}$ in $\mathbf{r}$ \; 
+		Define the list of indices $\mathbf{i}_{r}$ of the remaining elements in $\mathbf{r}$ \;
+		$\mathbf{d}_{e} \gets \begin{bmatrix} \mathbf{d}_{e} \\ \mathbf{d}[i_{m}] \end{bmatrix}$ \;
+		Compute $\tilde{\mathbf{p}}$ (equation \ref{eq:p-tilde-MS94}) \;
+		Compute $\mathbf{r} = \mathbf{d} - \mathbf{G}[\mathbf{i}_{r}, :]^{\top} \tilde{\mathbf{p}}$ \;
+		Define the maximum absolute value $a_{m}$ in $\mathbf{r}$ \; 
+	}
+	\caption{Generic pseudo-code for the method proposed by \cite{mendonca-silva1994}.}
+	\label{alg:MS94}
+\end{algorithm}
 
 \subsection{Reparameterization}
 

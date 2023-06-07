@@ -377,16 +377,14 @@ as well as (iii) perform potential field transformations (equation \ref{eq:trans
 
 We focus on the overall strategies used by the selected methods
 
-\subsection{Notation}
+\subsection{Notation for subvectors and submatrices}
 
-Here, we use a notation inspired on that presented by \cite[][p. 4]{vanloan1992}.
-
+Here, we use a notation inspired on that presented by \cite[][p. 4]{vanloan1992} to represent subvectors and submatrices.
 Subvectors of $\mathbf{d}$, for example, are specified by $\mathbf{d}[\mathbf{i}]$, where $\mathbf{i}$ is a
 list of integer numbers that ``pick out'' the elements of $\mathbf{d}$ forming the subvector $\mathbf{d}[\mathbf{i}]$.
 For example, $\mathbf{i} = (1, 6, 4, 6)$ gives the subvector $\mathbf{d}[\mathbf{i}] = [ d_{1} \:\: d_{6} \:\: d_{4} \:\: d_{6} ]^{\top} $.
 Note that the list $\mathbf{i}$ of indices may be sorted or not and it may also have repeated indices.
-
-We may define regular lists of indices by using the colon notation. For example, 
+We may also define regular lists of indices by using the colon notation. For example, 
 \begin{equation*}
 	\begin{split}
 		\mathbf{i} = (3:8) &\Leftrightarrow \mathbf{d}[3:8] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{8} ]^{\top} \\
@@ -406,6 +404,8 @@ lead to the submatrix
 		g_{61} & g_{63} & g_{68} 
 	\end{bmatrix} \: .
 \end{equation*}
+Note that, in this case, the lists $\mathbf{i}$ and $\mathbf{j}$ ``pick out'', respectively, the rows and columns
+of $\mathbf{G}$ that form the submatrix $\mathbf{G}[\mathbf{i}, \mathbf{j}]$.
 The $i$-th row and the $j$-th column of $\mathbf{G}$ can be defined respectively by $\mathbf{G}[i,:]$ and $\mathbf{G}[:,j]$.
 Finally, we may use the colon notation to define the following submatrix of $\mathbf{G}$:
 \begin{equation*}
@@ -414,59 +414,50 @@ Finally, we may use the colon notation to define the following submatrix of $\ma
 		g_{33} & g_{34} & g_{35} & g_{36} & g_{37} \\
 		g_{43} & g_{44} & g_{45} & g_{46} & g_{47} \\
 		g_{53} & g_{54} & g_{55} & g_{56} & g_{57}
-	\end{bmatrix} \: .
+	\end{bmatrix} \: ,
 \end{equation*}
+which contains the contiguous elements of $\mathbf{G}$ from rows $2$ to $5$ and from columns
+$3$ to $7$.
 
 \subsection{Moving windows}
 
-Split the observed data $d_{i}$, $i \in \{1 : D\}$, into $M$ overlapping subsets (or data windows) 
+The initial approach to enhance the computational efficiency of the equivalent-layer technique 
+is commonly denoted \textit{moving window} and involves
+first splitting the observed data $d_{i}$, $i \in \{1 : D\}$, into $M$ overlapping subsets (or data windows) 
 formed by $D^{m}$ data each, $m \in \{ 1 : M \}$.
-
-The data inside the $m$-th window have indices defined by an integer list $\mathbf{i}^{m}$ having $D^{m}$ elements.
-
+The data inside the $m$-th window are usually adjacent to each other and have indices defined by an 
+integer list $\mathbf{i}^{m}$ having $D^{m}$ elements.
 The number of data $D^{m}$ forming the data windows are not necessarily equal to each other.
-
-The data forming a given window are usually adjacent to each other.
-
 Each data window has a $D^{m} \times 1$ observed data vector $\mathbf{d}^{m} \equiv \mathbf{d}[\mathbf{i}^{m}]$.
-
-Define a set of $P$ equivalent sources with scalar physical property $p_{j}$, $j \in \{1:P\}$.
-
-Split the equivalent sources into $M$ overlapping subsets (or source windows) 
-formed by $P^{m}$ data each, $m \in \{ 1 : M \}$.
-
+The second step consists in defining a set of $P$ equivalent sources with scalar physical property $p_{j}$, $j \in \{1:P\}$,
+and also split them into $M$ overlapping subsets (or source windows) formed by $P^{m}$ data each, $m \in \{ 1 : M \}$.
 The sources inside the $m$-th window have indices defined by an integer list $\mathbf{j}^{m}$ having $P^{m}$ elements.
-
-Each source window has a $P^{m} \times 1$ parameter vector $\mathbf{p}^{m} \equiv \mathbf{p}[\mathbf{j}^{m}]$.
-
-The $m$-th source window is located right below the corresponding $m$-th data window. 
-
-Let each $\mathbf{d}^{m}$ be approximated by 
+Each source window has a $P^{m} \times 1$ parameter vector $\mathbf{p}^{m}$ and
+is located right below the corresponding $m$-th data window. 
+Then, each $\mathbf{d}^{m} \equiv \mathbf{d}[\mathbf{i}^{m}]$ is approximated by 
 \begin{equation}
 	\mathbf{f}^{m} = \mathbf{G}^{m} \mathbf{p}^{m} \: ,
 	\label{eq:predicted-data-window-m}
 \end{equation}
-where $\mathbf{G}^{m} \equiv \mathbf{G}[\mathbf{i}^{m}, \mathbf{j}^{m}]$ is a submatrix of $\mathbf{G}$ (equation \ref{eq:predicted-data-vector})
-formed by the elements computed with equation \ref{eq:harmonic-function-g-ij} by considering only the 
-data and equivalent sources located inside the window $m$-th.
+where $\mathbf{G}^{m} \equiv \mathbf{G}[\mathbf{i}^{m}, \mathbf{j}^{m}]$ is a submatrix of 
+$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) formed by the elements computed with equation 
+\ref{eq:harmonic-function-g-ij} using only the data and equivalent sources located inside the window $m$-th.
+The main idea of the moving-window approach is using the $\tilde{\mathbf{p}}^{m}$ estimated for 
+each window to obtain (i) an estimate $\tilde{\mathbf{p}}$ of the parameter vector for the entire equivalent layer
+or (ii) a given potential-field transformation $\mathbf{t}$ (equation \ref{eq:transformation}).
+The main advantage of this approach is that the estimated parameter vector $\tilde{\mathbf{p}}$ or transformed potential field
+are not obtained by solving the full, but smaller linear systems.
 
-The main advantage of this approach is that the estimated parameter vector $\tilde{\mathbf{p}}$ is not
-obtained by solving the full linear system, but several smaller ones.
-
-\cite{leao-silva1989} presented a pioneer work using this approach.
-
+\cite{leao-silva1989} presented a pioneer work using the moving-window approach.
 Their method requires a regularly-spaced grid of observed data on a horizontal plane $z_{0}$. 
-
 The data windows are defined by square local grids of $\sqrt{D'} \times \sqrt{D'}$ adjacent points, all of them having the
 same number of points $D'$.
-
 The equivalent sources in the $m$-th data window are located below the observation plane, at a constant vertical distance
 $\Delta z_{0}$. They are arranged on a regular grid of $\sqrt{P'} \times \sqrt{P'}$ adjacent points 
 following the same grid pattern of the observed data. 
 The local grid of sources for all data windows have the same number of elements $P'$.
 Besides, they are vertically aligned, but expands the limits of their corresponding data windows,
 so that $D' < P'$.
-
 Because of this spatial configuration of observed data and equivalent sources, we have that
 $\mathbf{G}^{m} = \mathbf{G}'$ (equation \ref{eq:predicted-data-window-m}) for all data windows 
 (i.e., $\forall \: m \in \{1 : M\}$), where $\mathbf{G}'$ is a $D' \times P'$ constant matrix.
@@ -497,7 +488,7 @@ of order $P'$ and $D'$, respectively, and $\mathbf{0}$ is a vector of zeros.
 
 The method proposed by \cite{leao-silva1989} can be outlined by the Algorithm \ref{alg:LS89}.
 Note that \cite{leao-silva1989} directly compute the transformed potential $t^{m}_{c}$ at the central point of
-each data window without explicitly computing and storing $\mathbf{p}^{m}$ (equation \ref{eq:predicted-data-window-m}).
+each data window without explicitly computing and storing an estimated for $\mathbf{p}^{m}$ (equation \ref{eq:predicted-data-window-m}).
 It means that their method allows computing a single potential-field transformation. 
 A different transformation or the same one evaluated at different points require running their moving-data window method again.
 
@@ -521,18 +512,14 @@ A different transformation or the same one evaluated at different points require
 \end{algorithm}
 
 \cite{soler-uieda2021} generalized the method proposed by \cite{leao-silva1989} for irregularly spaced data on an undulating surface.
-
-A direct consequence of this generalization is that a different matrix $\mathbf{G}^{m}$ (equation \ref{eq:predicted-data-window-m}) must be
-computed for each window.
-
+A direct consequence of this generalization is that a different submatrix $\mathbf{G}^{m} \equiv \mathbf{G}[\mathbf{i}^{m}, \mathbf{j}^{m}]$ 
+(equation \ref{eq:predicted-data-window-m}) must be computed for each window.
 Differently from \cite{leao-silva1989}, \cite{soler-uieda2021} store the computed $\tilde{\mathbf{p}}^{m}$ for all windows and
-subsequently use them to compute a desired potential-field transformation (equation \ref{eq:transformation}) as the superposed
+subsequently use them to obtain a desired potential-field transformation (equation \ref{eq:transformation}) as the superposed
 effect of all windows.
-
-The computed $\tilde{\mathbf{p}}^{m}$ for all windows are combined to form a single $P \times 1$ vector $\tilde{\mathbf{p}}$,
+The estimated $\tilde{\mathbf{p}}^{m}$ for all windows are combined to form a single $P \times 1$ vector $\tilde{\mathbf{p}}$,
 which is an estimate for original parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}).
-
-For each data window, \cite{soler-uieda2021} solve a overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) 
+For each data window, \cite{soler-uieda2021} solve an overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) 
 for $\tilde{\mathbf{p}}^{m}$ by using 
 $\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P^{m}}$ (equations \ref{eq:reparameterization} and \ref{eq:weighting-matrix-q}),
 $\mathbf{W}^{m}_{d}$ (equation \ref{eq:function-Phi}) equal to a diagonal matrix of weights for the data inside the $m$-th window
@@ -545,7 +532,6 @@ and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so 
 	\mathbf{d}^{m} \: .
 	\label{eq:p-tilde-m-SU21}
 \end{equation}
-
 The overall steps of their method are defined by the Algorithm \ref{alg:SU21}.
 Note that Algorithm \ref{alg:SU21} starts with a residuals vector $\mathbf{r}$ that is iteratively updated.
 At each iteration, the potential field predicted a source window is computed at all observation points and removed from the

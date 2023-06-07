@@ -384,6 +384,7 @@ Subvectors of $\mathbf{d}$, for example, are specified by $\mathbf{d}[\mathbf{i}
 list of integer numbers that ``pick out'' the elements of $\mathbf{d}$ forming the subvector $\mathbf{d}[\mathbf{i}]$.
 For example, $\mathbf{i} = (1, 6, 4, 6)$ gives the subvector $\mathbf{d}[\mathbf{i}] = [ d_{1} \:\: d_{6} \:\: d_{4} \:\: d_{6} ]^{\top} $.
 Note that the list $\mathbf{i}$ of indices may be sorted or not and it may also have repeated indices.
+The list may also have a single element $\mathbf{i} = (i)$, which results in the $i$-th element $d_{i} \equiv \mathbf{d}[i]$ of $\mathbf{d}$.
 We may also define regular lists of indices by using the colon notation. For example, 
 \begin{equation*}
 	\begin{split}
@@ -445,8 +446,9 @@ $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) formed by the elements co
 The main idea of the moving-window approach is using the $\tilde{\mathbf{p}}^{m}$ estimated for 
 each window to obtain (i) an estimate $\tilde{\mathbf{p}}$ of the parameter vector for the entire equivalent layer
 or (ii) a given potential-field transformation $\mathbf{t}$ (equation \ref{eq:transformation}).
-The main advantage of this approach is that the estimated parameter vector $\tilde{\mathbf{p}}$ or transformed potential field
-are not obtained by solving the full, but smaller linear systems.
+The main advantages of this approach is that (i) the estimated parameter vector $\tilde{\mathbf{p}}$ or transformed potential field
+are not obtained by solving the full, but smaller linear systems and (ii) the full matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector})
+is never stored.
 
 \cite{leao-silva1989} presented a pioneer work using the moving-window approach.
 Their method requires a regularly-spaced grid of observed data on a horizontal plane $z_{0}$. 
@@ -558,13 +560,56 @@ residuals vector $\mathbf{r}$.
 	\label{alg:SU21}
 \end{algorithm}
 
-PAREI AQUI - APARENTEMENTE, A COLON NOTATION VAI SER UMA MÃO NA RODA
-
 \subsection{Column update}
 
-\cite{cordell1992}
+\cite{cordell1992} proposed a computational strategy that was later used by \cite{guspi-novara2009} and relies on
+first defining one equivalent source located right below each observed data $d_{i}$, $i \in \{1:D\}$, at a vertical
+coordinate $z_{i} + \Delta z_{i}$, where $\Delta z_{i}$ is proportional to the distance from the $i$-th observation point 
+$(x_{i}, y_{i}, z_{i})$ to its closest neighbor.
+The second step consists in updating the physical property $p_{j}$ of a given equivalent source, $j \in \{1:D\}$ and 
+remove its predicted potential field from the observed data vector $\mathbf{d}$, producing a residuals vector $\mathbf{r}$. 
+Then, the same procedure is repeated for other sources with the purpose of iteratively updating $\mathbf{r}$ and the
+$D \times 1$ parameter vector $\mathbf{p}$ containing the physical property of all equivalent sources.
+At the end, the algorithm produces an estimate $\tilde{\mathbf{p}}$ for the parameter vector yielding a predicted
+potential field $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) satisfactorily fitting the observed data
+$\mathbf{d}$ according to a given criterion.
+Note that the method proposed by \cite{cordell1992} iteratively solves the linear $\mathbf{G} \tilde{\mathbf{p}} \approx \mathbf{d}$
+with a $D \times D$ matrix $\mathbf{G}$. At each iteration, only a single column of $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
+is used.
+An advantage of this \textit{column-update approach} is that the full matrix $\mathbf{G}$ is never stored.
 
-\cite{guspi-novara2009}
+Algorithm \ref{alg:C92} delineates the \citeauthor{cordell1992}'s method.
+Note that a single column $\mathbf{G}[:, i_{m}]$ of the $D \times D$ matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector})
+is used per iteration.
+As pointed out by \cite{cordell1992}, the method does not necessarily decrease monotonically along the iterations.
+Besides, the method may not converge depending on how the vertical distances $\Delta z_{i}$, $i \in \{1:D\}$, 
+controlling the depths of the equivalent sources are set.
+According to \cite{cordell1992}, the maximum absolute value $a_{m}$ in $\mathbf{r}$ decreases robustly at the beginning 
+and oscillates within a narrowing envelope for the subsequent iterations.
+
+\begin{algorithm}
+	%\SetAlgoLined
+	\Input{}
+	Compute a $D \times 1$ vector $\boldsymbol{\Delta}\mathbf{z}$ whose $i$-th element $\Delta z_{i}$ 
+	is a vertical distance controlling the depth of the $i$-th equivalent source, $i \in \{1:D\}$ \;
+	Set a tolerance $\epsilon$ \;
+	Set a maximum number of iteration $\mathtt{ITMAX}$ \;
+	Set a $D \times 1$ residuals vector $\mathbf{r} = \mathbf{d}$ \;
+	Set a $D \times 1$ vector $\tilde{\mathbf{p}} = \mathbf{0}$ \;
+	Define the maximum absolute value $a_{m}$ in $\mathbf{r}$ \;
+	$\ell = 1$ \;
+	\While{$(a_{m} > \epsilon)$ {\bf and} $(\ell < \mathtt{ITMAX})$}{
+		Define the coordinates $(x_{m}, y_{m}, z_{m})$ and index $i_{m}$ of the observation point associated with $a_{m}$ \;
+		$\tilde{\mathbf{p}}[i_{m}] \gets \tilde{\mathbf{p}}[i_{m}] + \left( a_{m} \, \boldsymbol{\Delta}\mathbf{z}[i_{m}] \right)$ \;
+		$\mathbf{r} \gets \mathbf{r} - \left( \mathbf{G}[:, i_{m}] \, \tilde{\mathbf{p}}[i_{m}] \right)$ \;
+		Define the new $a_{m}$ in $\mathbf{r}$ \;
+		$\ell \gets \ell + 1$ \;
+	}
+	\caption{Generic pseudo-code for the method proposed by \cite{cordell1992}.}
+	\label{alg:C92}
+\end{algorithm}
+
+
 
 \subsection{Row update}
 

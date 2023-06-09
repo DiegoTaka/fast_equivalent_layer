@@ -563,7 +563,13 @@ and oscillates within a narrowing envelope for the subsequent iterations.
 
 \cite{mendonca-silva1994} proposes an algebraic reconstruction technique (ART) \cite[e.g.,][p. 58]{sluis-vorst1987}
 to estimate a parameter vector $\tilde{\mathbf{p}}$ for a regular grid of $P$ equivalent sources on a horizontal plane $z_{0}$.
-They consider that
+Such methods iterate on the linear system rows to estimate corrections for the parameter vector,
+which may substantially save computer time and memory required to compute and store the full linear system matrix
+along the iterations.
+The convergence of such \textit{row-update methods} depends on the linear system condition.
+The main advantage of such methods is not computing and storing the full linear system matrix, but iteratively using 
+its rows.
+The particular ART method proposed by \cite{mendonca-silva1994} considers that
 \begin{equation}
 	\mathbf{d} = \begin{bmatrix}
 		\mathbf{d}_{e} \\ \mathbf{d}_{r}
@@ -599,10 +605,10 @@ leads to a $D_{r} \times 1$ residuals vector
 having a maximum absolute value $r_{\mathtt{max}} \le \epsilon$, where $\epsilon$ is a predefined tolerance.
 
 The overall method of \cite{mendonca-silva1994} is defined by Algorithm \ref{alg:MS94}.
-It is important noting that, at each iteration, the number of equivalent data in $\mathbf{d}_{e}$ increases by one,
+It is important noting that the number $D_{e}$ of equivalent data in $\mathbf{d}_{e}$ increases by one per iteration,
 which means that the order of the linear system in equation $\ref{eq:p-tilde-MS94}$ also increases by one at each iteration.
 Those authors also propose a computational strategy based on Cholesky decomposition for efficiently updating 
-$\left(\mathbf{F} + \mu \, \mathbf{I}_{D_{e}} \right)$ at each iteration (line 16 in Algorithm \ref{alg:MS94}) 
+$\left(\mathbf{F} + \mu \, \mathbf{I}_{D_{e}} \right)$ at a given iteration (line 16 in Algorithm \ref{alg:MS94}) 
 by computing only its new elements with respect to those computed in the previous iteration.
 
 \begin{algorithm}
@@ -634,6 +640,17 @@ by computing only its new elements with respect to those computed in the previou
 
 \subsection{Reparameterization}
 
+Estimate $\tilde{\mathbf{p}}$ by solving an overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) 
+with $\mathbf{W}_{p} = \mathbf{I}_{P}$ (equation \ref{eq:weighting-matrix-q}),
+$\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}).
+
+The reference vector $\bar{q}$ (equation \ref{eq:reparameterization-reference}) is set equal to $\mathbf{0}$
+for direct solvers or computed iteratively for iterative solvers.
+
+The difference between methods relies on how the reparameterization matrix $\mathbf{H}$ is defined.
+
+PAREI AQUI - vou tentar usar o q barra para descrever os metodos iterativos
+
 \cite{barnes-lumley_2011}
 
 \cite{oliveirajr-etal2013}
@@ -645,6 +662,8 @@ by computing only its new elements with respect to those computed in the previou
 \cite{li-oldenburg_2010}
 
 \subsection{Iterative methods using the original $\mathbf{G}$}
+
+Ideia: descrever o conjugate gradient e depois as diferenças dos outros métodos iterativos
 
 \cite{xia-sprowl1991}
 

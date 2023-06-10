@@ -557,8 +557,6 @@ and oscillates within a narrowing envelope for the subsequent iterations.
 	\label{alg:C92}
 \end{algorithm}
 
-
-
 \subsection{Row update}
 
 \cite{mendonca-silva1994} proposes an algebraic reconstruction technique (ART) \cite[e.g.,][p. 58]{sluis-vorst1987}
@@ -607,7 +605,8 @@ having a maximum absolute value $r_{\mathtt{max}} \le \epsilon$, where $\epsilon
 The overall method of \cite{mendonca-silva1994} is defined by Algorithm \ref{alg:MS94}.
 It is important noting that the number $D_{e}$ of equivalent data in $\mathbf{d}_{e}$ increases by one per iteration,
 which means that the order of the linear system in equation $\ref{eq:p-tilde-MS94}$ also increases by one at each iteration.
-Those authors also propose a computational strategy based on Cholesky decomposition for efficiently updating 
+Those authors also propose a computational strategy based on Cholesky factorization \cite[e.g.,][p. 163]{golub-vanloan2013}
+for efficiently updating 
 $\left(\mathbf{F} + \mu \, \mathbf{I}_{D_{e}} \right)$ at a given iteration (line 16 in Algorithm \ref{alg:MS94}) 
 by computing only its new elements with respect to those computed in the previous iteration.
 
@@ -640,22 +639,66 @@ by computing only its new elements with respect to those computed in the previou
 
 \subsection{Reparameterization}
 
-Estimate $\tilde{\mathbf{p}}$ by solving an overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) 
-with $\mathbf{W}_{p} = \mathbf{I}_{P}$ (equation \ref{eq:weighting-matrix-q}),
-$\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}).
+Another approach for improving the computational performance of equivalent-layer technique consists in 
+setting a $P \times Q$ reparameterization matrix $\mathbf{H}$ (equation \ref{eq:reparameterization})
+with $Q << P$. 
+In this case, an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$
+is obtained and subsequently used to obtain an estimate $\tilde{\mathbf{p}}$ 
+for the parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) by using equation
+\ref{eq:reparameterization}. 
+The idea of this \textit{reparameterization approach} is solving an appreciably smaller linear inverse problem for 
+$\tilde{\mathbf{q}}$ than that for obtaining an estimate $\tilde{\mathbf{p}}$ for the original parameter
+vector (equation \ref{eq:predicted-data-vector}).
 
-The reference vector $\bar{q}$ (equation \ref{eq:reparameterization-reference}) is set equal to $\mathbf{0}$
-for direct solvers or computed iteratively for iterative solvers.
+\cite{oliveirajr-etal2013} have used this approach to describe the physical property distribution on the
+equivalent layer in terms of piecewise bivariate polynomials.
+Specifically, their method consists in splitting a regular grid of equivalent sources into 
+source windows inside which the physical-property distribution is described by bivariate polynomial 
+functions. The key aspect of their method relies on the fact that the total number of coefficients 
+required to define the bivariate polynomials is considerably smaller than the original number of equivalent sources. 
+Hence, they formulate a linear inverse problem for estimating the polynomial coefficients and use them later
+to compute the physical property distribution on the equivalent layer. 
 
-The difference between methods relies on how the reparameterization matrix $\mathbf{H}$ is defined.
+The method proposed by \cite{oliveirajr-etal2013} consists in solving an overdetermined problem 
+(equation \ref{eq:delta-q-tilde-overdetermined}) for estimating the polynomial coefficients 
+$\tilde{\mathbf{q}}$ with $\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}) and
+$\bar{q} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so that
+\begin{equation}
+	\left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{G} \, \mathbf{H} + 
+	\mu \, \mathbf{W}_{q} \right) 
+	\tilde{\mathbf{q}} = 
+	\mathbf{H}^{\top} \mathbf{G}^{\top} \: \mathbf{d} \: ,
+	\label{eq:q-tilde-OBU13}
+\end{equation}
+where $\mathbf{W}_{q}$ is defined by equation \ref{eq:weighting-matrix-q}, with a matrix $\mathbf{W}_{p}$
+representing the zeroth- and first-order Tikhonov regularization \cite[e.g.,][p. 103]{aster_etal2019}.
+Note that, in this case, the prior information is defined for the original parameter vector $\mathbf{p}$
+and then transformed to the $\mathbf{q}$ space.
+Another characteristic of their method is that it is valid for processing irregularly-spaced data
+on an undulating surface.
 
-PAREI AQUI - vou tentar usar o q barra para descrever os metodos iterativos
+\cite{mendonca-2020} also proposed a reparameterization approach for the equivalent-layer technique.
+Their approach, however, consists in setting $\mathbf{H}$ as a truncated singular value decomposition
+(SVD) \cite[e.g.,][p. 55]{aster_etal2019} of the observed potential field. 
+Differently from \cite{oliveirajr-etal2013}, however, the method of \cite{mendonca-2020} requires 
+a regular grid of potential-field data on horizontal plane.
+Another difference is that these authors uses $\mathbf{W}_{q} = \mathbf{I}_{Q}$ (equation \ref{eq:weighting-matrix-q}),
+which means that the regularization is defined directly in the $\mathbf{q}$ space.
 
-\cite{barnes-lumley_2011}
+Similarly to \cite{oliveirajr-etal2013} and \cite{mendonca-2020}, \cite{barnes-lumley_2011} also proposed a computationally
+efficient method for equivalent-layer technique based on reparameterization. 
+A key difference, however, is that \cite{barnes-lumley_2011} did not set a $P \times Q$ reparameterization matrix $\mathbf{H}$
+(equation \ref{eq:reparameterization}) with $Q << P$. 
+Instead, their method uses a matrix $\mathbf{H}$ with $Q \approx 1.7 \, P$. 
+Their central idea is setting a reparameterization scheme that groups distant equivalent sources into blocks by
+using a bisection process. 
+This scheme leads to a quadtree representation of the physical-property distribution on the equivalent layer, 
+so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-reparameterized}) is notably sparse.
+\cite{barnes-lumley_2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
+(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient algorithm \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
 
-\cite{oliveirajr-etal2013}
+PAREI AQUI
 
-\cite{mendonca-2020}
 
 \subsection{Wavelet compression}
 
@@ -681,83 +724,6 @@ Ideia: descrever o conjugate gradient e depois as diferenças dos outros método
 \cite{takahashi-etal2022}
 
 \section{TEXTO ANTIGO}
-
-\cite{leao-silva1989} reduced the total processing time and memory usage
-of equivalent-layer technique by means of a moving data-window scheme.
-A small moving data window with $N_w$ observations and a small equivalent layer with $M_w$ equivalent sources 
-($M_w > N_w$) located  below the observations are established.
-For each position of a moving-data window, \cite{leao-silva1989} estimate a stable solution 
-$\mathbf{{p_w}^{\ast}}$ by using a data-space approach with the zeroth-order Tikhonov regularization 
-\citep{aster2018parameter}, i.e.,
-\begin{subequations}
-\begin{eqnarray}
-\left( \mathbf{A_w} \mathbf{A_w}^{\top} + \mu \mathbf{I}\right) \mathbf{w} &=& \mathbf{d_w}^{o} \:, \\
-\mathbf{A_w}^{\top} \: \mathbf{w} &=&  \mathbf{{p_w}^{\ast}} \:, 
-\label{eq:p_tk0}
-\end{eqnarray}
-\end{subequations}
-where $\mathbf{w}$ is a dummy vector, 
-$\mu$ is a regularizing parameter, 
-$\mathbf{d_w}^{o}$ is an $N_w$-dimensional vector containing the observed potential-field data, 
-$\mathbf{A_w}$ is an $N_w \times M_w$  sensitivity matrix related to a moving-data window, 
-$\mathbf{I}$ is  an identity matrix of order $N_w$ and 
-the superscript $\top$ stands for a transpose. 
-After estimating an $M_w \times 1$ parameter vector $\mathbf{{p_w}^{\ast}}$  (equation \ref{eq:p_tk0}) 
-the desired transformation of the data is only calculated at the central point of each moving-data window, i.e.:
-\begin{equation}
-	\hat{t}_{k} = \mathbf{t}_k^{\top} \: \mathbf{{p_w}^{\ast}} \: ,
-	\label{eq:t_leaosilva}
-\end{equation}
-where $\hat{t}_{k}$ is the transformed data calculated at the central point ${k}$ of the data window and
-$\mathbf{t}_k$ is an $M_w \times 1$ vector whose elements form the $k$th row of the $N_w \times N_w$ 
-matrix of Green's functions $\mathbf{T}$ (equation \ref{eq:t_data}) of 
-the desired linear transformation of the data.
-
-By shifting the moving-data window with a shift size of one data spacing, 
-a new position of a data window is set up.
-Next, the aforementioned process (equations \ref{eq:p_tk0} and \ref{eq:t_leaosilva}) is repeated  for each position of a moving-data window, until the entire data have been processed.
-Hence, instead of solving a large inverse problem, \cite{leao-silva1989} solve several much smaller ones. 
-
-
-To reduce the size of the linear system to be solved, \cite{soler-uieda2021}  adopted the same strategy proposed, originally, by \cite{leao-silva1989}  of using a small moving-data window sweeping the whole data.
-In \cite{leao-silva1989}, a moving-data window slides to the next adjacent data window following a sequential movement, the predicted data is calculated inside the data window and the desired transformation are only calculated at the center of the moving-data window.
-Unlike \cite{leao-silva1989}, \cite{soler-uieda2021} do not adopt a sequential order of the data windows; rather, they adopt a randomized order of windows in the iterations of the gradient-boosting algorithm 
-(\citeauthor{friedman2001}, \citeyear{friedman2001} and \citeyear{friedman2002}).
-The  gradient-boosting algorithm in \cite{soler-uieda2021} estimates a stable solution using the data and the equivalent sources 
-that fall within a moving-data window; however, it calculates the predicted data and the residual data in the whole survey data. 
-Next, the residual data  that fall within a new position of the data window is used as input data to estimate a new stable solution within the data window
-which in turn is used to calculated a new predicted data and 
-a new residual data in the whole survey data.
-Finally, unlike \cite{leao-silva1989}, in \cite{soler-uieda2021} neither the data nor the equivalent sources need to be distributed in regular grids.
-Indeed, \cite{leao-silva1989} built their method using regular grids, but in fact regular grids are not necessary.
-Regarding the equivalent-source layout, \cite{soler-uieda2021} proposed the block-averaged sources locations in which the survey area is divided into horizontal blocks and one single equivalent source is assigned to each block.
-Each single source per block is placed over the layer with its horizontal coordinates given by the average horizontal positions of observation points.
-According to \cite{soler-uieda2021}, the block-averaged sources layout reduces the number of equivalent sources significantly
-and the gradient-boosting algorithm provides even greater efficiency in terms of data fitting.
-
-
-
-% PENSAR ONDE COLOCAR OS FLOPS
-%In the \cite{leao-silva1989}  equivalent-layer approach, the number of flops  required to solve the linear %system  by Cholesky's decomposition is
-
-
-
-
-\subsubsection{The equivalent-data concept}
-
-To reduced the total processing time and memory usage of equivalent-layer technique, \cite{mendonca-silva1994} proposed a strategy called 'equivalent data concept'.
-The equivalent data concept is grounded on the  principle  that there is a subset of redundant data that does not contribute to the final solution and thus can be dispensed.
-Conversely, there is a subset of observations, called equivalent data, that  contributes effectively to the final solution and fits the remaining observations (redundant data).
-Iteractively, \cite{mendonca-silva1994} selected the subset of equivalent data that is substantially smaller than the original dataset. 
-This selection is carried out by incorporating one data point at a time.
-
-According to \cite{mendonca-silva1994}, the number of equivalent data is about one-tenth 
-of the total number of observations. 
-These authors used the equivalent data concept to carry out an interpolation of gravity data.
-They showed a reduction of the total processing time and memory usage by, at least, 
-two orders of magnitude as opposed to using all observations in the interpolation process 
-via the classical equivalent-layer technique.
-
 
 \subsubsection{The wavelet compression and lower-dimensional subspace}
 

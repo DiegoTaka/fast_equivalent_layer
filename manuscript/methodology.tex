@@ -199,6 +199,9 @@ rewritten as follows:
 	\mathbf{f} = \mathbf{G} \, \mathbf{H} \, \mathbf{q} \: .
 	\label{eq:predicted-data-vetor-reparameterized}
 \end{equation}
+Note that the original parameter vector $\mathbf{p}$ is defined in a $P$-dimensional space whereas the reparameterized
+parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization}) lies in a $Q$-dimensional space.
+For convenience, we use the terms $P$-space and $Q$-space to designate them.
 
 Then, the problem of estimating a parameter vector $\tilde{\mathbf{p}}$ minimizing a length 
 measure of the difference between $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) and $\mathbf{d}$
@@ -218,22 +221,18 @@ and
 	\label{eq:function-Theta}
 \end{equation}
 where $\mu$ is a positive scalar controlling the trade-off between $\Phi(\mathbf{q})$ and $\Theta(\mathbf{q})$; 
-$\mathbf{W}_{q}$ is a $Q \times Q$ symmetric matrix imposing prior information on $\mathbf{q}$ given by
-\begin{equation}
-	\mathbf{W}_{q} = \mathbf{H}^{\top} \mathbf{W}_{p} \, \mathbf{H} \: ,
-	\label{eq:weighting-matrix-q}
-\end{equation}
-with $\mathbf{W}_{p}$ being a $P \times P$ symmetric matrix imposing prior information on $\mathbf{p}$;
-$\bar{\mathbf{q}}$ is a $Q \times 1$ vector of reference values for $\mathbf{q}$ satisfying
+$\mathbf{W}_{d}$ is a $D \times D$ symmetric matrix defining the relative importance of each observed datum $d_{i}$;
+$\mathbf{W}_{q}$ is a $Q \times Q$ symmetric matrix imposing prior information on $\mathbf{q}$;
+and $\bar{\mathbf{q}}$ is a $Q \times 1$ vector of reference values for $\mathbf{q}$ that satisfies
 \begin{equation}
 	\bar{\mathbf{p}} = \mathbf{H} \, \bar{\mathbf{q}} \: ,
 	\label{eq:reparameterization-reference}
 \end{equation}
-with $\bar{\mathbf{p}}$ being a $P \times 1$ vector containing reference values
-for the original parameter vector $\mathbf{p}$; and 
-$\mathbf{W}_{d}$ is a $D \times D$ symmetric matrix defining the relative importance of each observed datum $d_{i}$.
-After obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization}) minimizing
-$\Gamma(\mathbf{q})$ (equation \ref{eq:function-Gamma}), the estimate $\tilde{\mathbf{p}}$ for the original parameter vector 
+where $\bar{\mathbf{p}}$ is a $P \times 1$ vector containing reference values
+for the original parameter vector $\mathbf{p}$.
+
+After obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization}), 
+the estimate $\tilde{\mathbf{p}}$ for the original parameter vector 
 (equation \ref{eq:predicted-data-vector}) is computed by 
 \begin{equation}
 	\tilde{\mathbf{p}} = \mathbf{H} \, \tilde{\mathbf{q}} \: .
@@ -291,20 +290,21 @@ for $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}):
 	\tilde{\boldsymbol{\delta}}_{d} \: .
 	\label{eq:delta-q-tilde-overdetermined}
 \end{equation}
+
 On the other hand, for the cases in which $D < P$ (underdetermined problems), matrix $\mathbf{B}$ is 
-usually defined according to equation \ref{eq:matrix-B-underdetermined}. In this case, we consider that the 
-the estimate $\tilde{\mathbf{q}}$ is obtained in two steps, which consists in first solving a linear system 
-for a dummy vector $\mathbf{u}$ and then computing a matrix-vector product as follows:
+usually defined according to equation \ref{eq:matrix-B-underdetermined}. In this case, the general approach involves 
+estimating $\tilde{\mathbf{q}}$ in two steps. The first consists in solving a linear system 
+for a dummy vector, which is subsequently used to compute $\tilde{\mathbf{q}}$ by a matrix-vector product as follows:
 \begin{equation}
 	\begin{split}
 		\left( \mathbf{G} \, \mathbf{H} \, \mathbf{W}_{q}^{-1} \,
-		\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \, \mathbf{W}_{d}^{-1} \right) \,  
+		\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \mathbf{W}_{d}^{-1} \right)  
 		\mathbf{u} = \tilde{\boldsymbol{\delta}}_{d} \\
-		\tilde{\boldsymbol{\delta}}_{q} = \mathbf{W}_{q}^{-1}
-		\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{u}
-	\end{split} \: .
+		\tilde{\boldsymbol{\delta}}_{q} = \mathbf{W}_{q}^{-1} \, \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{u}
+	\end{split} \quad ,
 	\label{eq:delta-q-tilde-underdetermined}
 \end{equation}
+where $\mathbf{u}$ is a dummy vector.
 After obtaining $\tilde{\boldsymbol{\delta}}_{q}$ (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}),
 the estimate $\tilde{\mathbf{q}}$ is computed with equation \ref{eq:delta-q-tilde}.
 
@@ -430,7 +430,7 @@ data and equivalent sources, $\mathbf{a}'$ is the same for all data windows.
 Note that equation \ref{eq:transformed-field-tmc-LS89} combines the potential-field transformation
 (equation \ref{eq:transformation}) with the solution of the undetermined problem
 (equation \ref{eq:delta-q-tilde-underdetermined}) for the particular case in which 
-$\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P'}$ (equations \ref{eq:reparameterization} and \ref{eq:weighting-matrix-q}),
+$\mathbf{H} = \mathbf{W}_{q} = \mathbf{I}_{P'}$ (equations \ref{eq:reparameterization} and \ref{eq:function-Theta}),
 $\mathbf{W}_{d} = \mathbf{I}_{D'}$ (equation \ref{eq:function-Phi}), $\bar{p} = \mathbf{0}$ 
 (equation \ref{eq:reparameterization-reference}), 
 where $\mathbf{I}_{P'}$ and $\mathbf{I}_{D'}$ are identity matrices 
@@ -471,7 +471,7 @@ The estimated $\tilde{\mathbf{p}}^{m}$ for all windows are combined to form a si
 which is an estimate for original parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}).
 For each data window, \cite{soler-uieda2021} solve an overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) 
 for $\tilde{\mathbf{p}}^{m}$ by using 
-$\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P^{m}}$ (equations \ref{eq:reparameterization} and \ref{eq:weighting-matrix-q}),
+$\mathbf{H} = \mathbf{W}_{q} = \mathbf{I}_{P^{m}}$ (equations \ref{eq:reparameterization} and \ref{eq:function-Theta}),
 $\mathbf{W}^{m}_{d}$ (equation \ref{eq:function-Phi}) equal to a diagonal matrix of weights for the data inside the $m$-th window
 and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so that
 \begin{equation}
@@ -583,7 +583,7 @@ $\mathbf{G}_{e}$ and $\mathbf{G}_{r}$ are $D_{e} \times P$ and $D_{r} \times P$ 
 With the exception of a normalization strategy, \cite{mendonca-silva1994} calculate a $P \times 1$ estimated parameter vector $\tilde{\mathbf{p}}$ 
 by solving an underdetermined problem (equation \ref{eq:delta-q-tilde-underdetermined}) involving only the equivalent data $\mathbf{d}_{e}$ 
 (equation \ref{eq:partitioned-d-G-MS94})
-for the particular case in which $\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P}$ (equations \ref{eq:reparameterization} and \ref{eq:weighting-matrix-q}),
+for the particular case in which $\mathbf{H} = \mathbf{W}_{p} = \mathbf{I}_{P}$ (equations \ref{eq:reparameterization} and \ref{eq:function-Theta}),
 $\mathbf{W}_{d} = \mathbf{I}_{D_{e}}$ (equation \ref{eq:function-Phi}) and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), 
 which results in
 \begin{equation}
@@ -629,8 +629,8 @@ by computing only its new elements with respect to those computed in the previou
 		Define the list of indices $\mathbf{i}_{r}$ of the remaining elements in $\mathbf{r}$ \;
 		$\mathbf{d}_{e} \gets \begin{bmatrix} \mathbf{d}_{e} \\ \mathbf{d}[i_{\mathtt{max}}] \end{bmatrix}$ \;
 		Update $\left(\mathbf{F} + \mu \, \mathbf{I}_{D_{e}} \right)$ and $\mathbf{G}_{e}$ \;
-		Compute $\tilde{\mathbf{p}}$ (equation \ref{eq:p-tilde-MS94}) \;
-		Compute $\mathbf{r} = \mathbf{d}[\mathbf{i}_{r}] - \mathbf{G}[\mathbf{i}_{r}, :] \, \tilde{\mathbf{p}}$ \;
+		Update $\tilde{\mathbf{p}}$ (equation \ref{eq:p-tilde-MS94}) \;
+		Update $\mathbf{r} = \mathbf{d}[\mathbf{i}_{r}] - \mathbf{G}[\mathbf{i}_{r}, :] \, \tilde{\mathbf{p}}$ \;
 		Define the maximum absolute value $r_{\mathtt{max}}$ in $\mathbf{r}$ \; 
 	}
 	\caption{Generic pseudo-code for the method proposed by \cite{mendonca-silva1994}.}
@@ -642,13 +642,15 @@ by computing only its new elements with respect to those computed in the previou
 Another approach for improving the computational performance of equivalent-layer technique consists in 
 setting a $P \times Q$ reparameterization matrix $\mathbf{H}$ (equation \ref{eq:reparameterization})
 with $Q << P$. 
-In this case, an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$
-is obtained and subsequently used to obtain an estimate $\tilde{\mathbf{p}}$ 
-for the parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) by using equation
+This strategy has been used in applied geophysics for decades \cite[e.g.,][]{skilling-bryan1984, kennett1988, oldenburg1993, barbosa-etal1997} 
+and is known as \textit{subspace method}. 
+The main idea relies in reducing the linear system dimension from the original $P$-space to a lower-dimensional subspace (the $Q$-space).
+An estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$
+is obtained in the $Q$-space and subsequently used to obtain an estimate $\tilde{\mathbf{p}}$ 
+for the parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) in the $P$-space by using equation
 \ref{eq:reparameterization}. 
-The idea of this \textit{reparameterization approach} is solving an appreciably smaller linear inverse problem for 
-$\tilde{\mathbf{q}}$ than that for obtaining an estimate $\tilde{\mathbf{p}}$ for the original parameter
-vector (equation \ref{eq:predicted-data-vector}).
+Hence, the key aspect of this \textit{reparameterization approach} is solving an appreciably smaller linear inverse problem for 
+$\tilde{\mathbf{q}}$ than that for the original parameter vector $\tilde{\mathbf{p}}$ (equation \ref{eq:predicted-data-vector}).
 
 \cite{oliveirajr-etal2013} have used this approach to describe the physical property distribution on the
 equivalent layer in terms of piecewise bivariate polynomials.
@@ -670,10 +672,10 @@ $\bar{q} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so that
 	\mathbf{H}^{\top} \mathbf{G}^{\top} \: \mathbf{d} \: ,
 	\label{eq:q-tilde-OBU13}
 \end{equation}
-where $\mathbf{W}_{q}$ is defined by equation \ref{eq:weighting-matrix-q}, with a matrix $\mathbf{W}_{p}$
+where $\mathbf{W}_{q} = \mathbf{H}^{\top}\mathbf{W}_{p} \, \mathbf{H}$ is defined by a matrix $\mathbf{W}_{p}$
 representing the zeroth- and first-order Tikhonov regularization \cite[e.g.,][p. 103]{aster_etal2019}.
-Note that, in this case, the prior information is defined for the original parameter vector $\mathbf{p}$
-and then transformed to the $\mathbf{q}$ space.
+Note that, in this case, the prior information is defined in the $P$-space for the original parameter vector $\mathbf{p}$
+and then transformed to the $Q$-space.
 Another characteristic of their method is that it is valid for processing irregularly-spaced data
 on an undulating surface.
 
@@ -682,31 +684,41 @@ Their approach, however, consists in setting $\mathbf{H}$ as a truncated singula
 (SVD) \cite[e.g.,][p. 55]{aster_etal2019} of the observed potential field. 
 Differently from \cite{oliveirajr-etal2013}, however, the method of \cite{mendonca-2020} requires 
 a regular grid of potential-field data on horizontal plane.
-Another difference is that these authors uses $\mathbf{W}_{q} = \mathbf{I}_{Q}$ (equation \ref{eq:weighting-matrix-q}),
-which means that the regularization is defined directly in the $\mathbf{q}$ space.
+Another difference is that these authors uses $\mathbf{W}_{q} = \mathbf{I}_{Q}$ (equation \ref{eq:function-Theta}),
+which means that the regularization is defined directly in the $Q$-space.
 
-Similarly to \cite{oliveirajr-etal2013} and \cite{mendonca-2020}, \cite{barnes-lumley_2011} also proposed a computationally
+Before \cite{oliveirajr-etal2013} and \cite{mendonca-2020}, \cite{barnes-lumley_2011} also proposed a computationally
 efficient method for equivalent-layer technique based on reparameterization. 
 A key difference, however, is that \cite{barnes-lumley_2011} did not set a $P \times Q$ reparameterization matrix $\mathbf{H}$
 (equation \ref{eq:reparameterization}) with $Q << P$. 
-Instead, their method uses a matrix $\mathbf{H}$ with $Q \approx 1.7 \, P$. 
+Instead, they used a matrix $\mathbf{H}$ with $Q \approx 1.7 \, P$. 
 Their central idea is setting a reparameterization scheme that groups distant equivalent sources into blocks by
 using a bisection process. 
 This scheme leads to a quadtree representation of the physical-property distribution on the equivalent layer, 
 so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-reparameterized}) is notably sparse.
 \cite{barnes-lumley_2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
-(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient algorithm \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
-
-PAREI AQUI
+(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method.
+Here, we consider the \textit{conjugate gradient normal equation residual} (CGNR) 
+\citet[][sec. 11.3]{golub-vanloan2013} as a reference, which is also known as \textit{conjugate gradient least squares} (CGLS) 
+\cite[][p. 165]{aster_etal2019}.
 
 
 \subsection{Wavelet compression}
 
-\cite{li-oldenburg_2010}
+Previously to \cite{barnes-lumley_2011}, the idea of transforming the dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
+into a sparse one has already been used in the context of equivalent-layer technique.
+\cite{li-oldenburg_2010} proposed a method that applies the wavelet transform to the original dense matrix $\mathbf{G}$ 
+and sets to zero the small coefficients that are below a given threshold, which results in an approximating
+sparse representation of $\mathbf{G}$ in the wavelet domain.
+Their method requires 
+
+PAREI AQUI
 
 \subsection{Iterative methods using the original $\mathbf{G}$}
 
-Ideia: descrever o conjugate gradient e depois as diferenças dos outros métodos iterativos
+Ideia: descrever o conjugate gradient e depois as diferenças dos outros métodos iterativos - esta ideia é ruim
+porque vai ser necessario reescrever os sistemas com matrizes CCT e CTC. Isso necessita definir as matrizes
+Wq e Wd como WqTWq ou WqWqT, a depender do problema.
 
 \cite{xia-sprowl1991}
 

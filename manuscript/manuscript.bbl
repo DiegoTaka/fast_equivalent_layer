@@ -1,4 +1,4 @@
-\begin{thebibliography}{26}
+\begin{thebibliography}{38}
 \providecommand{\natexlab}[1]{#1}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
@@ -11,6 +11,12 @@
 \providecommand{\bibAnnote}[2]{%
   \begin{quotation}\noindent\textsc{Key:} #1\\
   \textsc{Annotation:}\ #2\end{quotation}}
+
+\bibitem[{Amaral(1974)}]{amaral_1974}
+Amaral, G. (1974).
+\newblock \emph{Geologia Pré-Cambriana da Região Amazônica}.
+\newblock Ph.D. thesis, Universidade de São Paulo
+\bibAnnoteFile{amaral_1974}
 
 \bibitem[{Aster et~al.(2018)Aster, Borchers, and Thurber}]{aster2018parameter}
 Aster, R.~C., Borchers, B., and Thurber, C.~H. (2018).
@@ -38,6 +44,14 @@ Cordell, L. (1992).
 \newblock \emph{Geophysics} 57, 629--636
 \bibAnnoteFile{cordell1992}
 
+\bibitem[{Cunha et~al.(2016)Cunha, Dall'Agnol, and Feio}]{cunha_etal_2016}
+Cunha, I.~R., Dall'Agnol, R., and Feio, G. R.~L. (2016).
+\newblock Mineral chemistry and magnetic petrology of the archean planalto
+  suite, carajás province – amazonian craton: Implications for the evolution
+  of ferroan archean granites.
+\newblock \emph{Journal of South American Earth Sciences} 67, 100--121
+\bibAnnoteFile{cunha_etal_2016}
+
 \bibitem[{Dampney(1969)}]{dampney1969}
 Dampney, C. N.~G. (1969).
 \newblock The equivalent source technique.
@@ -52,6 +66,11 @@ Davis, K. and Li, Y. (2011).
 \newblock \emph{Geophysical Journal International} 185, 157--166.
 \newblock \doi{10.1111/j.1365-246X.2011.04929.x}
 \bibAnnoteFile{davis_li2011}
+
+\bibitem[{Davis(1979)}]{davis1979}
+Davis, P.~J. (1979).
+\newblock \emph{Circulant matrices} (John Wiley {\&} Sons, Inc.)
+\bibAnnoteFile{davis1979}
 
 \bibitem[{Friedman(2001)}]{friedman2001}
 Friedman, J.~H. (2001).
@@ -77,6 +96,11 @@ Gusp{\'\i}, F. and Novara, I. (2009).
   using newtonian equivalent sources.
 \newblock \emph{Geophysics} 74, L67--L73
 \bibAnnoteFile{guspi-novara2009}
+
+\bibitem[{Horn and Johnson(1991)}]{horn_johnson1991}
+Horn, R.~A. and Johnson, C.~R. (1991).
+\newblock \emph{Topics in Matrix Analysis} (Cambridge University Press), 1 edn.
+\bibAnnoteFile{horn_johnson1991}
 
 \bibitem[{Jirigalatu and Ebbing(2019)}]{jirigalatu-ebbing2019}
 Jirigalatu, J. and Ebbing (2019).
@@ -128,6 +152,22 @@ Mendon\c{c}a, C.~A. and Silva, J. B.~C. (1994).
 \newblock \doi{10.1190/1.1443630}
 \bibAnnoteFile{mendonca-silva1994}
 
+\bibitem[{Moroni et~al.(2001)Moroni, Girardi, and Ferrario}]{moroni_etal_2001}
+Moroni, M., Girardi, V., and Ferrario, A. (2001).
+\newblock The serra pelada au-pge deposit, serra dos carajás (pará state,
+  brazil): geological and geochemical indications for a composite mineralising
+  process.
+\newblock \emph{Mineralium Deposita} 36, 768–785
+\bibAnnoteFile{moroni_etal_2001}
+
+\bibitem[{Neudecker(1969)}]{neudecker1969}
+Neudecker, H. (1969).
+\newblock Some theorems on matrix differentiation with special reference to
+  kronecker matrix products.
+\newblock \emph{Journal of the American Statistical Association} 64, 953--963.
+\newblock \doi{10.1080/01621459.1969.10501027}
+\bibAnnoteFile{neudecker1969}
+
 \bibitem[{Oldenburg et~al.(1993)Oldenburg, McGillivray, and
   Ellis}]{oldenburg1993}
 Oldenburg, D., McGillivray, P., and Ellis, R. (1993).
@@ -142,6 +182,24 @@ Oliveira{ }Jr., V.~C., Barbosa, V. C.~F., and Uieda, L. (2013).
 \newblock \emph{Geophysics} 78, G1--G13.
 \newblock \doi{10.1190/geo2012-0196.1}
 \bibAnnoteFile{oliveirajr-etal2013}
+
+\bibitem[{Salomao et~al.(2019)Salomao, Dall'Agnol, Angelica, Figueiredo, Sahoo,
+  Medeiros-filho et~al.}]{salomao_etal_2019}
+Salomao, G.~N., Dall'Agnol, R., Angelica, R.~S., Figueiredo, M.~A., Sahoo,
+  P.~K., Medeiros-filho, C.~A., et~al. (2019).
+\newblock Geochemical mapping and estimation of background concentrations in
+  soils of carajás mineral province, eastern amazonian craton, brazil.
+\newblock \emph{Geochemistry: Exploration, Environment, Analysis} 19, 431--447
+\bibAnnoteFile{salomao_etal_2019}
+
+\bibitem[{Santos et~al.(2000)Santos, Hartmann, Gaudette, Groves, Mcnaughton,
+  and Fletcher}]{santos_etal_2000}
+Santos, J. O.~S., Hartmann, L.~A., Gaudette, H.~E., Groves, D.~I., Mcnaughton,
+  M.~J., and Fletcher, I.~R. (2000).
+\newblock A new understanding of the provinces of the amazon craton based on
+  integration of field mapping and u-pb and sm-nd geochronology.
+\newblock \emph{Gondwana Research} 3, 453--488
+\bibAnnoteFile{santos_etal_2000}
 
 \bibitem[{Siqueira et~al.(2017)Siqueira, Oliveira{ }Jr, and
   Barbosa}]{siqueira-etal2017}
@@ -178,6 +236,33 @@ Takahashi, D., Oliveira~Jr, V.~C., and Barbosa, V.~C. (2020).
 \newblock Convolutional equivalent layer for gravity data processing.
 \newblock \emph{Geophysics} 85, G129--G141
 \bibAnnoteFile{takahashi2020}
+
+\bibitem[{Tassinari and Macambira(1999)}]{tassinari_and_macambira_1999}
+Tassinari, C.~C. and Macambira, M.~J. (1999).
+\newblock Geochronological provinces of the amazonian craton.
+\newblock \emph{Episodes} 22, 174--182
+\bibAnnoteFile{tassinari_and_macambira_1999}
+
+\bibitem[{Teixeira et~al.(1989)Teixeira, Tassinari, Cordani, and
+  Kawashita}]{teixeira_etal_1989}
+Teixeira, W., Tassinari, C., Cordani, U.~G., and Kawashita, K. (1989).
+\newblock A review of the geochronology of the amazonian craton: Tectonic
+  implications.
+\newblock \emph{Precambrian Research} 42, 213--227
+\bibAnnoteFile{teixeira_etal_1989}
+
+\bibitem[{Van{ }Loan(1992)}]{vanloan1992}
+Van{ }Loan, C. (1992).
+\newblock \emph{Computational Frameworks for the {Fast Fourier Transform}}
+  (SIAM)
+\bibAnnoteFile{vanloan1992}
+
+\bibitem[{Villas and Santos(2001)}]{villas_and_santos_2001}
+Villas, R.~N. and Santos, M. (2001).
+\newblock Gold deposits of the carajás mineral province: deposit types and
+  metallogenesis.
+\newblock \emph{Mineralium Deposita} 36, 300–331
+\bibAnnoteFile{villas_and_santos_2001}
 
 \bibitem[{Xia and Sprowl(1991)}]{xia-sprowl1991}
 Xia, J. and Sprowl, D.~R. (1991).

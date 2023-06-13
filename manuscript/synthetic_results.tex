@@ -1,78 +1,57 @@
 \section{Synthetic data simulations}
 \label{sec:synthetic_simulations}
 
-For all applications, we generate a model composed by two spheres (PAREI AQUI - ANDRE)
-
-Grav: the prism has a contrast of density equal to $550 kg/m^3$, the left sphere $600 kg/m^3$ and the right sphere $-500 kg/m^3$
-
-Mag: all 3 bodies have magnetization of 3.46 intensity, 35.26 declination and 45.0 inclinations.
-The grid of the synthetic data is 50x50.
-
+For all applications, we generate a model composed by two spheres and a poligonal prism in a regular spaced grid of $50 \times 50$. The upper left sphere has a density contrast of $600 \, kg/m^3$, the right upper sphere a negative contrast of $-500 \, kg/m^3$ and the bottom prism is equal to $550 \, kg/m^3$. To generate the magnetic data, the bodies are in the same position and all of them have the same magnetization intensity and direction ($3.46 \, A/m$ intensity, $35.26^{\circ}$ inclination and $45.0^{\circ}$ declination) within a simulated geomagnetic field direction of $20.0^{\circ}$ inclination and $35.0^{\circ}$ declination. These synthetic datas are shown in figures \ref{fig:4} and \ref{fig:7}, respectively.
 
 \subsection{Stability analysis}
 
-For the stability analysis we show the comparison of the normal equations solution with zeroth-order Tikhonov regularization, the convolutional method for gravimetric and magnetic data, the deconvolutional method and the deconvolutional method with different values for the Wiener stabilization. We create $21$ data sets adding a crescent pseudo-random noise to the original data, which varies from $0\%$ to $10\%$ of the maximum anomaly value, in intervals of $0.5\%$. These noises has mean equal to zero and a Gaussian distribution.
-Figure XX shows how the residual between the predicted data and the noise-free data changes as the level of the noise is increased. We can see that for all methods, a linear tendency can be observed as it is expected. The inclination of the straight line is a indicative of the stability of each method. As show in the graph the deconvolutional method is very unstable and it is really necessary to use a stabilization method to have a good parameter estimative. In contrast, a correct value of the stabilization parameter is necessary to not overshoot the smootheness of the solution as it is the case for the well-known zeroth-order Tikhonov regularization. For the example using this gravimetric data, the optimal value for the Wiener stabilization parameter is $\mu = 10^{-9}$. Figure XX shows the comparison of the predicted data for each method with the original data.
+For the stability analysis we show the comparison of the normal equations solution (equation \ref{eq:t_data}) with zeroth-order Tikhonov regularization \citep{aster2018parameter}, the convolutional method (equation \ref{eq:DFT-system_takahashi}), the deconvolutional method (equation \ref{eq:deconvolution_takahashi}) and the deconvolutional method with different values for the Wiener stabilization (equation \ref{eq:wiener_takahashi}). We create $21$ data sets, for both gravity and magnetic data, adding a crescent pseudo-random noise to the original data, which varies from $0\%$ to $10\%$ of the maximum anomaly value in intervals of $0.5\%$. These noises has mean equal to zero and a Gaussian distribution. These synthetic datas are shown in figures \ref{fig:4} and \ref{fig:7}, where panel (A) of each figure represents the noise free data and panel (B) is the maximum noised data for gravity and magnetic, respectively.
+		
+Figure \ref{fig:3} shows how the euclidian norm of the equivalent sources residuals varies as the level of the noise is increased for the gravimetric data. We can see that for all methods, a linear tendency can be observed as it is expected. The inclination of the straight line is a indicative of the stability of each method. As show in the graph the deconvolutional method is very unstable and it is really necessary to use a stabilization method to have a good parameter estimative. In contrast, a correct value of the stabilization parameter is necessary to not overshoot the smootheness of the solution as it is the case for the zeroth-order Tikhonov regularization as well. Using this gravimetric data, the optimal value for the Wiener stabilization parameter is $\mu = 10^{-20}$. 
 
-For the magnetic data, the Wiener parameter seems to have the best solution for $\mu = 10^{-13}$. Figure XX shows the comparison of the predicted data for each method with the original data.
+Figure \ref{fig:5} shows the comparison of the predicted data for each method with the original data (figure \ref{fig:4}) using the most noised-corrupted data from the set of the stability analysis. The classical with zeroth-order Tikhonov regularization and the convolutional methods (figures \ref{fig:5}(A) and \ref{fig:5}(B)) yield very similar results for the predicted data confirming its similarities with the stabilization despite the bid difference in floating-point operations. Figure \ref{fig:5}(C) shows the deconvolutional method without a stabilization and demonstrates the necessity to use it for this method. Figure \ref{fig:5}(D) shows the deconvolutional method with Wiener stabilization $\mu = 10^{-15}$ which is too high, demonstrating the over smoothness of the predicted data. Figures \ref{fig:5}(E) and \ref{fig:5}(F) shows the predicted data for an optimal value of the Wiener parameter $\mu = 10^{-20}$ and a low value $\mu = 10^{-25}$, respectively.
 
+The upward continuation is a processing technique to visualize the data in a higher altitude. In practice is expected a lower amplitude signal and a smoother data as the high frequency anomalies tends to disapear. Figure  \ref{fig:grav_up}(A) shows the true modeled upward data at an height of $-500$ m. Figures \ref{fig:grav_up}(B), (C), (D) and (E) show the result of the upward processing for the classical, convolutional, deconvolutional and the deconvolutional with Wiener parameter $\mu = 10^{-20}$, respectively. It is clear that all methods seems to predict the upward data very reasonable, except the deconvolutional method without stabilization.
 
-Gravity synthetic statistics to be included:
+For the magnetic data, figure \ref{fig:6} shows a very similar behavior of the stability as the previous case. The Wiener parameter seems to have the best solution for $\mu = 10^{-13}$. For both types of data the best Wiener parameter seems to be one that produces a low slope for the straight line in the stability analysis, discordant from the classical and convolutional methods. 
 
-Means
+Figure \ref{fig:8} shows the comparison of the predicted data for each method with the original magnetic data in figure \ref{fig:7} using the most noised-corrupted data modeled from the stability analyis. As the previous case the classical (figure \ref{fig:8}(A)) and the convolutional (figure \ref{fig:8}(B)) methods have very similar predicted data but estimated with less orders of magnitude in floating-point operations. The deconvoutional (figure \ref{fig:8}(C)) have have a strong disagreement with the observed data showing the need for a stabilization method.
+Figure \ref{fig:8}(D) has a value of $\mu = 10^{-10}$ and the predicted data became to smooth by it. The optimal value of the Wiener parameter is shown in figure \ref{fig:8}(E) with $\mu = 10^{-13}$ and figure \ref{fig:8}(F) shows a predicted data with a low stablization value with $\mu = 10^{-16}$.
 
-0.24791339230971493 (Classical method)
+Figure \ref{fig:mag_up}(A) shows the true modeled upward data at an height of $-1400$ m. Figures \ref{fig:mag_up}(B), (C), (D) and (E) show the result of the upward processing for the classical, convolutional, deconvolutional and the deconvolutional with Wiener parameter $\mu = 10^{-13}$, respectively. As in the gravimetric case, all methods seems to predict the upward data, except the deconvolutional method without stabilization.
 
-0.25522040542133817 (CG BTTB method)
-
-0.86010282709889 (Deconvolutional method)
-
-1.53835137193657 (Deconvolutional w\ Wiener overshoot $\mu$ method)
-
-0.3134732823974472 (Deconvolutional w\ Wiener optimal $\mu$ method)
-
-0.5553048046997608 (Deconvolutional w\ Wiener suboptimal $\mu$ method)
-
-Standard deviations
-
-0.18274083156485463 (Classical method)
-
-0.18986126212291252 (CG BTTB method)
-
-1.439293452270024 (Deconvolutional method)
-
-1.1183051446613188 (Deconvolutional w\ Wiener overshoot $\mu$ method)
-
-0.2367045031838225 (Deconvolutional w\ Wiener optimal $\mu$ method)
-
-0.7047326489645682 (Deconvolutional w\ Wiener suboptimal $\mu$ method)
-\\\\
-Magnetic synthetic statistics to be included:
-
-Means
-
-4.71700586977892 (Classical method)
-
-4.791561788289162 (CG BTTB method)
-
-2761.170136908849 (Deconvolutional method)
-
-23.06442216727077 (Deconvolutional w\ Wiener overshoot $\mu$ method)
-
-8.860326967314595 (Deconvolutional w\ Wiener optimal $\mu$ method)
-
-33.83142137645327 (Deconvolutional w\ Wiener suboptimal $\mu$ method)
-
-Standard deviations
-
-3.571868619217408 (Classical method)
-
-3.6420538498453263 (CG BTTB method)
-
-4507.745135864884 (Deconvolutional method)
-
-14.232818621809827 (Deconvolutional w\ Wiener overshoot $\mu$ method)
-
-7.445085208152109 (Deconvolutional w\ Wiener optimal $\mu$ method)
-
-47.8175518946965 (Deconvolutional w\ Wiener suboptimal $\mu$ method)
+%Gravity synthetic statistics to be included:
+%Means
+%0.24791339230971493 (Classical method)
+%0.25522040542133817 (CG BTTB method)
+%0.86010282709889 (Deconvolutional method)
+%1.53835137193657 (Deconvolutional w\ Wiener overshoot $\mu$ method)
+%0.3134732823974472 (Deconvolutional w\ Wiener optimal $\mu$ method)
+%0.5553048046997608 (Deconvolutional w\ Wiener suboptimal $\mu$ method)
+%
+%Standard deviations
+%0.18274083156485463 (Classical method)
+%0.18986126212291252 (CG BTTB method)
+%1.439293452270024 (Deconvolutional method)
+%1.1183051446613188 (Deconvolutional w\ Wiener overshoot $\mu$ method)
+%0.2367045031838225 (Deconvolutional w\ Wiener optimal $\mu$ method)
+%0.7047326489645682 (Deconvolutional w\ Wiener suboptimal $\mu$ method)
+%\\\\
+%Magnetic synthetic statistics to be included:
+%
+%Means
+%
+%6.572366904728528 (Classical method)
+%6.689214592343857 (CG BTTB method)
+%971.9310697001104 (Deconvolutional method)
+%23.672356138290855 (Deconvolutional w\ Wiener overshoot μ method)
+%8.09848247511561 (Deconvolutional w\ Wiener optimal μ method)
+%29.264824940161848 (Deconvolutional w\ Wiener suboptimal μ method)
+%
+%standard deviations
+%4.9276131862044315 (Classical method)
+%4.9909561696899205 (CG BTTB method)
+%1742.0801705255908 (Deconvolutional method)
+%17.671099090589646 (Deconvolutional w\ Wiener overshoot μ method)
+%6.1358737706945075 (Deconvolutional w\ Wiener optimal μ method)
+%29.374157656258866 (Deconvolutional w\ Wiener suboptimal μ method)

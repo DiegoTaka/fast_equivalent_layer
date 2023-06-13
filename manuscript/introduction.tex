@@ -22,4 +22,5 @@ Recently, \citeauthor{takahashi2020} (\citeyear{takahashi2020}, \citeyear{takaha
 These methods took advantage of the Block-Toeplitz Toeplitz-block (BTTB) structure of the sensitivity matrices, allowing them to be calculated by using only their first column.
 In practice, the forward modeling uses a single equivalent source, which significantly reduces the the required RAM memory. \citeauthor{takahashi2020} (\citeyear{takahashi2020}, \citeyear{takahashi2022}) employed the strategy of the convolutional equivalent layer using the concept of  BTTB matrices.
 
-Here, we present a comprehensive review of
+Here, we present a comprehensive review of diverse strategies to solve the linear system of the equivalent layer alongside an analysis of the computational cost and stability of these strategies.
+To do this analysis we are using the floating-point operations count to evaluate the performance of each method and the sensitivity to noise of linear systems as a comparison parameter to stability. A potential field transformation will also be used to evaluate the quality of the equivalent sources estimation results.

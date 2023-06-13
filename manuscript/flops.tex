@@ -1,7 +1,7 @@
 \section{Numerical simulations}
 \label{sec:num_simulations}
 
-We investigated different computational algorithms for inverting gravity disturbances and total-field anomalies. To test the capability of the fast equivalent-layer technique for processing that potential field data we measure of the computational effort by counting the number of floating-point operations (\textit{flops}), such as additions, subtractions, multiplications, and divisions \citep{golub-vanloan2013} for different number of observation points, ranging from $10,000$ up to $1, 000, 000$. The results generated when using iterative methods are set to $\textit{it} = 50$ for the number of iterations.
+%We investigated different computational algorithms for inverting gravity disturbances and total-field anomalies. To test the capability of the equivalent-layer technique methods for processing that potential field data %we measure the computational effort by counting the number of floating-point operations (\textit{flops}), such as additions, subtractions, multiplications, and divisions \citep{golub-vanloan2013} for different number of %observation points, ranging from $10,000$ up to $1, 000, 000$. The results generated when using iterative methods are set to $\textit{it} = 50$ for the number of iterations.
  
 \subsection{Floating-point operations calculation}
 
@@ -9,7 +9,7 @@ To measure the computational effort of the different algorithms to solve the equ
 
 \subsubsection{Normal equations using Cholesky decomposition}
 
-The equivalent sources can be estimated directly from solving the normal equations \ref{eq:eq:t_data}. In this work we will use the Cholesky decompositions method to calculate the necessary \textit{flops}. In this method it is calculated the lower triangule of $\mathbf{A}^T\mathbf{A}$ ($1/2 N^3$), the Cholesky factor ($1/3 N^3$), a matrix-vector multiplication ($2N^2$) and finally solving the triangular system ($2N^2$), totalizing
+The equivalent sources can be estimated directly from solving the normal equations \ref{eq:t_data}. In this work we will use the Cholesky decompositions method to calculate the necessary \textit{flops}. In this method it is calculated the lower triangule of $\mathbf{A}^T\mathbf{A}$ ($1/2 N^3$), the Cholesky factor ($1/3 N^3$), a matrix-vector multiplication ($2N^2$) and finally solving the triangular system ($2N^2$), totalizing
 
 \begin{equation}
 	f_{classical} = \dfrac{5}{6} N^3 + 4N^2
@@ -18,7 +18,7 @@ The equivalent sources can be estimated directly from solving the normal equatio
 
 \subsubsection{Window method \citep{leao-silva1989}}
 
-The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems with much smaller sizes (equation \ref{eq:p_tk0}). For our results we are considering a data-window of the same size of wich the authors presented in theirs work ($N_w = 49$) and the same number of equivalent sources ($M_w = 225$). We are doing this process for all the other techniques to standardize the resolution of our problem. Using the Cholesky decomposition with this method the \textit{flops} are
+The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems with much smaller sizes (equation \ref{eq:p_tk0}) in comparison to the original $N \times N$ system. For our results we are considering a data-window of the same size of wich the authors presented in theirs work ($N_w = 49$) and the same number of equivalent sources ($M_w = 225$). Using the Cholesky decomposition with this method the \textit{flops} are
 
 \begin{equation}
 	f_{window} = N\dfrac{5}{6} M_w N_w^2 + 4N_w M_w
@@ -27,7 +27,7 @@ The moving data-window scheme \citep{leao-silva1989} solve $N$ linear systems wi
 
 \subsubsection{PEL method \citep{oliveirajr-etal2013}}
 
-The polynomial equivalent layer uses a simliar approach od moving windows from \cite{leao-silva1989}. For this operations calculation (equation \ref{eq:linear_system_pel}) we used a first degree polynomial (two variables) and each window contains $N_s = 1,000$ observed data and $M_s = 1,000$ equivalent sources. Following the steps given in \citep{oliveirajr-etal2013} the total \textit{flops} becomes
+The polynomial equivalent layer uses a similiar approach of moving windows from \cite{leao-silva1989}. For this operations calculation (equation \ref{eq:linear_system_pel}) we used a first degree polynomial (two variables) and each window contains $N_s = 1,000$ observed data and $M_s = 1,000$ equivalent sources. Following the steps given in \citep{oliveirajr-etal2013} the total \textit{flops} becomes
 
 \begin{equation}
 	f_{pel} = \dfrac{1}{3} H^3 + 2H^2 + 2NM_sH + H^2N + 2HN + 2NP
@@ -46,7 +46,7 @@ The CGLS method is a very stable and fast algorithm for solving linear systems i
 
 \subsubsection{Wavelet compression method with CGLS \citep{li-oldenburg2010}}
 
-For the wavelet method (equation \ref{eq:linear_system_li_oldenburg}) we have calculated a coompression rate of $98\%$ ( $C_r = 0.02$ ) for the threshold as the authors used in \cite{li-oldenburg2010} and the wavelet transformation requiring $\log_2(N)$ \textit{flops} each (equations \ref{eq:A_li_oldenburg} and \ref{eq:pl_system_li_oldenburg}c), with its inverse also using the same number of operations (equation \ref{eq:p_li_oldenburg}). Combined with the conjugate gradient least square necessary steps and iterations, the number of \textit{flops} are
+For the wavelet method (equation \ref{eq:linear_system_li_oldenburg}) we have calculated a compression rate of $98\%$ ( $C_r = 0.02$ ) as the authors used in \cite{li-oldenburg2010} and the wavelet transformation requiring $\log_2(N)$ \textit{flops} each (equations \ref{eq:A_li_oldenburg} and \ref{eq:pl_system_li_oldenburg}c), with its inverse also using the same number of operations (equation \ref{eq:p_li_oldenburg}). Combined with the conjugate gradient least square necessary steps and iterations, the number of \textit{flops} are
 
 \begin{equation}
 	f_{wavelet} = 2NC_r + 4N\log_2(N) + it(4N\log_2(N) + 4NC_r + 12C_r)
@@ -55,7 +55,7 @@ For the wavelet method (equation \ref{eq:linear_system_li_oldenburg}) we have ca
 
 \subsubsection{Fast equivalent layer for gravity data \citep{siqueira-etal2017}}
 
-The fast equivalent layer from \cite{siqueira-etal2017} solves the linear system in \textit{it} iterations. The main cost of this method (equations \ref{eq:linear_system_siqueira},\ref{eq:r_siqueira}, \ref{eq:deltap_siqueira} and \ref{eq:p_siqueira})is the matrix-vector multiplication to asses the predicted data ($2N^2$) and three simply element by element vector sum, subtraction and division ($3N$ total)
+The fast equivalent layer from \cite{siqueira-etal2017} solves the linear system in \textit{it} iterations. The main cost of this method (equations \ref{eq:linear_system_siqueira},\ref{eq:r_siqueira}, \ref{eq:deltap_siqueira} and \ref{eq:p_siqueira}) is the matrix-vector multiplication to asses the predicted data ($2N^2$) and three simply element by element vector sum, subtraction and division ($3N$ total)
 
 \begin{equation}
 	f_{siqueira} = it(3N +2N^2)
@@ -85,7 +85,7 @@ It requires a Hadamard product outside of the iterative loop and the matrix-vect
 
 \subsubsection{Deconvolutional method}
 
-The deconvolution method does not require an iterative algorithm, rather it solves the estimative of the physical properties in a single step using the $4N$ eigenvalues of the BCCB matrix as in the convolutional method. From equation \ref{eq:deconvolution_takahashi} it is possible to deduce this method requires two fast Fourier transform ($\kappa4N\log_2(4N)$), one for the eigenvalues and another for the data transformation, a element by element division ($24N$) and finally, a fast inverse Fourier transform for the final estimative ($\kappa4N\log_2(4N)$).
+The deconvolution method does not require an iterative algorithm, rather it solves the estimative of the physical properties in a single step using the $4N$ eigenvalues of the BCCB matrix as in the convolutional method. From equation \ref{eq:deconvolution_takahashi} it is possible to deduce this method requires two fast Fourier transform ($\kappa4N\log_2(4N)$), one for the eigenvalues and another for the data transformation, an element by element division ($24N$) and finally, a fast inverse Fourier transform for the final estimative ($\kappa4N\log_2(4N)$).
 
 \begin{equation}
 	f_{deconv} = \kappa12N\log_2(4N) + 24N

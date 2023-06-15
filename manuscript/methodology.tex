@@ -251,7 +251,7 @@ where $\mathbf{0}$ is a vector of zeros, as well as adding and subtracting the t
 $\left( \mathbf{H}^{\top}\mathbf{G}^{\top}\mathbf{W}_{d} \mathbf{G} \, \mathbf{H} \right) \bar{\mathbf{q}}$ ,
 we obtain
 \begin{equation}
-	\tilde{\boldsymbol{\delta}}_{q} = \mathbf{B} \, \tilde{\boldsymbol{\delta}}_{d} \: ,
+	\tilde{\boldsymbol{\delta}}_{q} = \mathbf{B} \, \boldsymbol{\delta}_{d} \: ,
 	\label{eq:vector-q-tilde}
 \end{equation}
 where 
@@ -260,7 +260,7 @@ where
 	\label{eq:delta-q-tilde}
 \end{equation}
 \begin{equation}
-	\tilde{\boldsymbol{\delta}}_{d} = \mathbf{d} - \mathbf{G} \, \mathbf{H} \, \bar{\mathbf{q}} \: ,
+	\boldsymbol{\delta}_{d} = \mathbf{d} - \mathbf{G} \, \mathbf{H} \, \bar{\mathbf{q}} \: ,
 	\label{eq:delta-d}
 \end{equation}
 \begin{equation}
@@ -287,7 +287,7 @@ for $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}):
 	\mu \, \mathbf{W}_{q} \right) 
 	\tilde{\boldsymbol{\delta}}_{q} = 
 	\mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d} \: 
-	\tilde{\boldsymbol{\delta}}_{d} \: .
+	\boldsymbol{\delta}_{d} \: .
 	\label{eq:delta-q-tilde-overdetermined}
 \end{equation}
 
@@ -299,7 +299,7 @@ for a dummy vector, which is subsequently used to compute $\tilde{\mathbf{q}}$ b
 	\begin{split}
 		\left( \mathbf{G} \, \mathbf{H} \, \mathbf{W}_{q}^{-1} \,
 		\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \mathbf{W}_{d}^{-1} \right)  
-		\mathbf{u} = \tilde{\boldsymbol{\delta}}_{d} \\
+		\mathbf{u} = \boldsymbol{\delta}_{d} \\
 		\tilde{\boldsymbol{\delta}}_{q} = \mathbf{W}_{q}^{-1} \, \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{u}
 	\end{split} \quad ,
 	\label{eq:delta-q-tilde-underdetermined}
@@ -331,13 +331,14 @@ Subvectors of $\mathbf{d}$, for example, are specified by $\mathbf{d}[\mathbf{i}
 list of integer numbers that ``pick out'' the elements of $\mathbf{d}$ forming the subvector $\mathbf{d}[\mathbf{i}]$.
 For example, $\mathbf{i} = (1, 6, 4, 6)$ gives the subvector $\mathbf{d}[\mathbf{i}] = [ d_{1} \:\: d_{6} \:\: d_{4} \:\: d_{6} ]^{\top} $.
 Note that the list $\mathbf{i}$ of indices may be sorted or not and it may also have repeated indices.
-The list may also have a single element $\mathbf{i} = (i)$, which results in the $i$-th element $d_{i} \equiv \mathbf{d}[i]$ of $\mathbf{d}$.
-We may also define regular lists of indices by using the colon notation. For example, 
+For the particular case in which the list has a single element $\mathbf{i} = (i)$, then it can be used to extract the $i$-th element 
+$d_{i} \equiv \mathbf{d}[i]$ of $\mathbf{d}$.
+Regular lists can be represented by using the colon notation. For example, 
 \begin{equation*}
 	\begin{split}
-		\mathbf{i} = (3:8) &\Leftrightarrow \mathbf{d}[3:8] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{8} ]^{\top} \\
-		\mathbf{i} = (:8) &\Leftrightarrow \mathbf{d}[:8] = [ d_{1} \:\: d_{2} \:\: \dots \:\: d_{7} ]^{\top} \\
-		\mathbf{i} = (3:) &\Leftrightarrow \mathbf{d}[3:] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{D} ]^{\top} \\
+		\mathbf{i} = (3:8) &\Leftrightarrow \mathbf{d}[\mathbf{i}] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{8} ]^{\top} \\
+		\mathbf{i} = (:8) &\Leftrightarrow \mathbf{d}[\mathbf{i}] = [ d_{1} \:\: d_{2} \:\: \dots \:\: d_{7} ]^{\top} \\
+		\mathbf{i} = (3:) &\Leftrightarrow \mathbf{d}[\mathbf{i}] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{D} ]^{\top} \\
 	\end{split} \quad ,
 \end{equation*}
 where $D$ is the number of elements forming $\mathbf{d}$.
@@ -697,10 +698,11 @@ using a bisection process.
 This scheme leads to a quadtree representation of the physical-property distribution on the equivalent layer, 
 so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-reparameterized}) is notably sparse.
 \cite{barnes-lumley_2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
-(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method.
-Here, we consider the \textit{conjugate gradient normal equation residual} (CGNR) 
-\citet[][sec. 11.3]{golub-vanloan2013} as a reference, which is also known as \textit{conjugate gradient least squares} (CGLS) 
-\cite[][p. 165]{aster_etal2019}.
+(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
+
+%Here, we consider the \textit{conjugate gradient normal equation residual} (CGNR) 
+%\citet[][sec. 11.3]{golub-vanloan2013} as a reference, which is also known as \textit{conjugate gradient least squares} (CGLS) 
+%\cite[][p. 165]{aster_etal2019}.
 
 
 \subsection{Wavelet compression}
@@ -712,7 +714,26 @@ and sets to zero the small coefficients that are below a given threshold, which 
 sparse representation of $\mathbf{G}$ in the wavelet domain.
 Their method requires 
 
+\begin{equation}
+	\mathbf{d}_{w} \approx \mathbf{G}_{w} \, \mathbf{p}_{w} \: ,
+	\label{eq:linear-system-wavelet-domain}
+\end{equation}
+
+\begin{equation}
+	\begin{split}
+		\mathbf{d}_{w} &= \boldsymbol{\mathcal{W}} \, \mathbf{d} \\
+		\mathbf{p}_{w} &= \boldsymbol{\mathcal{W}}^{\top} \mathbf{p} \\
+		\mathbf{G}_{w} &= \boldsymbol{\mathcal{W}} \, \mathbf{G} \, \boldsymbol{\mathcal{W}}
+	\end{split}
+	\label{vectors-dw-pw}
+\end{equation}
+
+\begin{equation}
+	\left( \mathbf{G}_{s}^{\top}\mathbf{G}_{s} + \mu \, \mathbf{W}_{p} \right) 
+\end{equation}
+
 PAREI AQUI
+
 
 \subsection{Iterative methods using the original $\mathbf{G}$}
 

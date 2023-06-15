@@ -709,28 +709,59 @@ so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-rep
 
 Previously to \cite{barnes-lumley_2011}, the idea of transforming the dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
 into a sparse one has already been used in the context of equivalent-layer technique.
-\cite{li-oldenburg_2010} proposed a method that applies the wavelet transform to the original dense matrix $\mathbf{G}$ 
-and sets to zero the small coefficients that are below a given threshold, which results in an approximating
-sparse representation of $\mathbf{G}$ in the wavelet domain.
-Their method requires 
-
+\cite{li-oldenburg_2010} proposed a method that applies the discrete wavelet transform to introduce sparsity into 
+the original dense matrix $\mathbf{G}$.
+Those authors approximate a planar grid of potential-field data by a regularly-spaced grid of equivalent sources,
+so that the number of data $D$ and sources $P$ is the same , i.e., $D = P$.
+Specifically, \cite{li-oldenburg_2010} proposed a method that applies the wavelet transform to the original dense 
+matrix $\mathbf{G}$ and sets to zero the small coefficients that are below a given threshold, which results in an 
+approximating sparse representation of $\mathbf{G}$ in the wavelet domain.
+They first consider the following approximation
 \begin{equation}
-	\mathbf{d}_{w} \approx \mathbf{G}_{w} \, \mathbf{p}_{w} \: ,
-	\label{eq:linear-system-wavelet-domain}
+	\mathbf{d}_{w} \approx \mathbf{G}_{L} \, \mathbf{p}_{L} \: ,
+	\label{eq:approximated-linear-system-wavelet-domain}
+\end{equation}
+where 
+\begin{equation}
+	\mathbf{d}_{w} = \boldsymbol{\mathcal{W}} \, \mathbf{d} \: ,
+	\label{eq:vector-dw}
+\end{equation}
+is the observed data in the wavelet domain; $\boldsymbol{\mathcal{W}}$ is a $D \times D$ orthogonal matrix defining a 
+discrete wavelet transform; 
+\begin{equation}
+	\mathbf{G}_{L} = \mathbf{G}_{s} \, \mathbf{L}^{-1} \: ,
+	\label{eq:matrix-GL}
+\end{equation}
+is defined in terms of a diagonal matrix $\mathbf{L}$ and a sparse matrix $\mathbf{G}_{s}$, which is obtained by setting to zero the 
+elements of
+\begin{equation}
+	\mathbf{G}_{w} = \boldsymbol{\mathcal{W}} \, \mathbf{G} \, \boldsymbol{\mathcal{W}}
+	\label{eq:matrix-Gw}
+\end{equation}
+with absolute value smaller than a given threshold; and
+\begin{equation}
+	\mathbf{p}_{L} = \mathbf{L} \, \boldsymbol{\mathcal{W}} \, \mathbf{p} \: .
+	\label{eq:vector-pL}
 \end{equation}
 
+\cite{li-oldenburg_2010} formulate an overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) for obtaining an estimate
+$\tilde{\mathbf{p}}_{L}$ for $\mathbf{p}_{L}$ (equations \ref{eq:approximated-linear-system-wavelet-domain} and \ref{eq:vector-pL}) 
+by using $\mathbf{H} = \mathbf{I}_{P}$ (equations \ref{eq:reparameterization}),
+$\mu = 0$ (equation \ref{eq:function-Gamma}), 
+$\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}) and 
+$\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}) so that
 \begin{equation}
-	\begin{split}
-		\mathbf{d}_{w} &= \boldsymbol{\mathcal{W}} \, \mathbf{d} \\
-		\mathbf{p}_{w} &= \boldsymbol{\mathcal{W}}^{\top} \mathbf{p} \\
-		\mathbf{G}_{w} &= \boldsymbol{\mathcal{W}} \, \mathbf{G} \, \boldsymbol{\mathcal{W}}
-	\end{split}
-	\label{vectors-dw-pw}
+	\left( \mathbf{G}_{L}^{\top}\mathbf{G}_{L} \right) \tilde{\mathbf{p}}_{L} 
+	= \mathbf{G}_{L}^{\top}\mathbf{d}_{w} \: .
+	\label{eq:overdetermined-problem-wavelet-domain}
+\end{equation}
+They solve this linear system (equation \ref{eq:overdetermined-problem-wavelet-domain}) iteratively by using the conjugate-gradient method
+\cite[e.g.,][sec. 11.3]{golub-vanloan2013} and use it to obtain an estimate $\tilde{\mathbf{p}}$ for the parameter vector given by
+\begin{equation}
+	\tilde{\mathbf{p}} = \boldsymbol{\mathcal{W}}^{\top} \, \mathbf{L}^{-1} \, \tilde{\mathbf{p}}_{L} \: .
+	\label{eq:vector-p-tilde-LO10}
 \end{equation}
 
-\begin{equation}
-	\left( \mathbf{G}_{s}^{\top}\mathbf{G}_{s} + \mu \, \mathbf{W}_{p} \right) 
-\end{equation}
 
 PAREI AQUI
 

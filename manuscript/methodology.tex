@@ -727,11 +727,6 @@ so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-rep
 \cite{barnes-lumley_2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
 (equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
 
-%Here, we consider the \textit{conjugate gradient normal equation residual} (CGNR) 
-%\citet[][sec. 11.3]{golub-vanloan2013} as a reference, which is also known as \textit{conjugate gradient least squares} (CGLS) 
-%\cite[][p. 165]{aster_etal2019}.
-
-
 \subsection{Wavelet compression}
 
 Previously to \cite{barnes-lumley_2011}, the idea of transforming the dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
@@ -785,11 +780,35 @@ They solve this linear system (equation \ref{eq:overdetermined-problem-wavelet-d
 where the term within parentheses removes the normalization (equation \ref{eq:normalization-revome}) and matrix
 $\boldsymbol{\mathcal{W}}^{\top}$ applies an inverse wavelet transform. 
 
+\subsection{Iterative methods using the full matrix $\mathbf{G}$}
+
+In the context of equivalent-layer technique, there are methods that modify the original linear system and
+then iteratively solve this modified system by using the conjugate gradient method \cite[e.g.,][]{li-oldenburg_2010, barnes-lumley_2011}.
+The conjugate gradient (CG) is a very popular iterative method for solving linear systems.
+This method was originally developed to solve systems having a square and positive definite matrix.
+There are two adapted versions of the CG method. The first is called \textit{conjugate gradient normal equation residual} (CGNR) 
+\citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) \cite[][p. 165]{aster_etal2019} and is
+used to solve overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}). 
+The second is called \textit{conjugate gradient normal equation error} (CGNE) method 
+\citet[][sec. 11.3]{golub-vanloan2013} and is used to solve the underdetermined problem (equation \ref{eq:delta-q-tilde-underdetermined}).
+
+\cite{xia-sprowl1991} also proposed a method for estimating a parameter 
+vector $\tilde{\mathbf{p}}$ by using the original matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector})
+without previously computing a compression of reparameterization, for example.
+Those authors have followed a purely numerical approach for deducing their method.
+More than two decades later, \cite{siqueira-etal2017} have started from the Gauss' theorem \cite[prefix][p. 43]{kellogg1967}
+and the total excess of mass \cite[][p. 60]{blakely1996} to deduce essentially the same method.
+This iterative method is outlined by Algorithm \ref{alg:XS91-SOB17}.
+Note that the residuals $\mathbf{r}$ are used to compute a correction $\boldsymbol{\Delta}\mathbf{p}$
+for the parameter vector at each iteration.
+\citet{siqueira-etal2017} have shown that this method produces very stable solutions even for noise-corrupted potential-field data.
 
 PAREI AQUI
 
+\cite{jirigalatu-ebbing2019}: $\tilde{\mathbf{p}} = \omega \, \mathbf{G}^{\top} \mathbf{r}$
 
-\subsection{Iterative methods using the original $\mathbf{G}$}
+\cite{xia-etal1993} - Fourier
+
 
 \begin{algorithm}
 	%\SetAlgoLined
@@ -806,16 +825,12 @@ PAREI AQUI
 		$\mathbf{r} \gets \mathbf{r} - \mathbf{G} \, \boldsymbol{\Delta}\mathbf{p}$ \;
 		Compute $\| \mathbf{r} \|$ \;
 	}
-	\caption{Generic pseudo-code for the iterative methods proposed by \cite{xia-sprowl1991} and \cite{siqueira-etal2017}.}
+	\caption{Generic pseudo-code for the iterative methods proposed by \cite{xia-sprowl1991} and \cite{siqueira-etal2017}.
+	The symbol ``$\circ$'' denotes the entrywise or Hadamard product \cite[e.g.,][p. 298]{horn-johnson1991} and
+	$\mathbf{s}$ is a $P \times 1$ vector whose $j$-th element is a predefined element of area centered at the $j$-th
+	equivalent source.}
 	\label{alg:XS91-SOB17}
 \end{algorithm}
-
-\cite{jirigalatu-ebbing2019}: $\tilde{\mathbf{p}} = \omega \, \mathbf{G}^{\top} \mathbf{r}$
-
-\cite{xia-etal1993} - Fourier
-
-
-
 
 \subsection{Discrete convolution}
 

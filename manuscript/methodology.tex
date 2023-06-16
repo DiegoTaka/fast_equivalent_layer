@@ -203,7 +203,7 @@ Note that the original parameter vector $\mathbf{p}$ is defined in a $P$-dimensi
 parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization}) lies in a $Q$-dimensional space.
 For convenience, we use the terms $P$-space and $Q$-space to designate them.
 
-Then, the problem of estimating a parameter vector $\tilde{\mathbf{p}}$ minimizing a length 
+In this case, the problem of estimating a parameter vector $\tilde{\mathbf{p}}$ minimizing a length 
 measure of the difference between $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) and $\mathbf{d}$
 is replaced by that of estimating an auxiliary vector $\tilde{\mathbf{q}}$ minimizing the goal function
 \begin{equation}
@@ -220,7 +220,8 @@ and
 	\Theta(\mathbf{q}) = \left( \mathbf{q} - \bar{\mathbf{q}} \right)^{\top}\mathbf{W}_{q}\left( \mathbf{q} - \bar{\mathbf{q}} \right) \: ,
 	\label{eq:function-Theta}
 \end{equation}
-where $\mu$ is a positive scalar controlling the trade-off between $\Phi(\mathbf{q})$ and $\Theta(\mathbf{q})$; 
+where the regularization parameter $\mu$ is a positive scalar controlling the trade-off between the data-misfit function 
+$\Phi(\mathbf{q})$ and the regularization function $\Theta(\mathbf{q})$; 
 $\mathbf{W}_{d}$ is a $D \times D$ symmetric matrix defining the relative importance of each observed datum $d_{i}$;
 $\mathbf{W}_{q}$ is a $Q \times Q$ symmetric matrix imposing prior information on $\mathbf{q}$;
 and $\bar{\mathbf{q}}$ is a $Q \times 1$ vector of reference values for $\mathbf{q}$ that satisfies
@@ -307,6 +308,30 @@ for a dummy vector, which is subsequently used to compute $\tilde{\mathbf{q}}$ b
 where $\mathbf{u}$ is a dummy vector.
 After obtaining $\tilde{\boldsymbol{\delta}}_{q}$ (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}),
 the estimate $\tilde{\mathbf{q}}$ is computed with equation \ref{eq:delta-q-tilde}.
+
+\subsubsection{Optional normalization strategy}
+\label{subsubsec:normalization}
+
+Setting the regularization parameter $\mu$ (equation \ref{eq:function-Gamma}) can be very difficult due to scale differences
+between $\mathbf{G}$ and $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) or $\mathbf{G}\mathbf{H}$ and $\mathbf{q}$
+(equation \ref{eq:reparameterization}. 
+When faced with this scenario, a popular strategy \cite[e.g.,][]{li-oldenburg_2010, soler-uieda2021}
+involves creating the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and 
+\ref{eq:delta-q-tilde-underdetermined}) by substituting $\mathbf{G}\mathbf{H}$ and $\mathbf{q}$ with 
+\begin{equation}
+	\mathbf{G}_{n} = \mathbf{G} \, \mathbf{H} \, \mathbf{N} \: , \quad 
+	\mathbf{q}_{n} = \mathbf{N}^{-1} \mathbf{q} \: ,
+	\label{eq:normalization}
+\end{equation}
+and then finding the solution $\tilde{\mathbf{q}}_{n}$ for the normalized parameter vector $\mathbf{q}_{n}$.
+The estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization})
+is subsequently obtained by removing the normalization as follows:
+\begin{equation}
+	\tilde{\mathbf{q}} = \mathbf{N} \, \tilde{\mathbf{q}}_{n} \: ,
+	\label{eq:normalization-revome}
+\end{equation}
+where $\mathbf{N}$ is an invertible normalization matrix.
+This strategy usually constrains the practical range of the regularization parameter $\mu$ (equation \ref{eq:function-Gamma}).
 
 \section{Computational strategies}
 
@@ -483,8 +508,10 @@ and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so 
 	\mathbf{d}^{m} \: .
 	\label{eq:p-tilde-m-SU21}
 \end{equation}
+It is important to stress here that \cite{soler-uieda2021} used the normalization strategy described in section \ref{subsubsec:normalization},
+but we have conveniently omitted here.
 The overall steps of their method are defined by the Algorithm \ref{alg:SU21}.
-Note that Algorithm \ref{alg:SU21} starts with a residuals vector $\mathbf{r}$ that is iteratively updated.
+Note that this algorithm starts with a residuals vector $\mathbf{r}$ that is iteratively updated.
 At each iteration, the potential field predicted a source window is computed at all observation points and removed from the
 residuals vector $\mathbf{r}$.
 
@@ -718,49 +745,45 @@ matrix $\mathbf{G}$ and sets to zero the small coefficients that are below a giv
 approximating sparse representation of $\mathbf{G}$ in the wavelet domain.
 They first consider the following approximation
 \begin{equation}
-	\mathbf{d}_{w} \approx \mathbf{G}_{L} \, \mathbf{p}_{L} \: ,
+	\mathbf{d}_{w} \approx \mathbf{G}_{s} \, \mathbf{p}_{w} \: ,
 	\label{eq:approximated-linear-system-wavelet-domain}
 \end{equation}
 where 
 \begin{equation}
-	\mathbf{d}_{w} = \boldsymbol{\mathcal{W}} \, \mathbf{d} \: ,
-	\label{eq:vector-dw}
+	\mathbf{d}_{w} = \boldsymbol{\mathcal{W}} \, \mathbf{d} \: , \quad 
+	\mathbf{p}_{w} = \boldsymbol{\mathcal{W}} \, \mathbf{p} \: ,
+	\label{eq:vectors-dw-pw}
 \end{equation}
-is the observed data in the wavelet domain; $\boldsymbol{\mathcal{W}}$ is a $D \times D$ orthogonal matrix defining a 
-discrete wavelet transform; 
-\begin{equation}
-	\mathbf{G}_{L} = \mathbf{G}_{s} \, \mathbf{L}^{-1} \: ,
-	\label{eq:matrix-GL}
-\end{equation}
-is defined in terms of a diagonal matrix $\mathbf{L}$ and a sparse matrix $\mathbf{G}_{s}$, which is obtained by setting to zero the 
-elements of
+are the observed data and parameter vector in the wavelet domain; $\boldsymbol{\mathcal{W}}$ is a $D \times D$ orthogonal matrix defining a 
+discrete wavelet transform; and $\mathbf{G}_{s}$ is a sparse matrix obtained by setting to zero the elements of
 \begin{equation}
 	\mathbf{G}_{w} = \boldsymbol{\mathcal{W}} \, \mathbf{G} \, \boldsymbol{\mathcal{W}}
 	\label{eq:matrix-Gw}
 \end{equation}
-with absolute value smaller than a given threshold; and
-\begin{equation}
-	\mathbf{p}_{L} = \mathbf{L} \, \boldsymbol{\mathcal{W}} \, \mathbf{p} \: .
-	\label{eq:vector-pL}
-\end{equation}
+with absolute value smaller than a given threshold.
 
-\cite{li-oldenburg_2010} formulate an overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) for obtaining an estimate
-$\tilde{\mathbf{p}}_{L}$ for $\mathbf{p}_{L}$ (equations \ref{eq:approximated-linear-system-wavelet-domain} and \ref{eq:vector-pL}) 
-by using $\mathbf{H} = \mathbf{I}_{P}$ (equations \ref{eq:reparameterization}),
+\cite{li-oldenburg_2010} apply the normalization strategy defined in section \ref{subsubsec:normalization} to 
+equation \ref{eq:approximated-linear-system-wavelet-domain} by using a diagonal normalization matrix $\mathbf{N}$ 
+(equation \ref{eq:normalization}) and then formulate an overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) 
+with $\mathbf{H} = \mathbf{I}_{P}$ (equations \ref{eq:reparameterization}),
 $\mu = 0$ (equation \ref{eq:function-Gamma}), 
 $\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}) and 
 $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}) so that
 \begin{equation}
-	\left( \mathbf{G}_{L}^{\top}\mathbf{G}_{L} \right) \tilde{\mathbf{p}}_{L} 
-	= \mathbf{G}_{L}^{\top}\mathbf{d}_{w} \: .
+	\left( \mathbf{G}_{n}^{\top}\mathbf{G}_{n} \right) \tilde{\mathbf{p}}_{n} 
+	= \mathbf{G}_{n}^{\top}\mathbf{d}_{w} \: ,
 	\label{eq:overdetermined-problem-wavelet-domain}
 \end{equation}
-They solve this linear system (equation \ref{eq:overdetermined-problem-wavelet-domain}) iteratively by using the conjugate-gradient method
+where $\mathbf{G}_{n}$ and $\tilde{\mathbf{p}}_{n}$ are defined according to equation \ref{eq:normalization} in terms of the sparse matrix 
+$\mathbf{G}_{s}$ (equation \ref{eq:approximated-linear-system-wavelet-domain}).
+They solve this linear system (equation \ref{eq:overdetermined-problem-wavelet-domain}) with the conjugate-gradient method
 \cite[e.g.,][sec. 11.3]{golub-vanloan2013} and use it to obtain an estimate $\tilde{\mathbf{p}}$ for the parameter vector given by
 \begin{equation}
-	\tilde{\mathbf{p}} = \boldsymbol{\mathcal{W}}^{\top} \, \mathbf{L}^{-1} \, \tilde{\mathbf{p}}_{L} \: .
+	\tilde{\mathbf{p}} = \boldsymbol{\mathcal{W}}^{\top} \left( \mathbf{N} \, \tilde{\mathbf{p}}_{n} \right) \: ,
 	\label{eq:vector-p-tilde-LO10}
 \end{equation}
+where the term within parentheses removes the normalization (equation \ref{eq:normalization-revome}) and matrix
+$\boldsymbol{\mathcal{W}}^{\top}$ applies an inverse wavelet transform. 
 
 
 PAREI AQUI
@@ -768,17 +791,30 @@ PAREI AQUI
 
 \subsection{Iterative methods using the original $\mathbf{G}$}
 
-Ideia: descrever o conjugate gradient e depois as diferenças dos outros métodos iterativos - esta ideia é ruim
-porque vai ser necessario reescrever os sistemas com matrizes CCT e CTC. Isso necessita definir as matrizes
-Wq e Wd como WqTWq ou WqWqT, a depender do problema.
+\begin{algorithm}
+	%\SetAlgoLined
+	\Input{}
+	Set the auxiliary vector $\mathbf{s}$ \;
+	Set a tolerance $\epsilon$ \;
+	Compute $\tilde{\mathbf{p}} = \mathbf{s} \circ \mathbf{d}$ \;
+	Compute $\mathbf{G}$ \;
+	Compute $\mathbf{r} = \mathbf{d} - \mathbf{G} \, \tilde{\mathbf{p}}$ \;
+	Compute $\| \mathbf{r} \|$ \;
+	\While{$(\| \mathbf{r} \| > \epsilon)$}{
+		$\boldsymbol{\Delta}\mathbf{p} = \mathbf{s} \circ \mathbf{r}$ \;
+		$\tilde{\mathbf{p}} \gets \tilde{\mathbf{p}} + \boldsymbol{\Delta}\mathbf{p}$ \;
+		$\mathbf{r} \gets \mathbf{r} - \mathbf{G} \, \boldsymbol{\Delta}\mathbf{p}$ \;
+		Compute $\| \mathbf{r} \|$ \;
+	}
+	\caption{Generic pseudo-code for the iterative methods proposed by \cite{xia-sprowl1991} and \cite{siqueira-etal2017}.}
+	\label{alg:XS91-SOB17}
+\end{algorithm}
 
-\cite{xia-sprowl1991}
+\cite{jirigalatu-ebbing2019}: $\tilde{\mathbf{p}} = \omega \, \mathbf{G}^{\top} \mathbf{r}$
 
-\cite{xia-etal1993}
+\cite{xia-etal1993} - Fourier
 
-\cite{siqueira-etal2017}
 
-\cite{jirigalatu-ebbing2019}
 
 
 \subsection{Discrete convolution}

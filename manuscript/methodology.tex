@@ -798,9 +798,14 @@ The iterative method proposed by \citet{xia-sprowl1991} and \citet{siqueira-etal
 presumes an equivalent layer formed by monopoles (point masses) and can be applied to
 irregularly-spaced data on an undulating surface.
 Note that the residuals $\mathbf{r}$ are used to compute a correction $\boldsymbol{\Delta}\mathbf{p}$
-for the parameter vector at each iteration.
+for the parameter vector at each iteration (line 11), which requires a matrix-vector product involving the 
+full matrix $\mathbf{G}$.
 Interestingly, this approach for estimating the physical property distribution on an equivalent layer 
 is the same originally proposed by \citet{bott1960} for estimating the basement relief under sedimentary basins.
+The method of \citet{xia-sprowl1991} and \citet{siqueira-etal2017} was originally proposed for processing gravity data,
+but can be potentially applied to any harmonic function because it actually represents an iterative solution of the 
+classical \textit{Dirichlet’s problem} or the \textit{first boundary value problem of potential theory} 
+\cite[][ p. 236]{kellogg1967} on a plane.
 
 Recently, \citet{jirigalatu-ebbing2019} presented another iterative method for estimating a parameter 
 vector $\tilde{\mathbf{p}}$ (equation \ref{eq:predicted-data-vector}). 

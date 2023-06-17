@@ -782,37 +782,47 @@ $\boldsymbol{\mathcal{W}}^{\top}$ applies an inverse wavelet transform.
 
 \subsection{Iterative methods using the full matrix $\mathbf{G}$}
 
-In the context of equivalent-layer technique, there are methods that modify the original linear system and
-then iteratively solve this modified system by using the conjugate gradient method \cite[e.g.,][]{li-oldenburg_2010, barnes-lumley_2011}.
-The conjugate gradient (CG) is a very popular iterative method for solving linear systems.
-This method was originally developed to solve systems having a square and positive definite matrix.
-There are two adapted versions of the CG method. The first is called \textit{conjugate gradient normal equation residual} (CGNR) 
-\citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) \cite[][p. 165]{aster_etal2019} and is
-used to solve overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}). 
-The second is called \textit{conjugate gradient normal equation error} (CGNE) method 
-\citet[][sec. 11.3]{golub-vanloan2013} and is used to solve the underdetermined problem (equation \ref{eq:delta-q-tilde-underdetermined}).
+In the context of equivalent-layer technique, there are methods \cite[e.g.,][]{li-oldenburg_2010, barnes-lumley_2011} 
+that modify the original linear system and then iteratively solve this modified system by using the 
+well-established conjugate gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
+\citet{xia-sprowl1991} also proposed an iterative method for estimating a parameter 
+vector $\tilde{\mathbf{p}}$ (equation \ref{eq:predicted-data-vector}).
+Their method, however, uses the original matrix $\mathbf{G}$ 
+without previously computing a compression or reparameterization, for example.
+More than two decades later, \cite{siqueira-etal2017} have deduced essentially the same method presented by \citet{xia-sprowl1991},
+but by following a more theoretical approach based on the Gauss' theorem \cite[e.g.,][p. 43]{kellogg1967}
+and the total excess of mass \cite[e.g.,][p. 60]{blakely1996}.
+Besides, \citet{siqueira-etal2017} have shown that this method produces very stable solutions, even for noise-corrupted potential-field data.
 
-\cite{xia-sprowl1991} also proposed a method for estimating a parameter 
-vector $\tilde{\mathbf{p}}$ by using the original matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector})
-without previously computing a compression of reparameterization, for example.
-Those authors have followed a purely numerical approach for deducing their method.
-More than two decades later, \cite{siqueira-etal2017} have started from the Gauss' theorem \cite[prefix][p. 43]{kellogg1967}
-and the total excess of mass \cite[][p. 60]{blakely1996} to deduce essentially the same method.
-This iterative method is outlined by Algorithm \ref{alg:XS91-SOB17}.
+The iterative method proposed by \citet{xia-sprowl1991} and \citet{siqueira-etal2017} is outlined in Algorithm \ref{alg:XS91-SOB17},
+presumes an equivalent layer formed by monopoles (point masses) and can be applied to
+irregularly-spaced data on an undulating surface.
 Note that the residuals $\mathbf{r}$ are used to compute a correction $\boldsymbol{\Delta}\mathbf{p}$
 for the parameter vector at each iteration.
-\citet{siqueira-etal2017} have shown that this method produces very stable solutions even for noise-corrupted potential-field data.
+Interestingly, this approach for estimating the physical property distribution on an equivalent layer 
+is the same originally proposed by \citet{bott1960} for estimating the basement relief under sedimentary basins.
 
-PAREI AQUI
+Recently, \citet{jirigalatu-ebbing2019} presented another iterative method for estimating a parameter 
+vector $\tilde{\mathbf{p}}$ (equation \ref{eq:predicted-data-vector}). 
+With the purpose of combining different potential-field data, 
+their method basically modifies that shown in Algorithm \ref{alg:XS91-SOB17} by changing the initial approximation 
+and the iterative correction for the parameter vector.
+Specifically, \citet{jirigalatu-ebbing2019} replace line 3 by $\tilde{\mathbf{p}} = \mathbf{0}$, where $\mathbf{0}$ is a vector of zeros,
+and line 8 by $\boldsymbol{\Delta}\mathbf{p} = \omega \, \mathbf{G}^{\top} \mathbf{r}$, where $\omega$ is a positive
+scalar defined by trial and error.
+Note that this modified approach requires two matrix-vector products involving the full matrix $\mathbf{G}$ per iteration.
+To overcome the high computational cost of these two products, \citet{jirigalatu-ebbing2019} set an equivalent layer formed by
+prisms and compute their predicted potential field in the wavenumber domain by using the Gauss-FFT technique
+\cite{zhao-etal2018}.
 
-\cite{jirigalatu-ebbing2019}: $\tilde{\mathbf{p}} = \omega \, \mathbf{G}^{\top} \mathbf{r}$
 
-\cite{xia-etal1993} - Fourier
+INCLUIMOS \cite{xia-etal1993} - FOURIER - OU NÃO?
 
 
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
+	Set $P$ equivalent sources on a horizontal plane $z_{0}$ \;
 	Set the auxiliary vector $\mathbf{s}$ \;
 	Set a tolerance $\epsilon$ \;
 	Compute $\tilde{\mathbf{p}} = \mathbf{s} \circ \mathbf{d}$ \;
@@ -833,6 +843,14 @@ PAREI AQUI
 \end{algorithm}
 
 \subsection{Discrete convolution}
+
+The conjugate gradient (CG) is a very popular iterative method for solving linear systems.
+This method was originally developed to solve systems having a square and positive definite matrix.
+There are two adapted versions of the CG method. The first is called \textit{conjugate gradient normal equation residual} (CGNR) 
+\citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) \cite[][p. 165]{aster_etal2019} and is
+used to solve overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}). 
+The second is called \textit{conjugate gradient normal equation error} (CGNE) method 
+\citet[][sec. 11.3]{golub-vanloan2013} and is used to solve the underdetermined problem (equation \ref{eq:delta-q-tilde-underdetermined}).
 
 \cite{takahashi-etal2020}
 

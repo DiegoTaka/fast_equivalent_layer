@@ -58,7 +58,8 @@
 %These strategies are the following:
 
 Let $\mathbf{d}$ be a $D \times 1$ vector, whose $i$-th element $d_{i}$ is the observed potential
-field at the position $(x_{i}, y_{i}, z_{i})$, $i \in \{1:D\}$.
+field at the position $(x_{i}, y_{i}, z_{i})$, $i \in \{1:D\}$, of a topocentric Cartesian system with
+$x$, $y$ and $z$ axes pointing to north, east and down, respectively.
 Consider that $d_{i}$ can be satisfactorily approximated by a harmonic function
 \begin{equation}
 	f_{i} = \sum\limits_{j = 1}^{P} g_{ij} \, p_{j} \: ,
@@ -362,7 +363,7 @@ Regular lists can be represented by using the colon notation. For example,
 \begin{equation*}
 	\begin{split}
 		\mathbf{i} = (3:8) &\Leftrightarrow \mathbf{d}[\mathbf{i}] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{8} ]^{\top} \\
-		\mathbf{i} = (:8) &\Leftrightarrow \mathbf{d}[\mathbf{i}] = [ d_{1} \:\: d_{2} \:\: \dots \:\: d_{7} ]^{\top} \\
+		\mathbf{i} = (:8) &\Leftrightarrow \mathbf{d}[\mathbf{i}] = [ d_{1} \:\: d_{2} \:\: \dots \:\: d_{8} ]^{\top} \\
 		\mathbf{i} = (3:) &\Leftrightarrow \mathbf{d}[\mathbf{i}] = [ d_{3} \:\: d_{4} \:\: \dots \:\: d_{D} ]^{\top} \\
 	\end{split} \quad ,
 \end{equation*}
@@ -848,6 +849,37 @@ INCLUIMOS \cite{xia-etal1993} - FOURIER - OU NÃO?
 \end{algorithm}
 
 \subsection{Discrete convolution}
+
+Recently, \citet{takahashi-etal2020,takahashi-etal2022} have shown that $\mathbf{G}$ assumes a 
+\textit{doubly block Toeplitz} \cite[][p. 28]{jain1989} or \textit{block-Toeplitz Toeplitz-block} (BTTB) 
+\cite[][p. 67]{chan-jin2007} structure 
+for the particular case in which (i) there is a single equivalent source right below each potential-field
+datum and (ii) both data and sources rely on planar and regularly spaced grids. 
+This structure allows formulating the product
+of $\mathbf{G}$ and an arbitrary vector as a \textit{fast discrete convolution} \cite[][section 4.2]{vanloan1992}.
+
+\citet{takahashi-etal2020,takahashi-etal2022} consider a regular grid of $D$ 
+potential-field data at points $(x_{i}, y_{i}, z_{0})$, $i \in \{1:D\}$, on a horizontal plane $z_{0}$.
+The data indices $i$ may be ordered along the $x-$ or $y-$direction, which results in an
+$x-$ or $y-$oriented grid, respectively.
+They also consider a single equivalent source located right below each datum, at a constant vertical coordinate
+$z_{0} + \Delta z$, $\Delta z > 0$.
+In this case, the number of data and equivalent sources are equal to each other (i.e., $D = P$) and
+$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is a $D \times D$ matrix formed by $D_{B} \times D_{B}$
+blocks, where each block has $D_{b} \times D_{b}$ elements, with $D = D_{B} \, D_{b}$.
+
+Let $\boldsymbol{\mathcal{D}}$ be a $2 D_{B} \times 2 D_{b}$ matrix formed by four blocks 
+of $D_{B} \times D_{b}$ elements.
+All blocks have null elements, except the first block in the first quadrant, which has the observed data
+$d_{i}$, $i \in \{1:D\}$ arranged along its rows or columns if the data grid has a $x-$ or $y-$oriented pattern,
+respectively.
+Let us also consider a $2 D_{B} \times 2 D_{b}$ matrix $\boldsymbol{\mathcal{P}}$ having the
+same structure of $\boldsymbol{\mathcal{D}}$, but containing the elements $p_{j}$ of the parameter vector 
+$\mathbf{p}$, $j \in \{1:P\}$.
+
+
+The first block (in the first quadrant) contains  
+
 
 The conjugate gradient (CG) is a very popular iterative method for solving linear systems.
 This method was originally developed to solve systems having a square and positive definite matrix.

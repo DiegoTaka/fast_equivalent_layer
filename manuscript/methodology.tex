@@ -189,13 +189,15 @@ On the other hand, $g_{ij}$ is commonly defined as a component of the
 magnetic induction field produced at $(x_{i}, y_{i}, z_{i})$ by a dipole or prism located at $(x_{j}, y_{j}, z_{j})$,
 with unit magnetization intensity, when the observed potential field is magnetic data.
 
-For all harmonic functions discussed above, the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
-is always dense. For scattered potential-field data, $\mathbf{G}$ does not have a well-defined structure, regardless of
-whether the spatial distribution of the equivalent sources is set.
-Nevertheless, for the particular case in which (i) there is a single equivalent source right below each potential-field
-datum and (ii) both data and sources rely on planar and regularly spaced grids, \citet{takahashi-etal2020,takahashi-etal2022}
-show that $\mathbf{G}$ assumes a block-Toeplitz Toeplitz-block (BTTB) structure. In this case, the product of $\mathbf{G}$ and an 
-arbitrary vector can be efficiently computed via 2D fast Fourier transform as a discrete convolution.
+The main challenge in the equivalent-layer technique is the computational complexity associated with handling large datasets. 
+This complexity arises because the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is dense regardless of the 
+harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij}) employed. 
+In the case of scattered potential-field data, the structure of $\mathbf{G}$  is not well-defined, regardless of the spatial distribution 
+of the equivalent sources.
+However, in a specific scenario where (i) each potential-field datum is directly associated with a single equivalent source located directly below it, 
+and (ii) both the data and sources are based on planar and regularly spaced grids,  \citet{takahashi-etal2020,takahashi-etal2022} demonstrate that 
+$\mathbf{G}$ exhibits a block-Toeplitz Toeplitz-block (BTTB) structure. 
+In such cases, the product of $\mathbf{G}$ and an arbitrary vector can be efficiently computed using a 2D fast Fourier transform as a discrete convolution.
 
 \subsection{General formulation}
 \label{subsec:general-formulation}
@@ -294,8 +296,8 @@ or, equivalently \cite[][p. 62]{menke2018},
 \end{equation}
 Evidently, we have considered that all inverses exist in equations \ref{eq:matrix-B-overdetermined} and \ref{eq:matrix-B-underdetermined}.
 
-Matrix $\mathbf{B}$ defined by equation \ref{eq:matrix-B-overdetermined} is commonly used for the cases in which $D > P$, i.e., when
-there are more data than parameters (overdetermined problems).
+The $Q \times D$ matrix $\mathbf{B}$ defined by equation \ref{eq:matrix-B-overdetermined} is commonly used for the case 
+in which $D > Q$, i.e., when there are more data than parameters (overdetermined problems).
 In this case, we consider that the estimate $\tilde{\mathbf{q}}$ is obtained by solving the following linear system
 for $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}):
 \begin{equation}
@@ -306,8 +308,7 @@ for $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}):
 	\boldsymbol{\delta}_{d} \: .
 	\label{eq:delta-q-tilde-overdetermined}
 \end{equation}
-
-On the other hand, for the cases in which $D < P$ (underdetermined problems), matrix $\mathbf{B}$ is 
+On the other hand, for the cases in which $D < Q$ (underdetermined problems), matrix $\mathbf{B}$ is 
 usually defined according to equation \ref{eq:matrix-B-underdetermined}. In this case, the general approach involves 
 estimating $\tilde{\mathbf{q}}$ in two steps. The first consists in solving a linear system 
 for a dummy vector, which is subsequently used to compute $\tilde{\mathbf{q}}$ by a matrix-vector product as follows:
@@ -348,23 +349,21 @@ is subsequently obtained by removing the normalization as follows:
 where $\mathbf{N}$ is an invertible normalization matrix.
 This strategy usually constrains the practical range of the regularization parameter $\mu$ (equation \ref{eq:function-Gamma}).
 
-\section{Computational strategies}
+\subsubsection{Classical approach}
 
-COMEÇAR EXPLICANDO AS LIMITAÇÕES DA SOLUÇÃO OBTIDA PELA FORMULAÇÃO GERAL
+The classical approach in the equivalent-layer technique consists in using $\mathbf{H} = \mathbf{I}_{P}$, 
+so that $P = Q$, $\mathbf{p} = \mathbf{q}$ (equation \ref{eq:reparameterization}), $\bar{\mathbf{p}} = \bar{\mathbf{q}}$ (equation \ref{eq:reparameterization-reference}), 
+$\tilde{\mathbf{p}} = \tilde{\mathbf{q}}$ (equation \ref{eq:vector-p-tilde}), $\mathbf{p}_{n} = \mathbf{q}_{n}$ (equation \ref{eq:normalization})
+and $\tilde{\mathbf{p}}_{n} = \tilde{\mathbf{q}}_{n}$ (equation \ref{eq:normalization-revome}).
+In this case, the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}) is directly 
+solved for 
+\begin{equation}
+	\tilde{\boldsymbol{\delta}}_{p} = \tilde{\mathbf{p}} - \bar{\mathbf{p}} \: ,
+	\label{eq:delta-p-tilde}
+\end{equation}
+instead of $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}).
 
-Two important factors affecting the efficiency of a given matrix algorithm are the 
-storage and amount of required arithmetic. Here, we quantify this last factor by counting flops.
-A flop is a floating point addition, subtraction, multiplication or division \cite[][ p. 12--14]{golub-vanloan2013}.
-
-To investigate the efficiency of equivalent-layer methods, we consider how they:
-\begin{itemize}
-	\item[(i)] set up the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined});
-	\item[(ii)] solve the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined});
-	\item[(iii)] perform potential-field transformations (equation \ref{eq:transformation}).
-\end{itemize}
-We focus on the overall strategies used by the selected methods.
-
-\subsection{Notation for subvectors and submatrices}
+\section{Notation for subvectors and submatrices}
 
 Here, we use a notation inspired on that presented by \cite[][p. 4]{vanloan1992} to represent subvectors and submatrices.
 Subvectors of $\mathbf{d}$, for example, are specified by $\mathbf{d}[\mathbf{i}]$, where $\mathbf{i}$ is a
@@ -399,7 +398,8 @@ The $i$-th row of $\mathbf{G}$ is given by the $1 \times P$ vector $\mathbf{G}[i
 Similarly, the $D \times 1$ vector $\mathbf{G}[:,j]$ represents the $j$-th column.
 Finally, we may use the colon notation to define the following submatrix:
 \begin{equation*}
-	\mathbf{G}[2:5,3:7] = \begin{bmatrix}
+	\mathbf{i} = (2:5), \mathbf{j} = (3:7) \Leftrightarrow
+	\mathbf{G}[\mathbf{i},\mathbf{j}] = \begin{bmatrix}
 		g_{23} & g_{24} & g_{25} & g_{26} & g_{27} \\
 		g_{33} & g_{34} & g_{35} & g_{36} & g_{37} \\
 		g_{43} & g_{44} & g_{45} & g_{46} & g_{47} \\
@@ -408,6 +408,22 @@ Finally, we may use the colon notation to define the following submatrix:
 \end{equation*}
 which contains the contiguous elements of $\mathbf{G}$ from rows $2$ to $5$ and from columns
 $3$ to $7$.
+
+\section{Computational strategies}
+
+Here, we review some strategies for reducing the computational cost of equivalent-layer technique.
+Typically, estimating a parameter vector $\tilde{\mathbf{p}}$ or $\tilde{\mathbf{q}}$ 
+requires to solve a large-scale linear inversion (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}).
+This, in turn, means to deal with some obstacles concerning large computational cost:
+\begin{itemize}
+	\item[(i)] the large computer memory to store large and full matrices;
+	\item[(ii)] the long computation time to multiply a matrix by a vector; and
+	\item[(iii)] the long computation time to solve a large linear system of equations.
+\end{itemize}
+Two important factors affecting the efficiency of a given matrix algorithm are the 
+storage and amount of required arithmetic. Here, we quantify this last factor by counting \textit{flops},
+which are floating point additions, subtractions, multiplications or divisions \cite[][ p. 12--14]{golub-vanloan2013}.
+We focus on the overall strategies used by the selected methods.
 
 \subsection{Moving window}
 

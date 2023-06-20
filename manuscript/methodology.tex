@@ -125,7 +125,21 @@ In practical applications, however, there is no guarantee that this condition is
 Actually, its is widely known from practical experience \cite[e.g.,][]{gonzalez-etal2022} that the equivalent-layer technique
 works even for the case in which the layer cross the true sources. 
 
-CRITÉRIOS PARA DEFINIR A PROFUNDIDADE DA CAMADA: DAMPNEY (ESPAÇAMENTO DO GRID) E REIS (ESPAÇAMENTO DAS LINHAS)
+Regarding the depth of the equivalent layer, \citet{dampney1969}  proposed a criterion based on horizontal data sampling, 
+suggesting that the equivalent-layer depth should be between two and six times the horizontal grid spacing, 
+considering evenly spaced data. 
+However, when dealing with a survey pattern that has unevenly spaced data, \citet{reis-etal2020} adopted an alternative 
+empirical criterion. 
+According to their proposal, the depth of the equivalent layer should range from two to three times the spacing between 
+adjacent flight lines.
+The criteria of \citet{dampney1969} and \citet{reis-etal2020} are valid for planar equivalent layers. 
+\citet{cordell1992} have proposed and an alternative criterion for scattered data that leads to an undulating equivalent layer.
+This criterion have been slightly modified by \citet{guspi-etal2004}, \citet{guspi-novara2009} and \citet{soler-uieda2021},
+for example, and consists in setting one equivalent source below each datum at a depth 
+proportional to the horizontal distance to the nearest neighboring data points.
+\citet{soler-uieda2021} have compared different strategies for defining the equivalent sources depth for the specific
+problem of interpolating gravity data, but they have not found significant differences between them.
+
 
 \subsection{Matrix $\mathbf{G}$}
 \label{subsec:sensitivity-matrix}

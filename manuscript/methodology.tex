@@ -473,14 +473,17 @@ By omitting the normalization strategy used by \cite{leao-silva1989}, their meth
 directly computing the transformed potential field $t^{m}_{c}$ at the central point $(x^{m}_{c}, y^{m}_{c}, z_{0} + \Delta z_{0})$ 
 of each data window as follows:
 \begin{equation}
-	t^{m}_{c} = \left( \mathbf{G}' \mathbf{a}' \right)^{\top} 
-	\left[ \mathbf{G}' \, \left( \mathbf{G}' \right)^{\top} + \mu \, \mathbf{I}_{D'} \right]^{-1} 
-	\mathbf{d}^{m} \: , \quad m \in \{ 1 : M \} \: ,
+	t^{m}_{c} = \mathbf{U} \: \mathbf{d}^{m} \: , \quad m \in \{ 1 : M \} \: ,
 	\label{eq:transformed-field-tmc-LS89}
 \end{equation}
-where $\mathbf{I}_{D'}$ is the identity matrix of order $D'$ and
-$\mathbf{a}'$ is a $P' \times 1$ vector with elements computed by equation 
-\ref{eq:harmonic-function-a-kj} by using all equivalent sources in the $m$-th subset and
+where 
+\begin{equation}
+	\mathbf{U}  = \left( \mathbf{G}' \mathbf{a}' \right)^{\top} 
+	\left[ \mathbf{G}' \, \left( \mathbf{G}' \right)^{\top} + \mu \, \mathbf{I}_{D'} \right]^{-1} 
+	\label{eq:dummy-matrix-LS89}
+\end{equation}
+and $\mathbf{a}'$ is a $P' \times 1$ vector with elements computed by equation 
+\ref{eq:harmonic-function-a-kj} by using all equivalent sources in the $m$-th window and
 only the coordinate of the central point in the $m$-th data window.
 Due to the presumed spatial configuration of the observed 
 data and equivalent sources, $\mathbf{a}'$ and $\mathbf{G}'$ are the same for all data windows.
@@ -508,8 +511,7 @@ A different transformation or the same one evaluated at different points require
 	Set the constant depth $z_{0} + \Delta z_{0}$ for all equivalent sources \;
 	Compute the vector $\mathbf{a}'$ associated with the desired potential-field transformation \;
 	Compute the matrix $\mathbf{G}'$ \;
-	Compute $\left( \mathbf{G}' \mathbf{a}' \right)^{\top} 
-	\left[ \mathbf{G}' \, \left( \mathbf{G}' \right)^{\top} + \mu \, \mathbf{I}_{D'} \right]^{-1}$ \;
+	Compute the matrix $\mathbf{U}$ (equation \ref{eq:dummy-matrix-LS89}) \;
 	$m = 1$ \;
 	\While{$m < M$}{
 		Compute $t^{m}_{c}$ (equation \ref{eq:transformed-field-tmc-LS89}) \;
@@ -540,12 +542,30 @@ and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so 
 	\mathbf{d}^{m} \: .
 	\label{eq:p-tilde-m-SU21}
 \end{equation}
-It is important to stress here that \cite{soler-uieda2021} used the normalization strategy described in section \ref{subsubsec:normalization},
-but we have conveniently omitted here.
-The overall steps of their method are defined by the Algorithm \ref{alg:SU21}.
+
+Unlike \cite{leao-silva1989}, \cite{soler-uieda2021} do not adopt a sequential order of the data windows; 
+rather, they adopt a randomized order of windows in their  iterations.
+The overall steps of the method proposed by \cite{soler-uieda2021} are defined by the Algorithm \ref{alg:SU21}.
+For convenience, we have omitted  the details about the randomized window order and the normalization strategy 
+employed by \cite{soler-uieda2021} which was described in section \ref{subsubsec:normalization} 
 Note that this algorithm starts with a residuals vector $\mathbf{r}$ that is iteratively updated.
-At each iteration, the potential field predicted a source window is computed at all observation points and removed from the
-residuals vector $\mathbf{r}$.
+The  iterative algorithm in \cite{soler-uieda2021} estimates a solution 
+($\tilde{\mathbf{p}}^{m}$ in equation \ref{eq:p-tilde-m-SU21}) using the data and 
+the equivalent sources that fall within a moving-data window; however, it calculates the predicted data and 
+the residual data in the whole survey data. 
+Next, the residual data  that fall within a new position of the data window is used as input data to estimate a new 
+solution within the data window which, in turn, is used to calculated a new predicted data and a new residual data 
+in the whole survey data.
+Regarding the equivalent-source layout, \cite{soler-uieda2021} proposed the block-averaged sources locations 
+in which the survey area is divided into horizontal blocks and one single equivalent source is assigned to each block. 
+Each single source per block is placed over the layer with its horizontal coordinates given by the average horizontal 
+positions of observation points. 
+According to \cite{soler-uieda2021}, the block-averaged sources layout may prevent aliasing of the interpolated 
+values, specially when the observations are unevenly sampled.
+This strategy also reduces the number of equivalent sources without affecting the accuracy of the potential-field interpolation. 
+This reduction reduces the computational load for estimating the physical property on the equivalent layer.
+This block-averaged sources layout is not included in the Algorithm \ref{alg:SU21}.
+
 
 \begin{algorithm}
 	%\SetAlgoLined
@@ -568,23 +588,34 @@ residuals vector $\mathbf{r}$.
 	\label{alg:SU21}
 \end{algorithm}
 
-\subsection{Column update}
+\subsection{Column-action update}
+
+We call the computational strategy \textit{column-action update} because a single source is used to calculate the predicted data 
+and the residual data in the whole survey data.
+Hence, a single column of the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is
+calculated iteratively.
 
 \cite{cordell1992} proposed a computational strategy that was later used by \cite{guspi-novara2009} and relies on
 first defining one equivalent source located right below each observed data $d_{i}$, $i \in \{1:D\}$, at a vertical
 coordinate $z_{i} + \Delta z_{i}$, where $\Delta z_{i}$ is proportional to the distance from the $i$-th observation point 
 $(x_{i}, y_{i}, z_{i})$ to its closest neighbor.
-The second step consists in updating the physical property $p_{j}$ of a given equivalent source, $j \in \{1:D\}$ and 
-remove its predicted potential field from the observed data vector $\mathbf{d}$, producing a residuals vector $\mathbf{r}$. 
-Then, the same procedure is repeated for other sources with the purpose of iteratively updating $\mathbf{r}$ and the
-$D \times 1$ parameter vector $\mathbf{p}$ containing the physical property of all equivalent sources.
+The second step consists in updating the physical property $p_{j}$ of a single equivalent source, $j \in \{1:D\}$ and 
+remove its predicted potential field from the observed data vector $\mathbf{d}$, producing a residuals vector $\mathbf{r}$.
+At each iteration, the single equivalent source is the one located vertically beneath the observation station of the maximum data residual. 
+Next, the predicted data produced by this single source is calculated over all of the observation points and 
+a new data residual $\mathbf{r}$ and the $D \times 1$ parameter vector $\mathbf{p}$ containing the physical property 
+of all equivalent sources are updated iteratively. 
+During each subsequent iteration,  \citeauthor{cordell1992}'s method 
+either incorporates a single equivalent source or adjusts an existing equivalent source to match the maximum amplitude 
+of the current residual field.
+The convergence occurs when all of the residuals are bounded by an envelope of prespecified expected error.
 At the end, the algorithm produces an estimate $\tilde{\mathbf{p}}$ for the parameter vector yielding a predicted
 potential field $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) satisfactorily fitting the observed data
 $\mathbf{d}$ according to a given criterion.
 Note that the method proposed by \cite{cordell1992} iteratively solves the linear $\mathbf{G} \tilde{\mathbf{p}} \approx \mathbf{d}$
 with a $D \times D$ matrix $\mathbf{G}$. At each iteration, only a single column of $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
 is used.
-An advantage of this \textit{column-update approach} is that the full matrix $\mathbf{G}$ is never stored.
+An advantage of this \textit{column-action update approach} is that the full matrix $\mathbf{G}$ is never stored.
 
 Algorithm \ref{alg:C92} delineates the \citeauthor{cordell1992}'s method.
 Note that a single column $\mathbf{G}[:, i_{\mathtt{max}}]$ of the $D \times D$ matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector})
@@ -594,6 +625,16 @@ Besides, the method may not converge depending on how the vertical distances $\D
 controlling the depths of the equivalent sources are set.
 According to \cite{cordell1992}, the maximum absolute value $r_{\mathtt{max}}$ in $\mathbf{r}$ decreases robustly at the beginning 
 and oscillates within a narrowing envelope for the subsequent iterations.
+
+\cite{guspi-novara2009} generalized \citeauthor{cordell1992}'s method to
+perform reduction to the pole and other transformations on scattered magnetic observations by using two steps. 
+The first step involves computing the vertical component of the observed field using equivalent sources while preserving the magnetization direction.
+In the second step, the vertical observation direction is maintained, but the magnetization direction is shifted to the vertical.
+The main idea employed by both \cite{cordell1992} and \cite{guspi-novara2009} is an iterative scheme that 
+uses a single equivalent source positioned below a measurement station to compute both the predicted data and residual data for all stations. 
+This approach entails a computational strategy where a single column of the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
+is calculated per iteration.
+
 
 \begin{algorithm}
 	%\SetAlgoLined
@@ -608,7 +649,7 @@ and oscillates within a narrowing envelope for the subsequent iterations.
 	$m = 1$ \;
 	\While{$(r_{\mathtt{max}} > \epsilon)$ {\bf and} $(m < \mathtt{ITMAX})$}{
 		Define the coordinates $(x_{\mathtt{max}}, y_{\mathtt{max}}, z_{\mathtt{max}})$ and index $i_{\mathtt{max}}$ of the observation point associated with $r_{\mathtt{max}}$ \;
-		$\tilde{\mathbf{p}}[i_{\mathtt{max}}] \gets \tilde{\mathbf{p}}[i_{\mathtt{max}}] + \left( a_{\mathtt{max}} \, \boldsymbol{\Delta}\mathbf{z}[i_{\mathtt{max}}] \right)$ \;
+		$\tilde{\mathbf{p}}[i_{\mathtt{max}}] \gets \tilde{\mathbf{p}}[i_{\mathtt{max}}] + \left( r_{\mathtt{max}} \, \boldsymbol{\Delta}\mathbf{z}[i_{\mathtt{max}}] \right)$ \;
 		$\mathbf{r} \gets \mathbf{r} - \left( \mathbf{G}[:, i_{\mathtt{max}}] \, \tilde{\mathbf{p}}[i_{\mathtt{max}}] \right)$ \;
 		Define the new $r_{\mathtt{max}}$ in $\mathbf{r}$ \;
 		$m \gets m + 1$ \;
@@ -617,7 +658,20 @@ and oscillates within a narrowing envelope for the subsequent iterations.
 	\label{alg:C92}
 \end{algorithm}
 
-\subsection{Row update}
+\subsection{Row-action update}
+
+We call the computational strategy \textit{row-action update} because a single row of the sensitivity matrix  
+$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is calculated iteratively.
+Hence, the equivalent-layer solution is updated by processing a new datum (one matrix row) at each iteration.
+To reduce the total processing time and memory usage of equivalent-layer technique, \cite{mendonca-silva1994} proposed 
+a strategy called \textit{equivalent data concept}.
+The equivalent data concept is grounded on the  principle  that there is a subset of redundant data that does not 
+contribute to the final solution and thus can be dispensed.
+Conversely, there is a subset of observations, called equivalent data, that  contributes effectively to the 
+final solution and fits the remaining observations (redundant data).
+Iteratively, \cite{mendonca-silva1994} selected the subset of equivalent data that is substantially smaller than 
+the original dataset. 
+This selection is carried out by incorporating one data point at a time.
 
 \cite{mendonca-silva1994} proposes an algebraic reconstruction technique (ART) \cite[e.g.,][p. 58]{sluis-vorst1987}
 to estimate a parameter vector $\tilde{\mathbf{p}}$ for a regular grid of $P$ equivalent sources on a horizontal plane $z_{0}$.
@@ -627,6 +681,9 @@ along the iterations.
 The convergence of such \textit{row-update methods} depends on the linear system condition.
 The main advantage of such methods is not computing and storing the full linear system matrix, but iteratively using 
 its rows.
+In contrast to ART-type algorithms, the rows in \cite{mendonca-silva1994} are not processed sequentially. 
+Instead, in \cite{mendonca-silva1994}, the rows are introduced according to their residual magnitudes
+(maximum absolute value in $\mathbf{r}$), which are computed based on the estimate over the equivalent layer from the previous iteration.
 The particular ART method proposed by \cite{mendonca-silva1994} considers that
 \begin{equation}
 	\mathbf{d} = \begin{bmatrix}
@@ -653,7 +710,7 @@ which results in
 	\end{split} \quad ,
 	\label{eq:p-tilde-MS94}
 \end{equation}
-where $\mathbf{F}$ is a $P \times P$ matrix that replaces $\mathbf{G}_{e} \, \mathbf{G}_{e}^{\top}$.
+where $\mathbf{F}$ is a computationally-efficient $D_{e} \times D_{e}$ matrix that approximates $\mathbf{G}_{e} \, \mathbf{G}_{e}^{\top}$.
 \cite{mendonca-silva1994} presume that the estimated parameter vector $\tilde{\mathbf{p}}$ obtained from equation \ref{eq:p-tilde-MS94}
 leads to a $D_{r} \times 1$ residuals vector
 \begin{equation}

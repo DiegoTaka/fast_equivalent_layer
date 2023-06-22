@@ -907,7 +907,7 @@ of $\mathbf{G}$ and an arbitrary vector as a \textit{fast 2D discrete convolutio
 \textit{Fast Fourier Transform} (FFT) \cite[][section 4.2]{vanloan1992}.
 
 Consider, for example, the particular case in which $D_{B} = 4$, $D_{b} = 3$ and $D = 12$. In this case,
-$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is $12 \times 12$ block matrix given by
+$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is a $12 \times 12$ block matrix given by
 \begin{equation}
 	\mathbf{G} = \begin{bmatrix}
 		\mathbf{G}^{0} & \mathbf{G}^{1} & \mathbf{G}^{2} & \mathbf{G}^{3} \\
@@ -918,13 +918,23 @@ $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is $12 \times 12$ block m
 	\label{eq:matrix-G-BTTB}
 \end{equation}
 where each block $\mathbf{G}^{\ell}$, $\ell \in \{ (1 - D_{B}) : (D_{B} - 1) \}$, is a $3 \times 3$ Toeplitz matrix.
+\citet{takahashi-etal2020, takahashi-etal2022} have deduced the specific relationship between blocks $\mathbf{G}^{\ell}$
+and $\mathbf{G}^{-\ell}$ and also between a given block $\mathbf{G}^{\ell}$ and its transposed $\left(\mathbf{G}^{\ell}\right)^{\top}$
+according to the harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij}) defining the element $ij$ of
+the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) and the orientation of the data grid.
 
-Consider the product
+Consider the matrix-vector products
 \begin{equation}
-	\mathbf{G} \, \mathbf{v} = \mathbf{w} \: ,
+	\mathbf{G} \, \mathbf{v} = \mathbf{w}
 	\label{eq:product-Gv-w}
 \end{equation}
-where 
+and
+\begin{equation}
+	\mathbf{G}^{\top} \, \mathbf{v} = \mathbf{w} \: ,
+	\label{eq:product-GTv-w}
+\end{equation}
+involving a $D \times D$ sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) defined in terms of a given
+harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij}), where 
 \begin{equation}
 	\mathbf{v} = \begin{bmatrix}
 		\mathbf{v}^{0} \\ \vdots \\ \mathbf{v}^{D_{B}-1}
@@ -936,8 +946,7 @@ where
 \end{equation}
 are arbitrary partitioned vectors formed by $D_{B}$ sub-vectors $\mathbf{v}^{\ell}$ and $\mathbf{w}^{\ell}$,
 $\ell \in \{ 0 : (D_{B} - 1) \}$, all of them having $D_{b}$ elements.
-The matrix-vector product given by equation \ref{eq:product-Gv-w} can be efficiently computed
-in terms of
+Equations \ref{eq:product-Gv-w} and \ref{eq:product-GTv-w} can be computed in terms of an auxiliary matrix-vector product
 \begin{equation}
 	\mathbf{G}_{c} \, \mathbf{v}_{c} = \mathbf{w}_{c} \: ,
 	\label{eq:aux-BCCB-system}
@@ -964,9 +973,15 @@ are partitioned vectors formed by $2D_{b} \times 1$ sub-vectors
 \end{equation}
 and $\mathbf{G}_{c}$ is a $4D \times 4D$ \textit{doubly block circulant} \cite[][p. 28]{jain1989} or 
 \textit{block-circulant circulant-block} (BCCB) \cite[][p. 76]{chan-jin2007} matrix.
-Matrix $\mathbf{G}_{c}$ is formed by $2D_{B} \times 2D_{B}$ blocks, where each block is a 
-$2D_{b} \times 2D_{b}$ circulant matrix.
-The first column of blocks forming the BCCB matrix $\mathbf{G}_{c}$ assumes the form
+What follows aims at explaining how the original matrix-vector products defined by equations \ref{eq:product-Gv-w}
+and \ref{eq:product-GTv-w}, involving a $D \times D$ BTTB matrix $\mathbf{G}$ exemplified by equation \ref{eq:matrix-G-BTTB}, 
+can be efficiently computed in terms of the auxiliary matrix-vector product given by equation \ref{eq:aux-BCCB-system}, which
+has a $4D \times 4D$ BCCB matrix $\mathbf{G}_{c}$.
+
+Matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is formed by $2D_{B} \times 2D_{B}$ blocks, 
+where each block $\mathbf{G}_{c}^{\ell}$, $\ell \in \{(1-D_{B}):(D_{B}-1)\}$ is a $2D_{b} \times 2D_{b}$ circulant matrix.
+For the case in which the original matrix-vector product is that defined by equation \ref{eq:product-Gv-w},
+the first column of blocks forming the BCCB matrix $\mathbf{G}_{c}$ is given by
 \begin{equation}
 	\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}] = \begin{bmatrix}
 		\mathbf{G}_{c}^{0} \\
@@ -978,24 +993,55 @@ The first column of blocks forming the BCCB matrix $\mathbf{G}_{c}$ assumes the 
 		\vdots \\
 		\mathbf{G}_{c}^{1} \\
 	\end{bmatrix}_{4D \times 2D_{b}} \: ,
-	\label{eq:matrix-G-BCCB-1st-block-column}
+	\label{eq:matrix-G-BCCB-1st-block-column-G}
 \end{equation}
-with blocks having first column given by
+with blocks $\mathbf{G}_{c}^{\ell}$ having the first column given by
 \begin{equation}
 	\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1] = \begin{bmatrix}
-		\mathbf{G}^{\ell}[ \, : \, , \, 1] \\ 0 \\ \left( \mathbf{G}^{\ell}[ 1 \, , \, D_{b}:2] \right)^{\top}
+		\mathbf{G}^{\ell}[ \, : \, , \, 1] \\ 
+		0 \\ 
+		\left( \mathbf{G}^{\ell}[ 1 \, , \, D_{b}:2] \right)^{\top}
 	\end{bmatrix}_{2D_{b} \times 2D_{b}} \: , \quad \ell \in \{(1-D_{B}):(D_{B}-1)\} \: ,
-	\label{eq:block-Gc-ell-1st-column}
+	\label{eq:block-Gc-ell-1st-column-G}
 \end{equation}
 where $\mathbf{G}^{\ell}$ are the blocks forming the BTTB matrix $\mathbf{G}$ (equation \ref{eq:matrix-G-BTTB}).
+For the case in which the original matrix-vector product is that defined by equation \ref{eq:product-GTv-w},
+the first column of blocks forming the BCCB matrix $\mathbf{G}_{c}$ is given by
+\begin{equation}
+	\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}] = \begin{bmatrix}
+		\mathbf{G}_{c}^{0} \\
+		\mathbf{G}_{c}^{1} \\
+		\vdots \\
+		\mathbf{G}_{c}^{D_{B}-1} \\
+		\mathbf{0}_{2D_{b} \times 2D_{b}} \\
+		\mathbf{G}_{c}^{1-D_{B}} \\
+		\vdots \\
+		\mathbf{G}_{c}^{-1} \\
+	\end{bmatrix}_{4D \times 2D_{b}} \: ,
+	\label{eq:matrix-G-BCCB-1st-block-column-GT}
+\end{equation}
+with blocks $\mathbf{G}_{c}^{\ell}$ having the first column given by
+\begin{equation}
+	\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1] = \begin{bmatrix}
+		\left( \mathbf{G}^{\ell}[ \, 1 \, , \, :] \right)^{\top} \\ 
+		0 \\ 
+		\mathbf{G}^{\ell}[ D_{b}:2 \, , \, 1 ]
+	\end{bmatrix}_{2D_{b} \times 2D_{b}} \: , \quad \ell \in \{(1-D_{B}):(D_{B}-1)\} \: .
+	\label{eq:block-Gc-ell-1st-column-GT}
+\end{equation}
 The complete matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is obtained by properly downshifting 
-$\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}]$ (equation \ref{eq:matrix-G-BCCB-1st-block-column}) to
-form its remaining columns of blocks.
+the block columns $\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}]$ defined by equations \ref{eq:matrix-G-BCCB-1st-block-column-G}
+or \ref{eq:matrix-G-BCCB-1st-block-column-GT}.
 Similarly, the $\ell$-th block $\mathbf{G}_{c}^{\ell}$ of $\mathbf{G}_{c}$ is obtained by properly
-downshifting $\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1]$ (equation \ref{eq:block-Gc-ell-1st-column}) to form its remaining columns.
+downshifting the first columns $\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1]$ defined by equations 
+\ref{eq:block-Gc-ell-1st-column-G} or \ref{eq:block-Gc-ell-1st-column-GT}.
 
-Because BCCB matrices are diagonalized by the 2D unitary discrete Fourier transform (DFT), 
-$\mathbf{G}_{c}$ can be written as
+Note that $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is a $4D \times 4D$ matrix and 
+$\mathbf{G}$ (equation \ref{eq:matrix-G-BTTB}) is a $D \times D$ matrix.
+It seems weird to say that computing $\mathbf{G}_{c} \mathbf{v}_{c}$ is more efficient
+than directly computing $\mathbf{G} \mathbf{v}$. To understand this, we need first to use the fact that
+BCCB matrices are diagonalized by the 2D unitary discrete Fourier transform (DFT) \citep[e.g.,][ p. 31]{davis1979}.
+Because of that, $\mathbf{G}_{c}$ can be written as
 \begin{equation}
 	\mathbf{G}_{c} = 
 	\left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right)^{\ast} 
@@ -1029,7 +1075,8 @@ where ``$\circ$'' denotes the Hadamard product \cite[e.g.,][p. 298]{horn-johnson
 $\boldsymbol{\mathcal{L}}$, $\boldsymbol{\mathcal{V}}_{c}$ and $\boldsymbol{\mathcal{W}}_{c}$ are 
 $2D_{B} \times 2D_{b}$ matrices obtained 
 by rearranging, along their rows, the elements forming the diagonal of 
-$\boldsymbol{\Lambda}$, vector $\mathbf{v}_{c}$ and vector $\mathbf{w}_{c}$, respectively.
+$\boldsymbol{\Lambda}$ (equation \ref{eq:matrix-G-BCCB-diagonalized}), vector $\mathbf{v}_{c}$ and 
+vector $\mathbf{w}_{c}$ (equation \ref{eq:vectors-vc-wc}), respectively.
 Then, by premultiplying both sides of equation \ref{eq:aux-BCCB-system-diagonalized-2} 
 by $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast}$ and then postmultiplying both sides by 
 $\boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$, we obtain
@@ -1039,10 +1086,8 @@ $\boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$, we obtain
 	\right] \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast} = \boldsymbol{\mathcal{W}}_{c} \: .
 	\label{eq:aux-BCCB-system-diagonalized-3}
 \end{equation}
-The left side of equation \ref{eq:aux-BCCB-system-diagonalized-3} represents the 2D 
-Inverse Discrete Fourier Transform (IDFT) of the term in brackets.
 Finally, we get from equation \ref{eq:matrix-G-BCCB-diagonalized} that 
-matrix $\boldsymbol{\mathcal{L}}$ can be efficiently computed by using only the first column 
+matrix $\boldsymbol{\mathcal{L}}$ can be computed by using only the first column 
 $\mathbf{G}_{c}[:,1]$ of the BCCB matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system})
 according to \citep{takahashi-etal2020}
 \begin{equation}
@@ -1051,7 +1096,31 @@ according to \citep{takahashi-etal2020}
 	\label{eq:matrix-L}
 \end{equation}
 where $\boldsymbol{\mathcal{C}}$ is a $2D_{B} \times 2D_{b}$ matrix obtained 
-by rearranging, along its rows, the elements of $\mathbf{G}_{c}[:,1]$. PAREI AQUI
+by rearranging, along its rows, the elements of $\mathbf{G}_{c}[:,1]$ (equation \ref{eq:aux-BCCB-system}).
+
+The whole procedure to compute the original matrix-vector products $\mathbf{G}\mathbf{v}$ (equation \ref{eq:product-Gv-w})
+and $\mathbf{G}^{\top}\mathbf{v}$ (equation \ref{eq:product-GTv-w}) consists in 
+(i) rearranging the elements of the vector $\mathbf{v}$ and the first column $\mathbf{G}[:,1]$ of matrix $\mathbf{G}$
+into the matrices $\boldsymbol{\mathcal{V}}_{c}$ and $\boldsymbol{\mathcal{C}}$ 
+(equations \ref{eq:aux-BCCB-system-diagonalized-3} and \ref{eq:matrix-L}), respectively;
+(ii) computing terms $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$
+and $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$,
+where $\boldsymbol{\mathcal{A}}$ is a given matrix, and a Hadamard product to obtain $\boldsymbol{\mathcal{W}}_{c}$ 
+(equation \ref{eq:aux-BCCB-system-diagonalized-3}); and
+(iii) retrieve the elements of vector $\mathbf{w}$ (equation \ref{eq:product-Gv-w}) from
+$\boldsymbol{\mathcal{W}}_{c}$ (equation \ref{eq:aux-BCCB-system-diagonalized-3}).
+It is important noting that the steps (i) and (iii) do not have any computational cost because they involve
+only reorganizing elements of vectors and matrices.
+Besides, the terms $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$
+and $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$
+in step (ii) represent, respectively, the 2D Discrete Fourier Transform (2D-DFT) and 
+the 2D Inverse Discrete Fourier Transform (2D-IDFT) of $\boldsymbol{\mathcal{A}}$.
+These transforms can be efficiently computed by using the 2D Fast Fourier Transform (2D-FFT).
+Hence, the original matrix-vector products $\mathbf{G}\mathbf{v}$ (equation \ref{eq:product-Gv-w})
+and $\mathbf{G}^{\top}\mathbf{v}$ (equation \ref{eq:product-GTv-w}) can be efficiently computed by using the 2D-FFT.
+
+PAREI AQUI: É NECESSÁRIO FALAR QUE A PARTIR DE G[:,1] É POSSÍVEL OBTER G$^{T}$[:,1] SABENDO-SE O TIPO DE SIMETRIA DA ESTRUTURA BTTB.
+ISSO POSSIBILITA USAR G[:,1] DEFINIR A G$_{c}$[:,1] ASSOCIADA AO PRODUTO Gv=w OU AO PRODUTO GTv=w
 
 \begin{algorithm}
 	%\SetAlgoLined
@@ -1060,7 +1129,7 @@ by rearranging, along its rows, the elements of $\mathbf{G}_{c}[:,1]$. PAREI AQU
 	Set a tolerance $\epsilon$ and a maximum number of iterations $\mathtt{ITMAX}$ \;
 	Compute the first column $\mathbf{G}[:,1]$ of the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
 	for the particular case in which it has a BTTB structure (equation \ref{eq:matrix-G-BTTB})\;
-	Rearrange the elements of $\mathbf{G}[:,1]$ into the first column $\mathbf{G}_{c}[:,1]$ of the BCCB matrix $\mathbf{G}_{c}$ (equation \ref{eq:matrix-G-BCCB-diagonalized})\;
+	Rearrange the elements of $\mathbf{G}[:,1]$ into the first column $\mathbf{G}_{c}[:,1]$ of the BCCB matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system})\;
 	Rearrange $\mathbf{G}_{c}[:,1]$ to obtain $\boldsymbol{\mathcal{C}}$ (equation \ref{eq:matrix-L})\;
 	Compute $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{C}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$ by using a 2D Fast Fourier
 	Transform (2D-FFT) and multiply by $\sqrt{4D}$ to obtain $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L})\;

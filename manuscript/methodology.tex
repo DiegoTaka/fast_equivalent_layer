@@ -904,25 +904,167 @@ $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) assumes a \textit{doubly 
 blocks, where each block has $D_{b} \times D_{b}$ elements, with $D = D_{B} \, D_{b}$.
 This particular structure allows formulating the product
 of $\mathbf{G}$ and an arbitrary vector as a \textit{fast 2D discrete convolution} via 
-\textit{Fast Fourier Transform} (FFT) \cite[][section 4.2]{vanloan1992}. PAREI AQUI
+\textit{Fast Fourier Transform} (FFT) \cite[][section 4.2]{vanloan1992}.
+
+Consider, for example, the particular case in which $D_{B} = 4$, $D_{b} = 3$ and $D = 12$. In this case,
+$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is $12 \times 12$ block matrix given by
+\begin{equation}
+	\mathbf{G} = \begin{bmatrix}
+		\mathbf{G}^{0} & \mathbf{G}^{1} & \mathbf{G}^{2} & \mathbf{G}^{3} \\
+		\mathbf{G}^{-1} & \mathbf{G}^{0} & \mathbf{G}^{1} & \mathbf{G}^{2} \\
+		\mathbf{G}^{-2} & \mathbf{G}^{-1} & \mathbf{G}^{0} & \mathbf{G}^{1} \\
+		\mathbf{G}^{-3} & \mathbf{G}^{-2} & \mathbf{G}^{-1} & \mathbf{G}^{0}
+	\end{bmatrix}_{D \times D} \: ,
+	\label{eq:matrix-G-BTTB}
+\end{equation}
+where each block $\mathbf{G}^{\ell}$, $\ell \in \{ (1 - D_{B}) : (D_{B} - 1) \}$, is a $3 \times 3$ Toeplitz matrix.
+
+Consider the product
+\begin{equation}
+	\mathbf{G} \, \mathbf{v} = \mathbf{w} \: ,
+	\label{eq:product-Gv-w}
+\end{equation}
+where 
+\begin{equation}
+	\mathbf{v} = \begin{bmatrix}
+		\mathbf{v}^{0} \\ \vdots \\ \mathbf{v}^{D_{B}-1}
+	\end{bmatrix}_{D \times 1} \: , \quad 
+	\mathbf{w} = \begin{bmatrix}
+		\mathbf{w}^{0} \\ \vdots \\ \mathbf{w}^{D_{B}-1}
+	\end{bmatrix}_{D \times 1} \: ,
+	\label{eq:vectors-v-w}
+\end{equation}
+are arbitrary partitioned vectors formed by $D_{B}$ sub-vectors $\mathbf{v}^{\ell}$ and $\mathbf{w}^{\ell}$,
+$\ell \in \{ 0 : (D_{B} - 1) \}$, all of them having $D_{b}$ elements.
+The matrix-vector product given by equation \ref{eq:product-Gv-w} can be efficiently computed
+in terms of
+\begin{equation}
+	\mathbf{G}_{c} \, \mathbf{v}_{c} = \mathbf{w}_{c} \: ,
+	\label{eq:aux-BCCB-system}
+\end{equation}
+where 
+\begin{equation}
+	\mathbf{v}_{c} = \begin{bmatrix}
+		\mathbf{v}_{c}^{0} \\ \vdots \\ \mathbf{v}_{c}^{D_{B}-1} \\ \mathbf{0}_{2D \times 1}
+	\end{bmatrix}_{4D \times 1} \: , \quad 
+	\mathbf{w}_{c} = \begin{bmatrix}
+		\mathbf{w}_{c}^{0} \\ \vdots \\ \mathbf{w}_{c}^{D_{B}-1} \\ \mathbf{0}_{2D \times 1}
+	\end{bmatrix}_{4D \times 1} \: ,
+	\label{eq:vectors-vc-wc}
+\end{equation}
+are partitioned vectors formed by $2D_{b} \times 1$ sub-vectors
+\begin{equation}
+	\mathbf{v}_{c}^{\ell} = \begin{bmatrix}
+		\mathbf{v}^{\ell} \\ \mathbf{0}_{D_{b} \times 1}
+	\end{bmatrix}_{2D_{b} \times 1} \: , \quad 
+	\mathbf{w}_{c}^{\ell} = \begin{bmatrix}
+		\mathbf{w}^{\ell} \\ \mathbf{0}_{D_{b} \times 1}
+	\end{bmatrix}_{2D_{b} \times 1} \: ,
+	\label{eq:vectors-vc-wc-ell}
+\end{equation}
+and $\mathbf{G}_{c}$ is a $4D \times 4D$ \textit{doubly block circulant} \cite[][p. 28]{jain1989} or 
+\textit{block-circulant circulant-block} (BCCB) \cite[][p. 76]{chan-jin2007} matrix.
+Matrix $\mathbf{G}_{c}$ is formed by $2D_{B} \times 2D_{B}$ blocks, where each block is a 
+$2D_{b} \times 2D_{b}$ circulant matrix.
+By considering the example defined by equation \ref{eq:matrix-G-BTTB}, the first column of blocks forming the 
+BCCB matrix $\mathbf{G}_{c}$ assumes the form
+\begin{equation}
+	\mathbf{G}_{c}[:,:6] = \begin{bmatrix}
+		\mathbf{G}_{c}^{0} \\
+		\mathbf{G}_{c}^{-1} \\
+		\mathbf{G}_{c}^{-2} \\
+		\mathbf{G}_{c}^{-3} \\
+		\mathbf{0}_{6 \times 6} \\
+		\mathbf{G}_{c}^{3} \\
+		\mathbf{G}_{c}^{2} \\
+		\mathbf{G}_{c}^{1} \\
+	\end{bmatrix}_{D \times 2D_{b}} \: .
+	\label{eq:matrix-G-BCCB-1st-block-column}
+\end{equation}
+The complete matrix $\mathbf{G}_{c}$ is obtained by properly downshifting $\mathbf{G}_{c}[:,:6]$ to
+form its remaining columns of blocks.
+Because a BCCB matrix is diagonalized by the 2D unitary discrete Fourier transform (DFT), 
+$\mathbf{G}_{c}$ can be written as
+\begin{equation}
+	\mathbf{G}_{c} = 
+	\left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right)^{\ast} 
+	\boldsymbol{\Lambda}
+	\left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right) \: ,
+	\label{eq:matrix-G-BCCB-diagonalized}
+\end{equation}
+where the symbol ``$\otimes$" denotes the Kronecker product \cite[e.g.,][p. 243]{horn-johnson1991},
+$\boldsymbol{\mathcal{F}}_{2D_{B}}$ and $\boldsymbol{\mathcal{F}}_{2D_{b}}$ are the $2D_{B} \times 2D_{B}$ and $2D_{b} \times 2D_{b}$ 
+unitary DFT matrices \citep[e.g.,][ p. 31]{davis1979}, respectively, the superscritpt 
+``$\ast$" denotes the complex conjugate and $\boldsymbol{\Lambda}$ is a 
+$4D \times 4D$ diagonal matrix containing the eigenvalues of $\mathbf{G}_{c}$.
+Due to the diagonalization of the matrix $\mathbf{G}_{c}$, 
+equation \ref{eq:aux-BCCB-system} can be rewritten by using equation 
+\ref{eq:matrix-G-BCCB-diagonalized} and premultiplying both sides of the result 
+by $\left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right)$, i.e.,
+\begin{equation}
+	\boldsymbol{\Lambda} \left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right) 
+	\mathbf{v}_{c} = \left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right) 
+	\mathbf{w}_{c} \: .
+	\label{eq:aux-BCCB-system-diagonalized}
+\end{equation}
+By following \citet{takahashi-etal2020}, we rearrange equation \ref{eq:aux-BCCB-system-diagonalized} as follows
+\begin{equation}
+	\boldsymbol{\mathcal{L}} \circ 
+	\left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right) = 
+	\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}}
+	\label{eq:aux-BCCB-system-diagonalized-2}
+\end{equation}
+where ``$\circ$'' denotes the Hadamard product \cite[e.g.,][p. 298]{horn-johnson1991} and 
+$\boldsymbol{\mathcal{L}}$, $\boldsymbol{\mathcal{V}}_{c}$ and $\boldsymbol{\mathcal{W}}_{c}$ are 
+$2D_{B} \times 2D_{b}$ matrices obtained 
+by rearranging, along their rows, the elements forming the diagonal of 
+$\boldsymbol{\Lambda}$, vector $\mathbf{v}_{c}$ and vector $\mathbf{w}_{c}$, respectively.
+Then, by premultiplying both sides of equation \ref{eq:aux-BCCB-system-diagonalized-2} 
+by $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast}$ and then postmultiplying both sides by 
+$\boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$, we obtain
+\begin{equation}
+	\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} \left[ \boldsymbol{\mathcal{L}} \circ 
+	\left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right)
+	\right] \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast} = \boldsymbol{\mathcal{W}}_{c} \: .
+	\label{eq:aux-BCCB-system-diagonalized-3}
+\end{equation}
+The left side of equation \ref{eq:aux-BCCB-system-diagonalized-3} represents the 2D 
+Inverse Discrete Fourier Transform (IDFT) of the term in brackets.
+Finally, we get from equation \ref{eq:matrix-G-BCCB-diagonalized} that 
+matrix $\boldsymbol{\mathcal{L}}$ can be efficiently computed by using only the first column 
+$\mathbf{G}_{c}[:,1]$ of the BCCB matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system})
+according to \citep{takahashi-etal2020}
+\begin{equation}
+	\boldsymbol{\mathcal{L}} = \sqrt{4D} \; 
+	\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{C}} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \: ,
+	\label{eq:matrix-L}
+\end{equation}
+where $\boldsymbol{\mathcal{C}}$ is a $2D_{B} \times 2D_{b}$ matrix obtained 
+by rearranging, along its rows, the elements of $\mathbf{G}_{c}[:,1]$. PAREI AQUI
 
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
 	Set the regular grid of $P$ equivalent sources on a horizontal plane $z_{0}$ \;
 	Set a tolerance $\epsilon$ and a maximum number of iterations $\mathtt{ITMAX}$ \;
-	Compute $\mathbf{G}$ and set $\tilde{\mathbf{p}} = \mathbf{0}$ \;
+	Compute the first column $\mathbf{G}[:,1]$ of the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
+	for the particular case in which it has a BTTB structure (equation \ref{eq:matrix-G-BTTB})\;
+	Rearrange the elements of $\mathbf{G}[:,1]$ into the first column $\mathbf{G}_{c}[:,1]$ of the BCCB matrix $\mathbf{G}_{c}$ (equation \ref{eq:matrix-G-BCCB-diagonalized})\;
+	Rearrange $\mathbf{G}_{c}[:,1]$ to obtain $\boldsymbol{\mathcal{C}}$ (equation \ref{eq:matrix-L})\;
+	Compute $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{C}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$ by using a 2D Fast Fourier
+	Transform (2D-FFT) and multiply by $\sqrt{4D}$ to obtain $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L})\;
+	Set $\tilde{\mathbf{p}} = \mathbf{0}$ \;
 	Set $\mathbf{r} = \mathbf{d}$ and compute $\delta = \nicefrac{\| \mathbf{r} \|}{D}$ \;
-	Compute $\boldsymbol{\vartheta} = \mathbf{G}^{\top} \, \mathbf{r}$ and $\rho_{0} = \boldsymbol{\vartheta}^{\top} \boldsymbol{\vartheta}$ \;
+	Compute $\boldsymbol{\vartheta} = \mathbf{G}^{\top} \, \mathbf{r}$ (Algorithm \ref{alg:fast-2D-convolution}) and $\rho_{0} = \boldsymbol{\vartheta}^{\top} \boldsymbol{\vartheta}$ \;
 	Set $\tau = 0$ and $\boldsymbol{\eta} = \mathbf{0}$ \;
 	$m = 1$ \;
 	\While{$(\delta > \epsilon)$ {\bf and} $(m < \mathtt{ITMAX})$}{
 		Update $\boldsymbol{\eta} \gets \boldsymbol{\vartheta} + \tau \, \boldsymbol{\eta}$ \;
-		Compute $\boldsymbol{\nu} = \mathbf{G} \, \boldsymbol{\eta}$ \;
+		Compute $\boldsymbol{\nu} = \mathbf{G} \, \boldsymbol{\eta}$ (Algorithm \ref{alg:fast-2D-convolution})\;
 		Compute $\upsilon = \nicefrac{\rho_{0}}{\left( \boldsymbol{\nu}^{\top} \boldsymbol{\nu} \right)}$ \;
 		Update $\tilde{\mathbf{p}} \gets \tilde{\mathbf{p}} + \upsilon \, \boldsymbol{\eta}$ \;
 		Update $\mathbf{r} \gets \mathbf{r} - \upsilon \, \boldsymbol{\nu}$ and compute $\delta \gets \nicefrac{\| \upsilon \, \boldsymbol{\nu} \|}{D}$ \;
-		Compute $\boldsymbol{\vartheta} = \mathbf{G}^{\top} \, \mathbf{r}$ and $\rho = \boldsymbol{\vartheta}^{\top} \boldsymbol{\vartheta}$ \;
+		Compute $\boldsymbol{\vartheta} = \mathbf{G}^{\top} \, \mathbf{r}$ (Algorithm \ref{alg:fast-2D-convolution}) and $\rho = \boldsymbol{\vartheta}^{\top} \boldsymbol{\vartheta}$ \;
 		Compute $\tau = \nicefrac{\rho}{\rho_{0}}$ \;
 		Update $\rho_{0} \gets \rho$ \;
 		$m \gets m + 1$ \;
@@ -930,6 +1072,23 @@ of $\mathbf{G}$ and an arbitrary vector as a \textit{fast 2D discrete convolutio
 	\caption{Generic pseudo-code for the convolutional equivalent-layer method proposed by 
 	\citet{takahashi-etal2020,takahashi-etal2022}.}
 	\label{alg:TOB-2020-2022}
+\end{algorithm}
+
+\begin{algorithm}
+	%\SetAlgoLined
+	Rearrange $\mathbf{v}$ (equations \ref{eq:product-Gv-w} and \ref{eq:vectors-v-w}) into $\mathbf{v}_{c}$
+	(equations \ref{eq:aux-BCCB-system}--\ref{eq:vectors-vc-wc-ell})\;
+	Rearrange $\mathbf{v}_{c}$ into $\boldsymbol{\mathcal{V}}_{c}$, compute $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$ via 2D-FFT and evaluate its Hadamard product with matrix $\boldsymbol{\mathcal{L}}$ to define
+	an auxiliary matrix $\boldsymbol{\mathcal{A}} = \boldsymbol{\mathcal{L}} \circ 
+	\left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right)$\;
+	Compute $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$ via 
+	2D-FFT inverse to evaluate $\boldsymbol{\mathcal{W}}_{c}$ (equation \ref{eq:aux-BCCB-system-diagonalized-3})\;
+	Retrieve $\mathbf{w}_{c}$ (equations \ref{eq:aux-BCCB-system}--\ref{eq:vectors-vc-wc-ell}) from $\boldsymbol{\mathcal{W}}_{c}$ (equation \ref{eq:aux-BCCB-system-diagonalized-3})\;
+	Retrieve $\mathbf{w}$ (equations \ref{eq:product-Gv-w} and \ref{eq:vectors-v-w}) from $\mathbf{w}_{c}$
+	(equations \ref{eq:aux-BCCB-system}--\ref{eq:vectors-vc-wc-ell})\;
+	\caption{Pseudo-code for computing the generic matrix-vector product given by equation \ref{eq:product-Gv-w} via 
+		fast 2D discrete convolution.}
+	\label{alg:fast-2D-convolution}
 \end{algorithm}
 
 %Let $\boldsymbol{\mathcal{D}}$ be a $2 D_{B} \times 2 D_{b}$ matrix formed by four blocks 

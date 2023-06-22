@@ -966,24 +966,35 @@ and $\mathbf{G}_{c}$ is a $4D \times 4D$ \textit{doubly block circulant} \cite[]
 \textit{block-circulant circulant-block} (BCCB) \cite[][p. 76]{chan-jin2007} matrix.
 Matrix $\mathbf{G}_{c}$ is formed by $2D_{B} \times 2D_{B}$ blocks, where each block is a 
 $2D_{b} \times 2D_{b}$ circulant matrix.
-By considering the example defined by equation \ref{eq:matrix-G-BTTB}, the first column of blocks forming the 
-BCCB matrix $\mathbf{G}_{c}$ assumes the form
+The first column of blocks forming the BCCB matrix $\mathbf{G}_{c}$ assumes the form
 \begin{equation}
-	\mathbf{G}_{c}[:,:6] = \begin{bmatrix}
+	\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}] = \begin{bmatrix}
 		\mathbf{G}_{c}^{0} \\
 		\mathbf{G}_{c}^{-1} \\
-		\mathbf{G}_{c}^{-2} \\
-		\mathbf{G}_{c}^{-3} \\
-		\mathbf{0}_{6 \times 6} \\
-		\mathbf{G}_{c}^{3} \\
-		\mathbf{G}_{c}^{2} \\
+		\vdots \\
+		\mathbf{G}_{c}^{1-D_{B}} \\
+		\mathbf{0}_{2D_{b} \times 2D_{b}} \\
+		\mathbf{G}_{c}^{D_{B}-1} \\
+		\vdots \\
 		\mathbf{G}_{c}^{1} \\
-	\end{bmatrix}_{D \times 2D_{b}} \: .
+	\end{bmatrix}_{4D \times 2D_{b}} \: ,
 	\label{eq:matrix-G-BCCB-1st-block-column}
 \end{equation}
-The complete matrix $\mathbf{G}_{c}$ is obtained by properly downshifting $\mathbf{G}_{c}[:,:6]$ to
+with blocks having first column given by
+\begin{equation}
+	\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1] = \begin{bmatrix}
+		\mathbf{G}^{\ell}[ \, : \, , \, 1] \\ 0 \\ \left( \mathbf{G}^{\ell}[ 1 \, , \, D_{b}:2] \right)^{\top}
+	\end{bmatrix}_{2D_{b} \times 2D_{b}} \: , \quad \ell \in \{(1-D_{B}):(D_{B}-1)\} \: ,
+	\label{eq:block-Gc-ell-1st-column}
+\end{equation}
+where $\mathbf{G}^{\ell}$ are the blocks forming the BTTB matrix $\mathbf{G}$ (equation \ref{eq:matrix-G-BTTB}).
+The complete matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is obtained by properly downshifting 
+$\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}]$ (equation \ref{eq:matrix-G-BCCB-1st-block-column}) to
 form its remaining columns of blocks.
-Because a BCCB matrix is diagonalized by the 2D unitary discrete Fourier transform (DFT), 
+Similarly, the $\ell$-th block $\mathbf{G}_{c}^{\ell}$ of $\mathbf{G}_{c}$ is obtained by properly
+downshifting $\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1]$ (equation \ref{eq:block-Gc-ell-1st-column}) to form its remaining columns.
+
+Because BCCB matrices are diagonalized by the 2D unitary discrete Fourier transform (DFT), 
 $\mathbf{G}_{c}$ can be written as
 \begin{equation}
 	\mathbf{G}_{c} = 

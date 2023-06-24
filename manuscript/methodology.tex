@@ -1225,59 +1225,47 @@ From a computational point of view, the number of CGLS iterations in the method 
 is equivalent to the number of tentative estimated parameter vectors required to form the L-curve in the proposed
 direct deconvolution.
 
-\section{Solution stability}
+\section{Numerical stability}
 
 All equivalent-layer methods aims at obtaining an estimate $\tilde{\mathbf{p}}$ for the parameter vector 
 $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}), which contains the physical property of the equivalent sources.
 Some methods do it by first obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$
 (equation \ref{eq:reparameterization}) and then using it to obtain $\tilde{\mathbf{p}}$ (equation \ref{eq:vector-p-tilde}).
+The stability of a solution $\tilde{\mathbf{p}}$ against noise in the observed data is rarely addressed.
+Here, we follow the numerical stability analysis presented in \citet{siqueira-etal2017}.
+
+For a given equivalent-layer method, we obtain an estimate $\tilde{\mathbf{p}}$ assuming noise-free potential-field data $\mathbf{d}$.
+Then, we create $L$ different noise-corrupted data $\mathbf{d}^{\ell}$, $\ell \in \{1:L\}$, by adding 
+$L$ different sequences of pseudorandom Gaussian noise to $\mathbf{d}$, all of them having zero mean. 
+From each $\mathbf{d}^{\ell}$, we obtain an estimate $\tilde{\mathbf{p}}^{\ell}$. 
+Regardless of the particular equivalent-layer method used, the following inequality \citep[][ p. 66]{aster_etal2019} 
+holds true:
+\begin{equation}
+	\Delta p^{\ell} \leq \kappa \; \Delta d^{\ell} \: , \quad \ell \in \{1:L\} \: ,
+	\label{eq:condition-number}
+\end{equation}
+where $\kappa$ is the constant of proportionality between the model perturbation
+\begin{equation}
+	\Delta p^{\ell} = \frac{\| \tilde{\mathbf{p}}^{\ell} - \tilde{\mathbf{p}} \|}{\| \tilde{\mathbf{p}} \|}
+	\: , \quad \ell \in \{1:L\} \: ,
+	\label{eq:model-perturbation}
+\end{equation}
+and the data perturbation
+\begin{equation}
+	\Delta d^{\ell} = \frac{\| \mathbf{d}^{\ell} - \mathbf{d} \|}{\| \mathbf{d} \|}
+	\: , \quad \ell \in \{1:L\} \: ,
+	\label{eq:data-perturbation}
+\end{equation}
+with $\| \cdot \|$ representing the Euclidean norm.
+The constant $\kappa$ acts as the condition number associated with the pseudo-inverse in a given linear inversion.
+The larger (smaller) the value of $\kappa$, the more unstable (stable) is the estimated solution.
+Equation \ref{eq:condition-number} shows a linear relationship between the model perturbation $\Delta p^{\ell}$ and 
+the data perturbation $\Delta d^{\ell}$ (equations \ref{eq:model-perturbation} and \ref{eq:data-perturbation}).
+We estimate the $\kappa$ (equation \ref{eq:condition-number}) associated with a given 
+equivalent-layer method as the slope of the straight line fitted to the $L$ points 
+$\left( \Delta p^{\ell} \: , \: \Delta d^{\ell} \right)$.
 
 PAREI AQUI
-
-The solution stability of the equivalent-layer methods is rarely addressed.
-Here, we follow the numerical stability analysis presented in \cite{siqueira-etal2017}.
-
-Let us assume noise-free potential-field data $\mathbf{d}$, 
-we estimate a physical-property distribution $\mathbf{p}$ (estimated solution) within the equivalent layer.
-Then, the  noise-free data $\mathbf{d}$ are contaminated with additive $D$ different sequences of 
-pseudorandom Gaussian noise, creating  different noise-corrupted potential-field data
-$\mathbf{d}^\mathbf{o}_\ell$, $\ell = 1, ..., D$.
-From each $\mathbf{d}^\mathbf{o}_\ell$, we estimate a physical-property distribution 
-$\mathbf{\hat{p}}_\ell$ within the equivalent layer. 
-
-Next, for each noise-corrupted data $\mathbf{d}^\mathbf{o}_\ell$
-and estimated solution $\mathbf{\hat{p}}_\ell$, the $\ell$th model perturbation $\delta p_\ell $
-and the $\ell$th data perturbation    $\delta d_\ell$ are,  respectively, evaluated by
-\begin{equation}
-\delta p_\ell = \frac{\parallel \mathbf{\hat{p}}_\ell - {\mathbf{p}} \parallel_2 }
-{\parallel {\mathbf{p}} \parallel _2 }, \quad \ell= 1, ..., D,
-\label{del_p}
-\end{equation}
-and
-\begin{equation}
-\delta d_\ell = \frac{\parallel \mathbf{d}^\mathbf{o}_\ell - \mathbf{d} \parallel _2 }
-{\parallel \mathbf{d}\parallel _2}, \quad \ell = 1, ..., D.
-\label{del_d}
-\end{equation}
-
-Regardless of the particular method used, the following inequality \citep[][ p. 66]{aster2018parameter}  is applicable:
-\begin{equation}
-\delta p_\ell \leq \kappa \; \delta d_\ell, \quad \ell = 1, ..., D,
-\label{condition_number}
-\end{equation}
-where $\kappa$ is the constant of proportionality between the model perturbation $\delta p_\ell $ 
-(equation \ref{del_p}) and the data perturbation   $\delta d_\ell$ (equation \ref{del_d}).
-The constant $\kappa$ acts as the condition number of an invertible matrix in a given inversion, and thus
-measures the instability of the solution.
-The larger (smaller) the value of $\kappa$ the more unstable (stable) is the estimated solution.
-
-Equation \ref{condition_number} shows a linear relationship between the model perturbation and 
-the data perturbation.
-By plotting $\delta p_b$ (equation \ref{del_p}) against $\delta d_\ell$ (equation \ref{del_d}) 
-produced by a set of $D$ estimated solution obtained by applying a given equivalent-layer method, 
-we obtain a straight line behaviour described by equation \ref{condition_number}.
-By applying a linear regression, we obtain a fitted straight line whose estimated slope 
-($\kappa$ in equation \ref{condition_number}) quantifies the solution stability.
 
 Here, the  analysis of solution stability is numerically conducted by applying
 the classical equivalent-layer technique with zeroth-order Tikhonov regularization,

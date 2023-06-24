@@ -36,13 +36,13 @@
 \label{fig:1}
 \end{figure}
 
-\begin{figure}[htbp]
-	\begin{center}
-		\includegraphics[width=9cm]{Fig/flops_mag}% This is a *.eps file
-	\end{center}
-	\caption{Number of \textit{flops} for many of the methods described in this work to estimate the equivalent sources using magnetic data. The range of observations varies from $10,000$ to $1,000,000$.}
-	\label{fig:2}
-\end{figure}
+%\begin{figure}[htbp]
+%	\begin{center}
+%		\includegraphics[width=9cm]{Fig/flops_mag}% This is a *.eps file
+%	\end{center}
+%	\caption{Number of \textit{flops} for many of the methods described in this work to estimate the equivalent sources using magnetic data. The range of observations varies from $10,000$ to $1,000,000$.}
+%	\label{fig:2}
+%\end{figure}
 
 \begin{figure}[htbp]
 	\begin{center}
@@ -56,7 +56,7 @@
 	\begin{center}
 		\includegraphics[width=9cm]{Fig/synthetic_grav}
 	\end{center}
-	\caption{Synthetic noise-free data of the gravimetric case. The observations points and equivalent sources are placed in a regular grid of $50 \times 50$.}
+	\caption{Synthetic data of the gravimetric case. The observations points are placed in a regular grid of $50 \times 50$. Panel (A) shows the noise-free data and panel (B) shows the maximum noised data ($10\%$).}
 	\label{fig:4}
 \end{figure}
 
@@ -66,6 +66,14 @@
 	\end{center}
 	\caption{Predicted gravity data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the classical method, \textbf{(B)} is the convolutional, \textbf{(C)} is the deconvolutional, \textbf{(D)} is the deconvolutional method using Wiener stabilization with a too high value for $\mu$, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu$ and \textbf{(F)} is the deconvolutional method using Wiener stabilization with a too low value for $\mu$.}
 	\label{fig:5}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/grav_upward}
+	\end{center}
+	\caption{True noiseless upward gravimetric data at $z_i = -500$ m height and predicted data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the true upward gravity data, Panel \textbf{(B)} is the classical method, \textbf{(C)} is the convolutional, \textbf{(D)} is the deconvolutional, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu = 10^{-20}$.}
+	\label{fig:grav_up}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -80,7 +88,7 @@
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/synthetic_mag}
 	\end{center}
-	\caption{Synthetic noise-free data of the magnetic case. The observations points and equivalent sources are placed in a regular grid of $50 \times 50$.}
+	\caption{Synthetic data of the magnetic case. The observations points are placed in a regular grid of $50 \times 50$. Panel (A) shows the noise-free data and panel (B) shows the maximum noised data ($10\%$).}
 	\label{fig:7}
 \end{figure}
 
@@ -94,9 +102,17 @@
 
 \begin{figure}[htbp]
 	\begin{center}
+		\includegraphics[width=10cm]{Fig/mag_upward}
+	\end{center}
+	\caption{True noiseless upward magnetic data at $z_i = -1400$ m height and predicted data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the true upward magnetic data, Panel \textbf{(B)} is the classical method, \textbf{(C)} is the convolutional, \textbf{(D)} is the deconvolutional, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu = 10^{-13}$.}
+	\label{fig:mag_up}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
 		\includegraphics[width=10cm]{Fig/carajas_gz_real_data_1000x500}
 	\end{center}
-	\caption{Gridded real aerogravimetric data from Carajás, Brazil. A regular grid of $10,000 \times 500$ is being used, totalizing $N,M = 5, 000, 000$ obsevation points and equivalent sources.}
+	\caption{Gridded real aerogravimetric data from Carajás, Brazil. A regular grid of $1,000 \times 500$ is being used, totalizing $N,M = 500, 000$ obsevation points and equivalent sources.}
 	\label{fig:9}
 \end{figure}
 
@@ -104,7 +120,7 @@
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/carajas_gz_predito_1000x500}
 	\end{center}
-	\caption{Panel \textbf{(A)} shows the predicted data from convolutional equivalent layer method. Panel \textbf{(B)} shows the residual from the convolutional equivalent layer method. Panel \textbf{(C)} shows the predicted data from deconvolutional equivalent layer method. Panel \textbf{(D)} shows the residual from the deconvolutional equivalent layer method.}
+	\caption{Panel \textbf{(A)} shows the Carajás predicted gravimetric data from convolutional equivalent layer method. Panel \textbf{(B)} shows the residual from the convolutional equivalent layer method. Panel \textbf{(C)} shows the predicted data from deconvolutional equivalent layer method. Panel \textbf{(D)} shows the residual from the deconvolutional equivalent layer method. Panel \textbf{(E)} shows the upward continuation at $z_i = -3500$ m for the convolutional method and Panel \textbf{(F)} shows the upward continuation at $z_i = -3500$ m for the deconvolutional method.}
 	\label{fig:10}
 \end{figure}
 
@@ -112,15 +128,15 @@
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/carajas_tf_real_data_1000x500}
 	\end{center}
-	\caption{Gridded real aeromagnetic data from Carajás, Brazil. A regular grid of $10,000 \times 500$ is being used, totalizing $N,M = 5, 000, 000$ obsevation points and equivalent sources.}
-	\label{fig11}
+	\caption{Gridded real aeromagnetic data from Carajás, Brazil. A regular grid of $1,000 \times 500$ is being used, totalizing $N,M = 500, 000$ obsevation points and equivalent sources.}
+	\label{fig:11}
 \end{figure}
 
 \begin{figure}[htbp]
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/carajas_tf_predito_1000x500}
 	\end{center}
-	\caption{Panel \textbf{(A)} shows the predicted data from convolutional equivalent layer method. Panel \textbf{(B)} shows the residual from the convolutional equivalent layer method. Panel \textbf{(C)} shows the predicted data from deconvolutional equivalent layer method. Panel \textbf{(D)} shows the residual from the deconvolutional equivalent layer method.}
+	\caption{Panel \textbf{(A)} shows the Carajás predicted magnetic data from convolutional equivalent layer method. Panel \textbf{(B)} shows the residual from the convolutional equivalent layer method. Panel \textbf{(C)} shows the predicted data from deconvolutional equivalent layer method. Panel \textbf{(D)} shows the residual from the deconvolutional equivalent layer method. Panel \textbf{(E)} shows the upward continuation at $z_i = -3500$ m for the convolutional method and Panel \textbf{(F)} shows the upward continuation at $z_i = -3500$ m for the deconvolutional method.}
 	\label{fig:12}
 \end{figure}
 

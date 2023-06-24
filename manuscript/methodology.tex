@@ -1125,41 +1125,8 @@ Note that those authors formulate the overdetermined problem (equation \ref{eq:d
 an estimate $\tilde{\mathbf{p}}$ for the parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) as an \textit{iterative deconvolution} via 
 \textit{conjugate gradient normal equation residual} (CGNR) \citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) 
 \cite[][p. 165]{aster_etal2019} method. 
-
-\subsection{Direct deconvolution}
-
-The method proposed by \citet{takahashi-etal2020, takahashi-etal2022} can be reformulated to avoid the iterations 
-of the conjugate gradient method.
-This alternative formulation consists in considering that $\mathbf{v} = \mathbf{p}$ and 
-$\mathbf{w} = \mathbf{d}$ in equation \ref{eq:product-Gv-w}, where $\mathbf{p}$ is the parameter vector (equation \ref{eq:predicted-data-vector})
-and $\mathbf{d}$ the observed data vector.
-Then, equation \ref{eq:aux-BCCB-system-diagonalized-2} is manipulated to obtain
-\begin{equation}
-	\boldsymbol{\mathcal{V}}_{c} = 
-	\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} 
-	\left[ \left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right)
-	\circ \breve{\boldsymbol{\mathcal{L}}} \right] \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast} \: ,
-	\label{eq:direct-deconvolution}
-\end{equation}
-where
-\begin{equation}
-	\breve{\boldsymbol{\mathcal{L}}} = 
-	\boldsymbol{\mathcal{L}}^{\ast} \oslash \left( \boldsymbol{\mathcal{L}} \boldsymbol{\mathcal{L}}^{\ast} + \zeta \mathbf{1} \right) \: ,
-	\label{eq:matrix-L-Wiener-deconvolution}
-\end{equation}
-$\mathbf{1}$ is a $4D \times 4D$ matrix of ones, ``$\oslash$" denotes entrywise division and 
-$\zeta$ is a positive scalar.
-Note that $\zeta = 0$ leads to $\mathbf{1} \oslash \boldsymbol{\mathcal{L}}$.
-In this case, the entrywise division may be problematic due to the elements of $\boldsymbol{\mathcal{L}}$ 
-having absolute value equal or close to zero. So, a small $\zeta$ is set to avoid this problem
-in equation \ref{eq:matrix-L-Wiener-deconvolution}.
-Next, we use $\breve{\boldsymbol{\mathcal{L}}}$ to obtain a matrix $\boldsymbol{\mathcal{V}}_{c}$ from equation \ref{eq:direct-deconvolution}.
-Finally, the elements of the estimated parameter vector $\tilde{\mathbf{p}}$ are retrieved from the first
-quadrant of $\boldsymbol{\mathcal{V}}_{c}$.
-This procedure represents a \textit{direct deconvolution} \citep[e.g.,][p. 220]{aster_etal2019}
-using a \textit{Wiener filter} \citep[e.g.,][p. 263]{gonzalez-woods2002}.
-
-PAREI AQUI
+As shown by \citet{takahashi-etal2020, takahashi-etal2022}, the number of CGLS iterations acts as a regularization for
+the inverse problem. 
 
 \begin{algorithm}
 	%\SetAlgoLined
@@ -1207,6 +1174,50 @@ PAREI AQUI
 		and matrix $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L}).}
 	\label{alg:fast-2D-convolution}
 \end{algorithm}
+
+\subsection{Direct deconvolution}
+
+The method proposed by \citet{takahashi-etal2020, takahashi-etal2022} can be reformulated to avoid the iterations 
+of the conjugate gradient method.
+This alternative formulation consists in considering that $\mathbf{v} = \mathbf{p}$ and 
+$\mathbf{w} = \mathbf{d}$ in equation \ref{eq:product-Gv-w}, where $\mathbf{p}$ is the parameter vector (equation \ref{eq:predicted-data-vector})
+and $\mathbf{d}$ the observed data vector.
+Then, equation \ref{eq:aux-BCCB-system-diagonalized-2} is manipulated to obtain
+\begin{equation}
+	\boldsymbol{\mathcal{V}}_{c} = 
+	\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} 
+	\left[ \left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right)
+	\circ \breve{\boldsymbol{\mathcal{L}}} \right] \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast} \: ,
+	\label{eq:direct-deconvolution}
+\end{equation}
+where
+\begin{equation}
+	\breve{\boldsymbol{\mathcal{L}}} = 
+	\boldsymbol{\mathcal{L}}^{\ast} \oslash \left( \boldsymbol{\mathcal{L}} \boldsymbol{\mathcal{L}}^{\ast} + \zeta \mathbf{1} \right) \: ,
+	\label{eq:matrix-L-Wiener-deconvolution}
+\end{equation}
+$\mathbf{1}$ is a $4D \times 4D$ matrix of ones, ``$\oslash$" denotes entrywise division and 
+$\zeta$ is a positive scalar.
+Note that $\zeta = 0$ leads to $\mathbf{1} \oslash \boldsymbol{\mathcal{L}}$.
+In this case, the entrywise division may be problematic due to the elements of $\boldsymbol{\mathcal{L}}$ 
+having absolute value equal or close to zero. So, a small $\zeta$ is set to avoid this problem
+in equation \ref{eq:matrix-L-Wiener-deconvolution}.
+Next, we use $\breve{\boldsymbol{\mathcal{L}}}$ to obtain a matrix $\boldsymbol{\mathcal{V}}_{c}$ from equation \ref{eq:direct-deconvolution}.
+Finally, the elements of the estimated parameter vector $\tilde{\mathbf{p}}$ are retrieved from the first
+quadrant of $\boldsymbol{\mathcal{V}}_{c}$.
+This procedure represents a \textit{direct deconvolution} \citep[e.g.,][p. 220]{aster_etal2019}
+using a \textit{Wiener filter} \citep[e.g.,][p. 263]{gonzalez-woods2002}.
+
+Differently from the convolutional equivalent-layer method proposed by 
+\citet{takahashi-etal2020, takahashi-etal2022}, the alternative direct deconvolution presented here 
+produces an estimated parameter vector $\tilde{\mathbf{p}}$ directly from the observed data $\mathbf{d}$, in a single step,
+avoiding the conjugate gradient iterations.
+On the other hand, the alternative method presented here requires estimating a set of tentative parameter vectors $\tilde{\mathbf{p}}$
+for different predefined $\zeta$. Besides, there must be criterion to chose the best $\tilde{\mathbf{p}}$ from this tentative set.
+This can be made, for example, by using the well-known \textit{L-curve} \citep{hansen1992}.
+From a computational point of view, the number of CGLS iterations in the method proposed by \citet{takahashi-etal2020, takahashi-etal2022}
+is equivalent to the number of tentative estimated parameter vectors required to form the L-curve in the proposed
+direct deconvolution.
 
 \section{Solution stability}
 

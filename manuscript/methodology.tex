@@ -898,13 +898,13 @@ They also consider a single equivalent source located right below each datum, at
 $z_{0} + \Delta z$, $\Delta z > 0$.
 In this case, the number of data and equivalent sources are equal to each other (i.e., $D = P$) and
 $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) assumes a \textit{doubly block Toeplitz} \cite[][p. 28]{jain1989} or 
-\textit{block-Toeplitz Toeplitz-block} (BTTB) \cite[][p. 67]{chan-jin2007} structure formed by $D_{B} \times D_{B}$
-blocks, where each block has $D_{b} \times D_{b}$ elements, with $D = D_{B} \, D_{b}$.
+\textit{block-Toeplitz Toeplitz-block} (BTTB) \cite[][p. 67]{chan-jin2007} structure formed by $N_{B} \times N_{B}$
+blocks, where each block has $N_{b} \times N_{b}$ elements, with $D = N_{B} \, N_{b}$.
 This particular structure allows formulating the product
 of $\mathbf{G}$ and an arbitrary vector as a \textit{fast 2D discrete convolution} via 
 \textit{Fast Fourier Transform} (FFT) \cite[][section 4.2]{vanloan1992}.
 
-Consider, for example, the particular case in which $D_{B} = 4$, $D_{b} = 3$ and $D = 12$. In this case,
+Consider, for example, the particular case in which $N_{B} = 4$, $N_{b} = 3$ and $D = 12$. In this case,
 $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is a $12 \times 12$ block matrix given by
 \begin{equation}
 	\mathbf{G} = \begin{bmatrix}
@@ -915,9 +915,9 @@ $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) is a $12 \times 12$ block
 	\end{bmatrix}_{D \times D} \: ,
 	\label{eq:matrix-G-BTTB}
 \end{equation}
-where each block $\mathbf{G}^{\ell}$, $\ell \in \{ (1 - D_{B}) : (D_{B} - 1) \}$, is a $3 \times 3$ Toeplitz matrix.
-\citet{takahashi-etal2020, takahashi-etal2022} have deduced the specific relationship between blocks $\mathbf{G}^{\ell}$
-and $\mathbf{G}^{-\ell}$ and also between a given block $\mathbf{G}^{\ell}$ and its transposed $\left(\mathbf{G}^{\ell}\right)^{\top}$
+where each block $\mathbf{G}^{n}$, $n \in \{ (1 - N_{B}) : (N_{B} - 1) \}$, is a $3 \times 3$ Toeplitz matrix.
+\citet{takahashi-etal2020, takahashi-etal2022} have deduced the specific relationship between blocks $\mathbf{G}^{n}$
+and $\mathbf{G}^{-n}$ and also between a given block $\mathbf{G}^{n}$ and its transposed $\left(\mathbf{G}^{n}\right)^{\top}$
 according to the harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij}) defining the element $ij$ of
 the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) and the orientation of the data grid.
 
@@ -935,15 +935,15 @@ involving a $D \times D$ sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predi
 harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij}), where 
 \begin{equation}
 	\mathbf{v} = \begin{bmatrix}
-		\mathbf{v}^{0} \\ \vdots \\ \mathbf{v}^{D_{B}-1}
+		\mathbf{v}^{0} \\ \vdots \\ \mathbf{v}^{N_{B}-1}
 	\end{bmatrix}_{D \times 1} \: , \quad 
 	\mathbf{w} = \begin{bmatrix}
-		\mathbf{w}^{0} \\ \vdots \\ \mathbf{w}^{D_{B}-1}
+		\mathbf{w}^{0} \\ \vdots \\ \mathbf{w}^{N_{B}-1}
 	\end{bmatrix}_{D \times 1} \: ,
 	\label{eq:vectors-v-w}
 \end{equation}
-are arbitrary partitioned vectors formed by $D_{B}$ sub-vectors $\mathbf{v}^{\ell}$ and $\mathbf{w}^{\ell}$,
-$\ell \in \{ 0 : (D_{B} - 1) \}$, all of them having $D_{b}$ elements.
+are arbitrary partitioned vectors formed by $N_{B}$ sub-vectors $\mathbf{v}^{n}$ and $\mathbf{w}^{n}$,
+$n \in \{ 0 : (N_{B} - 1) \}$, all of them having $N_{b}$ elements.
 Equations \ref{eq:product-Gv-w} and \ref{eq:product-GTv-w} can be computed in terms of an auxiliary matrix-vector product
 \begin{equation}
 	\mathbf{G}_{c} \, \mathbf{v}_{c} = \mathbf{w}_{c} \: ,
@@ -952,21 +952,21 @@ Equations \ref{eq:product-Gv-w} and \ref{eq:product-GTv-w} can be computed in te
 where 
 \begin{equation}
 	\mathbf{v}_{c} = \begin{bmatrix}
-		\mathbf{v}_{c}^{0} \\ \vdots \\ \mathbf{v}_{c}^{D_{B}-1} \\ \mathbf{0}_{2D \times 1}
+		\mathbf{v}_{c}^{0} \\ \vdots \\ \mathbf{v}_{c}^{N_{B}-1} \\ \mathbf{0}
 	\end{bmatrix}_{4D \times 1} \: , \quad 
 	\mathbf{w}_{c} = \begin{bmatrix}
-		\mathbf{w}_{c}^{0} \\ \vdots \\ \mathbf{w}_{c}^{D_{B}-1} \\ \mathbf{0}_{2D \times 1}
+		\mathbf{w}_{c}^{0} \\ \vdots \\ \mathbf{w}_{c}^{N_{B}-1} \\ \mathbf{0}
 	\end{bmatrix}_{4D \times 1} \: ,
 	\label{eq:vectors-vc-wc}
 \end{equation}
-are partitioned vectors formed by $2D_{b} \times 1$ sub-vectors
+are partitioned vectors formed by $2N_{b} \times 1$ sub-vectors
 \begin{equation}
-	\mathbf{v}_{c}^{\ell} = \begin{bmatrix}
-		\mathbf{v}^{\ell} \\ \mathbf{0}_{D_{b} \times 1}
-	\end{bmatrix}_{2D_{b} \times 1} \: , \quad 
-	\mathbf{w}_{c}^{\ell} = \begin{bmatrix}
-		\mathbf{w}^{\ell} \\ \mathbf{0}_{D_{b} \times 1}
-	\end{bmatrix}_{2D_{b} \times 1} \: ,
+	\mathbf{v}_{c}^{n} = \begin{bmatrix}
+		\mathbf{v}^{n} \\ \mathbf{0}
+	\end{bmatrix}_{2N_{b} \times 1} \: , \quad 
+	\mathbf{w}_{c}^{n} = \begin{bmatrix}
+		\mathbf{w}^{n} \\ \mathbf{0}
+	\end{bmatrix}_{2N_{b} \times 1} \: ,
 	\label{eq:vectors-vc-wc-ell}
 \end{equation}
 and $\mathbf{G}_{c}$ is a $4D \times 4D$ \textit{doubly block circulant} \cite[][p. 28]{jain1989} or 
@@ -976,61 +976,61 @@ and \ref{eq:product-GTv-w}, involving a $D \times D$ BTTB matrix $\mathbf{G}$ ex
 can be efficiently computed in terms of the auxiliary matrix-vector product given by equation \ref{eq:aux-BCCB-system}, which
 has a $4D \times 4D$ BCCB matrix $\mathbf{G}_{c}$.
 
-Matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is formed by $2D_{B} \times 2D_{B}$ blocks, 
-where each block $\mathbf{G}_{c}^{\ell}$, $\ell \in \{(1-D_{B}):(D_{B}-1)\}$ is a $2D_{b} \times 2D_{b}$ circulant matrix.
+Matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is formed by $2N_{B} \times 2N_{B}$ blocks, 
+where each block $\mathbf{G}_{c}^{n}$, $n \in \{(1-N_{B}):(N_{B}-1)\}$ is a $2N_{b} \times 2N_{b}$ circulant matrix.
 For the case in which the original matrix-vector product is that defined by equation \ref{eq:product-Gv-w},
 the first column of blocks forming the BCCB matrix $\mathbf{G}_{c}$ is given by
 \begin{equation}
-	\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}] = \begin{bmatrix}
+	\mathbf{G}_{c}[ \, : \, , \, : \, 2N_{b}] = \begin{bmatrix}
 		\mathbf{G}_{c}^{0} \\
 		\mathbf{G}_{c}^{-1} \\
 		\vdots \\
-		\mathbf{G}_{c}^{1-D_{B}} \\
-		\mathbf{0}_{2D_{b} \times 2D_{b}} \\
-		\mathbf{G}_{c}^{D_{B}-1} \\
+		\mathbf{G}_{c}^{1-N_{B}} \\
+		\mathbf{0} \\
+		\mathbf{G}_{c}^{N_{B}-1} \\
 		\vdots \\
 		\mathbf{G}_{c}^{1} \\
-	\end{bmatrix}_{4D \times 2D_{b}} \: ,
+	\end{bmatrix}_{4D \times 2N_{b}} \: ,
 	\label{eq:matrix-G-BCCB-1st-block-column-G}
 \end{equation}
-with blocks $\mathbf{G}_{c}^{\ell}$ having the first column given by
+with blocks $\mathbf{G}_{c}^{n}$ having the first column given by
 \begin{equation}
-	\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1] = \begin{bmatrix}
-		\mathbf{G}^{\ell}[ \, : \, , \, 1] \\ 
+	\mathbf{G}_{c}^{n}[ \, : \, , \, 1] = \begin{bmatrix}
+		\mathbf{G}^{n}[ \, : \, , \, 1] \\ 
 		0 \\ 
-		\left( \mathbf{G}^{\ell}[ 1 \, , \, D_{b}:2] \right)^{\top}
-	\end{bmatrix}_{2D_{b} \times 2D_{b}} \: , \quad \ell \in \{(1-D_{B}):(D_{B}-1)\} \: ,
+		\left( \mathbf{G}^{n}[ 1 \, , \, N_{b}:2] \right)^{\top}
+	\end{bmatrix}_{2N_{b} \times 2N_{b}} \: , \quad n \in \{(1-N_{B}):(N_{B}-1)\} \: ,
 	\label{eq:block-Gc-ell-1st-column-G}
 \end{equation}
-where $\mathbf{G}^{\ell}$ are the blocks forming the BTTB matrix $\mathbf{G}$ (equation \ref{eq:matrix-G-BTTB}).
+where $\mathbf{G}^{n}$ are the blocks forming the BTTB matrix $\mathbf{G}$ (equation \ref{eq:matrix-G-BTTB}).
 For the case in which the original matrix-vector product is that defined by equation \ref{eq:product-GTv-w},
 the first column of blocks forming the BCCB matrix $\mathbf{G}_{c}$ is given by
 \begin{equation}
-	\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}] = \begin{bmatrix}
+	\mathbf{G}_{c}[ \, : \, , \, : \, 2N_{b}] = \begin{bmatrix}
 		\mathbf{G}_{c}^{0} \\
 		\mathbf{G}_{c}^{1} \\
 		\vdots \\
-		\mathbf{G}_{c}^{D_{B}-1} \\
-		\mathbf{0}_{2D_{b} \times 2D_{b}} \\
-		\mathbf{G}_{c}^{1-D_{B}} \\
+		\mathbf{G}_{c}^{N_{B}-1} \\
+		\mathbf{0} \\
+		\mathbf{G}_{c}^{1-N_{B}} \\
 		\vdots \\
 		\mathbf{G}_{c}^{-1} \\
-	\end{bmatrix}_{4D \times 2D_{b}} \: ,
+	\end{bmatrix}_{4D \times 2N_{b}} \: ,
 	\label{eq:matrix-G-BCCB-1st-block-column-GT}
 \end{equation}
-with blocks $\mathbf{G}_{c}^{\ell}$ having the first column given by
+with blocks $\mathbf{G}_{c}^{n}$ having the first column given by
 \begin{equation}
-	\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1] = \begin{bmatrix}
-		\left( \mathbf{G}^{\ell}[ \, 1 \, , \, :] \right)^{\top} \\ 
+	\mathbf{G}_{c}^{n}[ \, : \, , \, 1] = \begin{bmatrix}
+		\left( \mathbf{G}^{n}[ \, 1 \, , \, :] \right)^{\top} \\ 
 		0 \\ 
-		\mathbf{G}^{\ell}[ D_{b}:2 \, , \, 1 ]
-	\end{bmatrix}_{2D_{b} \times 2D_{b}} \: , \quad \ell \in \{(1-D_{B}):(D_{B}-1)\} \: .
+		\mathbf{G}^{n}[ N_{b}:2 \, , \, 1 ]
+	\end{bmatrix}_{2N_{b} \times 2N_{b}} \: , \quad n \in \{(1-N_{B}):(N_{B}-1)\} \: .
 	\label{eq:block-Gc-ell-1st-column-GT}
 \end{equation}
 The complete matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is obtained by properly downshifting 
-the block columns $\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}]$ defined by equation \ref{eq:matrix-G-BCCB-1st-block-column-G}
+the block columns $\mathbf{G}_{c}[ \, : \, , \, : \, 2N_{b}]$ defined by equation \ref{eq:matrix-G-BCCB-1st-block-column-G}
 or \ref{eq:matrix-G-BCCB-1st-block-column-GT}.
-Similarly, the $\ell$-th block $\mathbf{G}_{c}^{\ell}$ of $\mathbf{G}_{c}$ is obtained by properly
+Similarly, the $n$-th block $\mathbf{G}_{c}^{n}$ of $\mathbf{G}_{c}$ is obtained by properly
 downshifting the first columns $\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1]$ defined by equation  
 \ref{eq:block-Gc-ell-1st-column-G} or \ref{eq:block-Gc-ell-1st-column-GT}.
 
@@ -1042,46 +1042,46 @@ BCCB matrices are diagonalized by the 2D unitary discrete Fourier transform (DFT
 Because of that, $\mathbf{G}_{c}$ can be written as
 \begin{equation}
 	\mathbf{G}_{c} = 
-	\left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right)^{\ast} 
+	\left(\boldsymbol{\mathcal{F}}_{2N_{B}} \otimes \boldsymbol{\mathcal{F}}_{2N_{b}} \right)^{\ast} 
 	\boldsymbol{\Lambda}
-	\left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right) \: ,
+	\left(\boldsymbol{\mathcal{F}}_{2N_{B}} \otimes \boldsymbol{\mathcal{F}}_{2N_{b}} \right) \: ,
 	\label{eq:matrix-G-BCCB-diagonalized}
 \end{equation}
 where the symbol ``$\otimes$" denotes the Kronecker product \cite[e.g.,][p. 243]{horn-johnson1991},
-$\boldsymbol{\mathcal{F}}_{2D_{B}}$ and $\boldsymbol{\mathcal{F}}_{2D_{b}}$ are the $2D_{B} \times 2D_{B}$ and $2D_{b} \times 2D_{b}$ 
+$\boldsymbol{\mathcal{F}}_{2N_{B}}$ and $\boldsymbol{\mathcal{F}}_{2N_{b}}$ are the $2N_{B} \times 2N_{B}$ and $2N_{b} \times 2N_{b}$ 
 unitary DFT matrices \citep[e.g.,][ p. 31]{davis1979}, respectively, the superscritpt 
 ``$\ast$" denotes the complex conjugate and $\boldsymbol{\Lambda}$ is a 
 $4D \times 4D$ diagonal matrix containing the eigenvalues of $\mathbf{G}_{c}$.
 Due to the diagonalization of the matrix $\mathbf{G}_{c}$, 
 equation \ref{eq:aux-BCCB-system} can be rewritten by using equation 
 \ref{eq:matrix-G-BCCB-diagonalized} and premultiplying both sides of the result 
-by $\left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right)$, i.e.,
+by $\left(\boldsymbol{\mathcal{F}}_{2N_{B}} \otimes \boldsymbol{\mathcal{F}}_{2N_{b}} \right)$, i.e.,
 \begin{equation}
-	\boldsymbol{\Lambda} \left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right) 
-	\mathbf{v}_{c} = \left(\boldsymbol{\mathcal{F}}_{2D_{B}} \otimes \boldsymbol{\mathcal{F}}_{2D_{b}} \right) 
+	\boldsymbol{\Lambda} \left(\boldsymbol{\mathcal{F}}_{2N_{B}} \otimes \boldsymbol{\mathcal{F}}_{2N_{b}} \right) 
+	\mathbf{v}_{c} = \left(\boldsymbol{\mathcal{F}}_{2N_{B}} \otimes \boldsymbol{\mathcal{F}}_{2N_{b}} \right) 
 	\mathbf{w}_{c} \: .
 	\label{eq:aux-BCCB-system-diagonalized}
 \end{equation}
 By following \citet{takahashi-etal2020}, we rearrange equation \ref{eq:aux-BCCB-system-diagonalized} as follows
 \begin{equation}
 	\boldsymbol{\mathcal{L}} \circ 
-	\left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right) = 
-	\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}}
+	\left( \boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2N_{b}} \right) = 
+	\boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2N_{b}}
 	\label{eq:aux-BCCB-system-diagonalized-2}
 \end{equation}
 where ``$\circ$'' denotes the Hadamard product \cite[e.g.,][p. 298]{horn-johnson1991} and 
 $\boldsymbol{\mathcal{L}}$, $\boldsymbol{\mathcal{V}}_{c}$ and $\boldsymbol{\mathcal{W}}_{c}$ are 
-$2D_{B} \times 2D_{b}$ matrices obtained 
+$2N_{B} \times 2N_{b}$ matrices obtained 
 by rearranging, along their rows, the elements forming the diagonal of 
 $\boldsymbol{\Lambda}$ (equation \ref{eq:matrix-G-BCCB-diagonalized}), vector $\mathbf{v}_{c}$ and 
 vector $\mathbf{w}_{c}$ (equation \ref{eq:vectors-vc-wc}), respectively.
 Then, by premultiplying both sides of equation \ref{eq:aux-BCCB-system-diagonalized-2} 
-by $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast}$ and then postmultiplying both sides by 
-$\boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$, we obtain
+by $\boldsymbol{\mathcal{F}}_{2N_{B}}^{\ast}$ and then postmultiplying both sides by 
+$\boldsymbol{\mathcal{F}}_{2N_{b}}^{\ast}$, we obtain
 \begin{equation}
-	\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} \left[ \boldsymbol{\mathcal{L}} \circ 
-	\left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right)
-	\right] \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast} = \boldsymbol{\mathcal{W}}_{c} \: .
+	\boldsymbol{\mathcal{F}}_{2N_{B}}^{\ast} \left[ \boldsymbol{\mathcal{L}} \circ 
+	\left( \boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2N_{b}} \right)
+	\right] \boldsymbol{\mathcal{F}}_{2N_{b}}^{\ast} = \boldsymbol{\mathcal{W}}_{c} \: .
 	\label{eq:aux-BCCB-system-diagonalized-3}
 \end{equation}
 Finally, we get from equation \ref{eq:matrix-G-BCCB-diagonalized} that 
@@ -1090,10 +1090,10 @@ $\mathbf{G}_{c}[:,1]$ of the BCCB matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-
 according to \citep{takahashi-etal2020}
 \begin{equation}
 	\boldsymbol{\mathcal{L}} = \sqrt{4D} \; 
-	\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{C}} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \: ,
+	\boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{C}} \, \boldsymbol{\mathcal{F}}_{2N_{b}} \: ,
 	\label{eq:matrix-L}
 \end{equation}
-where $\boldsymbol{\mathcal{C}}$ is a $2D_{B} \times 2D_{b}$ matrix obtained 
+where $\boldsymbol{\mathcal{C}}$ is a $2N_{B} \times 2N_{b}$ matrix obtained 
 by rearranging, along its rows, the elements of $\mathbf{G}_{c}[:,1]$ (equation \ref{eq:aux-BCCB-system}).
 It is important noting that the matrices $\boldsymbol{\mathcal{C}}$ and $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L}) 
 associated with the BTTB matrix $\mathbf{G}$ (equation \ref{eq:matrix-G-BTTB}) are different from those associated with $\mathbf{G}^{\top}$.
@@ -1103,16 +1103,16 @@ and $\mathbf{G}^{\top}\mathbf{v}$ (equation \ref{eq:product-GTv-w}) consists in
 (i) rearranging the elements of the vector $\mathbf{v}$ and the first column $\mathbf{G}[:,1]$ of matrix $\mathbf{G}$
 into the matrices $\boldsymbol{\mathcal{V}}_{c}$ and $\boldsymbol{\mathcal{C}}$ 
 (equations \ref{eq:aux-BCCB-system-diagonalized-3} and \ref{eq:matrix-L}), respectively;
-(ii) computing terms $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$
-and $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$,
+(ii) computing terms $\boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2N_{b}}$
+and $\boldsymbol{\mathcal{F}}_{2N_{B}}^{\ast} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2N_{b}}^{\ast}$,
 where $\boldsymbol{\mathcal{A}}$ is a given matrix, and a Hadamard product to obtain $\boldsymbol{\mathcal{W}}_{c}$ 
 (equation \ref{eq:aux-BCCB-system-diagonalized-3}); and
 (iii) retrieve the elements of vector $\mathbf{w}$ (equation \ref{eq:product-Gv-w}) from
 $\boldsymbol{\mathcal{W}}_{c}$ (equation \ref{eq:aux-BCCB-system-diagonalized-3}).
 It is important noting that the steps (i) and (iii) do not have any computational cost because they involve
 only reorganizing elements of vectors and matrices.
-Besides, the terms $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$
-and $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$
+Besides, the terms $\boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2N_{b}}$
+and $\boldsymbol{\mathcal{F}}_{2N_{B}}^{\ast} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2N_{b}}^{\ast}$
 in step (ii) represent, respectively, the 2D Discrete Fourier Transform (2D-DFT) and 
 the 2D Inverse Discrete Fourier Transform (2D-IDFT) of $\boldsymbol{\mathcal{A}}$.
 These transforms can be efficiently computed by using the 2D Fast Fourier Transform (2D-FFT).
@@ -1125,8 +1125,9 @@ Note that those authors formulate the overdetermined problem (equation \ref{eq:d
 an estimate $\tilde{\mathbf{p}}$ for the parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) as an \textit{iterative deconvolution} via 
 \textit{conjugate gradient normal equation residual} (CGNR) \citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) 
 \cite[][p. 165]{aster_etal2019} method. 
-As shown by \citet{takahashi-etal2020, takahashi-etal2022}, the number of CGLS iterations acts as a regularization for
-the inverse problem. 
+As shown by \citet{takahashi-etal2020, takahashi-etal2022}, the CGLS produces stable estimates $\tilde{\mathbf{p}}$ for the
+parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) in the presence of 
+noisy potential-field data $\mathbf{d}$. This is a well-known property of the CGLS method \citep[e.g.,][p. 166]{aster_etal2019}.
 
 \begin{algorithm}
 	%\SetAlgoLined
@@ -1164,7 +1165,7 @@ the inverse problem.
 	%\SetAlgoLined
 	Rearrange the elements of $\mathbf{v}$ (equations \ref{eq:product-Gv-w} and \ref{eq:vectors-v-w}) into the 
 	matrix $\boldsymbol{\mathcal{V}}_{c}$ (equation \ref{eq:aux-BCCB-system-diagonalized-3})\; 
-	Compute $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$ via 2D-FFT\;
+	Compute $\boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2N_{b}}$ via 2D-FFT\;
 	Compute the Hadamard product with matrix $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L})\;
 	Compute 2D-IDFT via 2D-FFT to obtain matrix $\boldsymbol{\mathcal{W}}_{c}$ (\ref{eq:aux-BCCB-system-diagonalized-3})\;
 	Retrieve $\mathbf{w}$ (equations \ref{eq:product-Gv-w} and \ref{eq:vectors-v-w}) from $\mathbf{w}_{c}$
@@ -1185,9 +1186,9 @@ and $\mathbf{d}$ the observed data vector.
 Then, equation \ref{eq:aux-BCCB-system-diagonalized-2} is manipulated to obtain
 \begin{equation}
 	\boldsymbol{\mathcal{V}}_{c} = 
-	\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} 
-	\left[ \left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right)
-	\circ \breve{\boldsymbol{\mathcal{L}}} \right] \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast} \: ,
+	\boldsymbol{\mathcal{F}}_{2N_{B}}^{\ast} 
+	\left[ \left( \boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2N_{b}} \right)
+	\circ \breve{\boldsymbol{\mathcal{L}}} \right] \boldsymbol{\mathcal{F}}_{2N_{b}}^{\ast} \: ,
 	\label{eq:direct-deconvolution}
 \end{equation}
 where
@@ -1260,7 +1261,7 @@ The larger (smaller) the value of $\kappa$ the more unstable (stable) is the est
 
 Equation \ref{condition_number} shows a linear relationship between the model perturbation and 
 the data perturbation.
-By plotting $\delta p_\ell$ (equation \ref{del_p}) against $\delta d_\ell$ (equation \ref{del_d}) 
+By plotting $\delta p_b$ (equation \ref{del_p}) against $\delta d_\ell$ (equation \ref{del_d}) 
 produced by a set of $D$ estimated solution obtained by applying a given equivalent-layer method, 
 we obtain a straight line behaviour described by equation \ref{condition_number}.
 By applying a linear regression, we obtain a fitted straight line whose estimated slope 

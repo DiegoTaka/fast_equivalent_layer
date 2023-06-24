@@ -268,17 +268,6 @@ where $\mathbf{u}$ is a dummy vector.
 After obtaining $\tilde{\boldsymbol{\delta}}_{q}$ (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}),
 the estimate $\tilde{\mathbf{q}}$ is computed with equation \ref{eq:delta-q-tilde}.
 
-Note that, for the particular case in which $\mathbf{H} = \mathbf{I}_{P}$ (equation \ref{eq:reparameterization}), 
-$P = Q$, $\mathbf{p} = \mathbf{q}$, $\bar{\mathbf{p}} = \bar{\mathbf{q}}$ (equation \ref{eq:reparameterization-reference}) and 
-$\tilde{\mathbf{p}} = \tilde{\mathbf{q}}$ (equation \ref{eq:vector-p-tilde}).
-In this case, the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}) is directly 
-solved for 
-\begin{equation}
-	\tilde{\boldsymbol{\delta}}_{p} = \tilde{\mathbf{p}} - \bar{\mathbf{p}} \: ,
-	\label{eq:delta-p-tilde}
-\end{equation}
-instead of $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}).
-
 %\subsubsection{Optional normalization strategy}
 %\label{subsubsec:normalization}
 %
@@ -302,6 +291,19 @@ instead of $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}).
 %\end{equation}
 %where $\mathbf{N}$ is an invertible normalization matrix.
 %This strategy usually constrains the practical range of the regularization parameter $\mu$ (equation \ref{eq:function-Gamma}).
+
+\subsubsection{Classical approach}
+
+The classical approach in the equivalent-layer technique consists in using $\mathbf{H} = \mathbf{I}_{P}$, 
+so that $P = Q$, $\mathbf{p} = \mathbf{q}$ (equation \ref{eq:reparameterization}), $\bar{\mathbf{p}} = \bar{\mathbf{q}}$ (equation \ref{eq:reparameterization-reference}) and 
+$\tilde{\mathbf{p}} = \tilde{\mathbf{q}}$ (equation \ref{eq:vector-p-tilde}).
+In this case, the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}) is directly 
+solved for 
+\begin{equation}
+	\tilde{\boldsymbol{\delta}}_{p} = \tilde{\mathbf{p}} - \bar{\mathbf{p}} \: ,
+	\label{eq:delta-p-tilde}
+\end{equation}
+instead of $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}).
 
 \section{Notation for subvectors and submatrices}
 
@@ -878,13 +880,13 @@ prisms and compute their predicted potential field in the wavenumber domain by u
 		Compute $\delta = \nicefrac{\| \boldsymbol{\nu} \|}{D}$ \;
 	}
 	\caption{Generic pseudo-code for the iterative method proposed by \cite{siqueira-etal2017}.
-	The symbol ``$\circ$'' denotes the entrywise or Hadamard product \cite[e.g.,][p. 298]{horn-johnson1991} and
-	$\boldsymbol{\sigma}$ is a $P \times 1$ vector whose $j$-th element is the ratio of a predefined element of area centered at the $j$-th
-	equivalent source and the term $2 \pi \gamma$, where $\gamma$ is the gravitational constant.}
+		The symbol ``$\circ$'' denotes the entrywise or Hadamard product \cite[e.g.,][p. 298]{horn-johnson1991} and
+		$\boldsymbol{\sigma}$ is a $P \times 1$ vector whose $j$-th element is the ratio of a predefined element of area centered at the $j$-th
+		equivalent source and the term $2 \pi \gamma$, where $\gamma$ is the gravitational constant.}
 	\label{alg:XS91-SOB17}
 \end{algorithm}
 
-\subsection{Iterative deconvolution}
+\subsection{Discrete convolution}
 
 Recently, \citet{takahashi-etal2020,takahashi-etal2022} proposed the \textit{convolutional equivalent-layer method}, 
 which explores the structure of the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) for 
@@ -1028,10 +1030,10 @@ with blocks $\mathbf{G}_{c}^{\ell}$ having the first column given by
 	\label{eq:block-Gc-ell-1st-column-GT}
 \end{equation}
 The complete matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is obtained by properly downshifting 
-the block columns $\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}]$ defined by equation \ref{eq:matrix-G-BCCB-1st-block-column-G}
+the block columns $\mathbf{G}_{c}[ \, : \, , \, : \, 2D_{b}]$ defined by equations \ref{eq:matrix-G-BCCB-1st-block-column-G}
 or \ref{eq:matrix-G-BCCB-1st-block-column-GT}.
 Similarly, the $\ell$-th block $\mathbf{G}_{c}^{\ell}$ of $\mathbf{G}_{c}$ is obtained by properly
-downshifting the first columns $\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1]$ defined by equation  
+downshifting the first columns $\mathbf{G}_{c}^{\ell}[ \, : \, , \, 1]$ defined by equations 
 \ref{eq:block-Gc-ell-1st-column-G} or \ref{eq:block-Gc-ell-1st-column-GT}.
 
 Note that $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system}) is a $4D \times 4D$ matrix and 
@@ -1095,8 +1097,6 @@ according to \citep{takahashi-etal2020}
 \end{equation}
 where $\boldsymbol{\mathcal{C}}$ is a $2D_{B} \times 2D_{b}$ matrix obtained 
 by rearranging, along its rows, the elements of $\mathbf{G}_{c}[:,1]$ (equation \ref{eq:aux-BCCB-system}).
-It is important noting that the matrices $\boldsymbol{\mathcal{C}}$ and $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L}) 
-associated with the BTTB matrix $\mathbf{G}$ (equation \ref{eq:matrix-G-BTTB}) are different from those associated with $\mathbf{G}^{\top}$.
 
 The whole procedure to compute the original matrix-vector products $\mathbf{G}\mathbf{v}$ (equation \ref{eq:product-Gv-w})
 and $\mathbf{G}^{\top}\mathbf{v}$ (equation \ref{eq:product-GTv-w}) consists in 
@@ -1119,59 +1119,20 @@ These transforms can be efficiently computed by using the 2D Fast Fourier Transf
 Hence, the original matrix-vector products $\mathbf{G}\mathbf{v}$ (equation \ref{eq:product-Gv-w})
 and $\mathbf{G}^{\top}\mathbf{v}$ (equation \ref{eq:product-GTv-w}) can be efficiently computed by using the 2D-FFT.
 
-Algorithms \ref{alg:TOB-2020-2022} and \ref{alg:fast-2D-convolution} show pseudo-codes for the convolutional equivalent-layer 
-method proposed by \citet{takahashi-etal2020, takahashi-etal2022}.
-Note that those authors formulate the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) of obtaining 
-an estimate $\tilde{\mathbf{p}}$ for the parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) as an \textit{iterative deconvolution} via 
-\textit{conjugate gradient normal equation residual} (CGNR) \citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) 
-\cite[][p. 165]{aster_etal2019} method. 
-
-\subsection{Direct deconvolution}
-
-The method proposed by \citet{takahashi-etal2020, takahashi-etal2022} can be reformulated to avoid the iterations 
-of the conjugate gradient method.
-This alternative formulation consists in considering that $\mathbf{v} = \mathbf{p}$ and 
-$\mathbf{w} = \mathbf{d}$ in equation \ref{eq:product-Gv-w}, where $\mathbf{p}$ is the parameter vector (equation \ref{eq:predicted-data-vector})
-and $\mathbf{d}$ the observed data vector.
-Then, equation \ref{eq:aux-BCCB-system-diagonalized-2} is manipulated to obtain
-\begin{equation}
-	\boldsymbol{\mathcal{V}}_{c} = 
-	\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} 
-	\left[ \left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right)
-	\circ \breve{\boldsymbol{\mathcal{L}}} \right] \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast} \: ,
-	\label{eq:direct-deconvolution}
-\end{equation}
-where
-\begin{equation}
-	\breve{\boldsymbol{\mathcal{L}}} = 
-	\boldsymbol{\mathcal{L}}^{\ast} \oslash \left( \boldsymbol{\mathcal{L}} \boldsymbol{\mathcal{L}}^{\ast} + \zeta \mathbf{1} \right) \: ,
-	\label{eq:matrix-L-Wiener-deconvolution}
-\end{equation}
-$\mathbf{1}$ is a $4D \times 4D$ matrix of ones, ``$\oslash$" denotes entrywise division and 
-$\zeta$ is a positive scalar.
-Note that $\zeta = 0$ leads to $\mathbf{1} \oslash \boldsymbol{\mathcal{L}}$.
-In this case, the entrywise division may be problematic due to the elements of $\boldsymbol{\mathcal{L}}$ 
-having absolute value equal or close to zero. So, a small $\zeta$ is set to avoid this problem
-in equation \ref{eq:matrix-L-Wiener-deconvolution}.
-Next, we use $\breve{\boldsymbol{\mathcal{L}}}$ to obtain a matrix $\boldsymbol{\mathcal{V}}_{c}$ from equation \ref{eq:direct-deconvolution}.
-Finally, the elements of the estimated parameter vector $\tilde{\mathbf{p}}$ are retrieved from the first
-quadrant of $\boldsymbol{\mathcal{V}}_{c}$.
-This procedure represent a \textit{direct deconvolution} \citep[e.g.,][p. 220]{aster_etal2019}
-using a \textit{Wiener filter} \citep[e.g.,][p. 263]{gonzalez-woods2002}.
-
-PAREI AQUI
+PAREI AQUI: É NECESSÁRIO FALAR QUE A PARTIR DE G[:,1] É POSSÍVEL OBTER G$^{T}$[:,1] SABENDO-SE O TIPO DE SIMETRIA DA ESTRUTURA BTTB.
+ISSO POSSIBILITA USAR G[:,1] DEFINIR A G$_{c}$[:,1] ASSOCIADA AO PRODUTO Gv=w OU AO PRODUTO GTv=w
 
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
 	Set the regular grid of $P$ equivalent sources on a horizontal plane $z_{0}$ \;
 	Set a tolerance $\epsilon$ and a maximum number of iterations $\mathtt{ITMAX}$ \;
-	Compute the first column $\mathbf{G}[:,1]$ and row $\mathbf{G}[1,:]$ of the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
+	Compute the first column $\mathbf{G}[:,1]$ of the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
 	for the particular case in which it has a BTTB structure (equation \ref{eq:matrix-G-BTTB})\;
-	Rearrange the elements of $\mathbf{G}[:,1]$ into matrix $\boldsymbol{\mathcal{C}}$, compute 
-	its 2D-DFT via 2D-FFT and multiply by $\sqrt{4D}$ to obtain a matrix $\boldsymbol{\mathcal{L}}'$ (equation \ref{eq:matrix-L})\;
-	Rearrange the elements of $\mathbf{G}[1,:]$ into matrix $\boldsymbol{\mathcal{C}}$, compute 
-	its 2D-DFT via 2D-FFT and multiply by $\sqrt{4D}$ to obtain a matrix $\boldsymbol{\mathcal{L}}''$ (equation \ref{eq:matrix-L})\;
+	Rearrange the elements of $\mathbf{G}[:,1]$ into the first column $\mathbf{G}_{c}[:,1]$ of the BCCB matrix $\mathbf{G}_{c}$ (equation \ref{eq:aux-BCCB-system})\;
+	Rearrange $\mathbf{G}_{c}[:,1]$ to obtain $\boldsymbol{\mathcal{C}}$ (equation \ref{eq:matrix-L})\;
+	Compute $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{C}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$ by using a 2D Fast Fourier
+	Transform (2D-FFT) and multiply by $\sqrt{4D}$ to obtain $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L})\;
 	Set $\tilde{\mathbf{p}} = \mathbf{0}$ \;
 	Set $\mathbf{r} = \mathbf{d}$ and compute $\delta = \nicefrac{\| \mathbf{r} \|}{D}$ \;
 	Compute $\boldsymbol{\vartheta} = \mathbf{G}^{\top} \, \mathbf{r}$ (Algorithm \ref{alg:fast-2D-convolution}) and $\rho_{0} = \boldsymbol{\vartheta}^{\top} \boldsymbol{\vartheta}$ \;
@@ -1189,26 +1150,1083 @@ PAREI AQUI
 		$m \gets m + 1$ \;
 	}
 	\caption{Generic pseudo-code for the convolutional equivalent-layer method proposed by 
-	\citet{takahashi-etal2020,takahashi-etal2022}.}
+		\citet{takahashi-etal2020,takahashi-etal2022}.}
 	\label{alg:TOB-2020-2022}
 \end{algorithm}
 
 \begin{algorithm}
 	%\SetAlgoLined
-	Rearrange the elements of $\mathbf{v}$ (equations \ref{eq:product-Gv-w} and \ref{eq:vectors-v-w}) into the 
-	matrix $\boldsymbol{\mathcal{V}}_{c}$ (equation \ref{eq:aux-BCCB-system-diagonalized-3})\; 
-	Compute $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$ via 2D-FFT\;
-	Compute the Hadamard product with matrix $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L})\;
-	Compute 2D-IDFT via 2D-FFT to obtain matrix $\boldsymbol{\mathcal{W}}_{c}$ (\ref{eq:aux-BCCB-system-diagonalized-3})\;
+	Rearrange $\mathbf{v}$ (equations \ref{eq:product-Gv-w} and \ref{eq:vectors-v-w}) into $\mathbf{v}_{c}$
+	(equations \ref{eq:aux-BCCB-system}--\ref{eq:vectors-vc-wc-ell})\;
+	Rearrange $\mathbf{v}_{c}$ into $\boldsymbol{\mathcal{V}}_{c}$, compute $\boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}}$ via 2D-FFT and evaluate its Hadamard product with matrix $\boldsymbol{\mathcal{L}}$ to define
+	an auxiliary matrix $\boldsymbol{\mathcal{A}} = \boldsymbol{\mathcal{L}} \circ 
+	\left( \boldsymbol{\mathcal{F}}_{2D_{B}} \, \boldsymbol{\mathcal{V}}_{c} \, \boldsymbol{\mathcal{F}}_{2D_{b}} \right)$\;
+	Compute $\boldsymbol{\mathcal{F}}_{2D_{B}}^{\ast} \, \boldsymbol{\mathcal{A}} \, \boldsymbol{\mathcal{F}}_{2D_{b}}^{\ast}$ via 
+	2D-FFT inverse to evaluate $\boldsymbol{\mathcal{W}}_{c}$ (equation \ref{eq:aux-BCCB-system-diagonalized-3})\;
+	Retrieve $\mathbf{w}_{c}$ (equations \ref{eq:aux-BCCB-system}--\ref{eq:vectors-vc-wc-ell}) from $\boldsymbol{\mathcal{W}}_{c}$ (equation \ref{eq:aux-BCCB-system-diagonalized-3})\;
 	Retrieve $\mathbf{w}$ (equations \ref{eq:product-Gv-w} and \ref{eq:vectors-v-w}) from $\mathbf{w}_{c}$
 	(equations \ref{eq:aux-BCCB-system}--\ref{eq:vectors-vc-wc-ell})\;
-	\caption{Pseudo-code for computing the generic matrix-vector products given by equations \ref{eq:product-Gv-w} 
-		and \ref{eq:product-GTv-w} via fast 2D discrete convolution for a given vector $\mathbf{v}$ (equation \ref{eq:vectors-v-w}) 
-		and matrix $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L}).}
+	\caption{Pseudo-code for computing the generic matrix-vector product given by equation \ref{eq:product-Gv-w} via 
+		fast 2D discrete convolution.}
 	\label{alg:fast-2D-convolution}
 \end{algorithm}
 
+%Let $\boldsymbol{\mathcal{D}}$ be a $2 D_{B} \times 2 D_{b}$ matrix formed by four blocks 
+%of $D_{B} \times D_{b}$ elements.
+%All blocks have null elements, except the first block in the first quadrant, which contains the observed data
+%$d_{i}$, $i \in \{1:D\}$.
+%The data are arranged along the rows or columns of the first block if the data grid has a $x-$ or $y-$oriented pattern,
+%respectively.
+%Let us also consider a $2 D_{B} \times 2 D_{b}$ matrix $\boldsymbol{\mathcal{P}}$ having the
+%same block structure of $\boldsymbol{\mathcal{D}}$, but containing the elements $p_{j}$ of the parameter vector 
+%$\mathbf{p}$, $j \in \{1:P\}$.
+%
+%The conjugate gradient (CG) is a very popular iterative method for solving linear systems.
+%This method was originally developed to solve systems having a square and positive definite matrix.
+%There are two adapted versions of the CG method. The first is called \textit{conjugate gradient normal equation residual} (CGNR) 
+%\citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) \cite[][p. 165]{aster_etal2019} and is
+%used to solve overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}). 
+%The second is called \textit{conjugate gradient normal equation error} (CGNE) method 
+%\citet[][sec. 11.3]{golub-vanloan2013} and is used to solve the underdetermined problem (equation \ref{eq:delta-q-tilde-underdetermined}).
+
+%\section{TEXTO ANTIGO}
+%
+%\subsubsection{The wavelet compression and lower-dimensional subspace}
+%
+%For large data sets, the  sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}) is a drawback in applying  
+%the equivalent-layer technique because it is a large and dense matrix.
+%
+%\cite{li-oldenburg2010} transformed a large and full sensitivity matrix into a sparse one by using fast wavelet transforms.
+%In the wavelet domain, \cite{li-oldenburg2010} applyied a 2D wavelet transform to each row and column of the original sensitivity matrix $\mathbf{A}$ to expand it in the wavelet bases. 
+%This operation can be done by premultiplying the original sensitivity matrix $\mathbf{A}$ by a 
+%matrix representing the 2D wavelet transform $\mathbf{W_2}$ and then the resulting is postmultiplied by 
+%the transpose of $\mathbf{W_2}$ (i.e., $\mathbf{W_2}^{\top}$).
+%\begin{equation}
+%	\mathbf{\tilde{A}} = \mathbf{W_2} \: \mathbf{A}  \: \mathbf{W_2}^{\top} \:,
+%	\label{eq:A_li_oldenburg}
+%\end{equation}
+%where $\mathbf{\tilde{A}}$ is the expanded original sensitivity matrix in the wavelet bases with many elements zero or close to zero.
+%Next, the matrix $\mathbf{\tilde{A}}$ is replaced by its sparse version $\mathbf{\tilde{A}_{s}}$ 
+%in the wavelet domain which in turn is obtained by retaining only 
+%the large elements of the $\mathbf{\tilde{A}}$.
+%Thus, the elements of  $\mathbf{\tilde{A}}$ whose  amplitudes fall below a relative threshold are discarded.
+%In \cite{li-oldenburg2010}, the original sensitivity matrix $\mathbf{A}$ is high compressed resulting in 
+%a sparce matrix $\mathbf{\tilde{A}_{s}}$ with a few percent of nonzero elements and 
+%the the inverse problem is solved in the wavelet domain by using $\mathbf{\tilde{A}_{s}}$ and 
+%a incomplete conjugate gradient least squares, without an explicit regularization parameter and 
+%a limited number of iterations.
+%The solution is obtained by solving the following linear system
+%\begin{equation}
+%	 \mathbf{\tilde{A}_{L}}^{\top} \: \mathbf{\tilde{A}_{L}} \: \mathbf{\tilde{p}_{L}}^{\ast} \: =  
+%	 \mathbf{\tilde{A}_{L}}^{\top} \: \mathbf{\tilde{d}}^{o} \: ,
+%	\label{eq:linear_system_li_oldenburg}
+%\end{equation}
+%where $\mathbf{\tilde{p}_{L}}^{\ast}$ is obtained by solving the linear system given by equation
+%\ref{eq:linear_system_li_oldenburg},
+%\begin{subequations}
+%\begin{eqnarray}
+%\mathbf{\tilde{A}_{L}} &=& \mathbf{\tilde{A}_{s}} \: \mathbf{\tilde{L}^{-1}}, \\
+%\mathbf{\tilde{p}_{L}} &=& \mathbf{\tilde{L}} \mathbf{\tilde{p}}, \\
+%\mathbf{\tilde{d}}^{o} &=&  \mathbf{W_2} \: \mathbf{d}^{o}, 
+%\end{eqnarray}
+%\label{eq:pl_system_li_oldenburg}
+%\end{subequations}
+%where $\mathbf{\tilde{L}}$ is a diagonal and invertible weighting matrix representing the finite-difference approximation in the wavelet domain. 
+%Finally, the distribution over the equivalent layer in the space domain $\mathbf{p}$ is obtained by applying an inverse wavelet transform in two steps, i.e.:
+%\begin{equation}
+%	\mathbf{\tilde{p}}  = \mathbf{\tilde{L}}^{-1} \:  \mathbf{\tilde{p}_{L}}^{\ast} \:,
+%	\label{eq:ptil_li_oldenburg}
+%\end{equation}
+%and
+%\begin{equation}
+%	 \mathbf{p}  = \mathbf{W_2} \: \mathbf{\tilde{p}} \:.
+%	\label{eq:p_li_oldenburg}
+%\end{equation}
+%Although the data misfit quantifying the difference between the observed and  predicted data 
+%by the equivalent source is calculated in the wavelet domain, we understand that the desired transformation
+%is calculated via equation \ref{eq:t_data} which  uses a full matrix of Green's functions $\mathbf{T}$.
+%
+%\cite{li-oldenburg2010} used the equivalent-layer technique with a wavelet compression to perform 
+%an  upward continuation of total-field anomaly between uneven surfaces.
+%For regularly spaced grid of data,  \cite{li-oldenburg2010} reported that high compression ratios 
+%are achived with insignificant loss of accuracy.
+%As compared to the upward-continued total-field anomaly by equivalent layer using the dense matrix,
+%\citeauthor{li-oldenburg2010}'s (\citeyear{li-oldenburg2010}) approach, using the Daubechies wavelet,
+%decreased CPU (central processing unit) time by up to two orders of magnitude.
+%
+%\cite{mendoncca2020} overcame the solution of intractable large-scale equivalent-layer problem by using the subspace method (e.g., 
+%\citeauthor{skilling-bryan1984}, \citeyear{skilling-bryan1984};
+%\citeauthor{kennett1988}, \citeyear{kennett1988};
+%\citeauthor{oldenburg1993}, \citeyear{oldenburg1993};  
+%\citeauthor{barbosa-etal1997}, \citeyear{barbosa-etal1997}).
+%The subspace method  reduces the dimension of the linear system of equations to be solved. 
+%Given a higher-dimensional space (e.g., $M$-dimensional model space, 
+%$\mathbb{R}^{M}$), there exists many lower-dimensional subspaces 
+%(e.g., $Q$-dimensional subspace) of $\mathbb{R}^{M}$.
+%The linear inverse problem related to the equivalent-layer technique 
+%consists in finding an $M$-dimension parameter vector $\mathbf{p} \: \in \mathbb{R}^{M}$ which adequately fits the potential-field data.
+%The subspace method looks for a parameter vector who lies in a $Q$-dimensional subspace of $\mathbb{R}^{M}$ which, in turn, is spanned by a set of $Q$ vectors 
+%$\mathbf{v}_i = 1, ..., Q$, where $\mathbf{v}_i \in \mathbb{R}^{M}$
+%In matrix notation,  the parameter vector in the subspace method 
+%can be written as  
+%\begin{equation}
+%	\mathbf{p} = \mathbf{V} \: \boldmath{\alpha}  \:,
+%	\label{eq:p_subspace}
+%\end{equation}
+%where $\mathbf{V}$ is an $M \times Q$ matrix whose columns 
+%$\mathbf{v}_i = 1, ..., Q$ form a basis vectors for a subspace $Q$ of 
+%$\mathbb{R}^{M}$.
+%In equation \ref{eq:p_subspace}, the parameter vector $\mathbf{p}$ 
+%is defined as a linear combination in the space spanned by $Q$ basis vectors 
+%$\mathbf{v}_i = 1, ..., Q$  and {\boldmath$\alpha$}  is a $Q$-dimensional 
+%unknown vector to be determined.
+%The main advantage of the subspace method is that the linear system of 
+%$M$ equations in $M$ unknowns to be originally solved 
+%is reduced to a new linear system of $Q$ equations in $Q$ unknowns
+%which requires much less computational effort since $Q << M$, i.e.:
+%\begin{equation}
+%	 \mathbf{V}^{\top} \:  \mathbf{A}^{\top} \: \mathbf{A} \:  \mathbf{V}  \: \boldmath{\alpha}^{\ast} \: = \:
+%	 \mathbf{V}^{\top}  \: \mathbf{d}^{o} \:.
+%	\label{eq:linear_system_subspace}
+%\end{equation}
+%To avoid the storage of matrices $\mathbf{A}$ and $\mathbf{V}$,  \cite{mendoncca2020} 
+%evaluates an element of the matrix  $\mathbf{A} \mathbf{V}$ by
+%calculating the dot product between the row of matrix $\mathbf{A}$ and the column of the matrix 
+%$\mathbf{B}$. 
+%After estimating {\boldmath$\alpha^{\ast}$} (equation \ref{eq:linear_system_subspace}) 
+%belonging to a $Q$-dimensional subspace of $\mathbb{R}^{M}$,
+%the distribution over the equivalent layer  $\mathbf{p}$ in the $\mathbb{R}^{M}$ is obtained by applying equation \ref{eq:p_subspace}.
+%The choice of the $Q$ basis vectors $\mathbf{v}_i = 1, ..., Q$ 
+%(equation \ref{eq:p_subspace}) in the subspace method is not strict.
+%\cite{mendoncca2020}, for example, chose the eigenvectors yielded by 
+%applying the singular value decomposition of the matrix containing the gridded data set.
+%The number of eigenvectors used to form basis vectors will depend on 
+%the singular values. 
+%
+%The proposed subspace method for solving large-scale equivalent-layer problem by \cite{mendoncca2020} was applied to  estimate the mass excess or deficiency caused by causative gravity sources.
+%
+%
+%\subsubsection{The quadtree discretization}
+%
+%To make the equivalent-layer technique tractable, \cite{barnes-lumley2011} also transformed the dense sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}) into a sparse matrix.
+%In \cite{barnes-lumley2011}, a sparce version of the sensitivity matrix is achived by grouping equivalent sources (e.g., they used prisms) distant from an observation point together to form a larger prism 
+%or larger block.
+%Each larger block has averaged physical properties and averaged top- and bottom-surfaces of the grouped smaller prisms (equivalent sources) that are encompassed by the larger block.
+%The authors called it the 'larger averaged block' and the essence of their method is the reduction 
+%in the number of equivalent sources, which means a reduction in the number of parameters to be estimated 
+%implying in model dimension reduction.
+%
+%The key of the \citeauthor{barnes-lumley2011}'s (\citeyear{barnes-lumley2011}) method is the 
+%algorithm for deciding how to group the smaller prisms.
+%In practice, these authors used a recursive bisection process that results in a quadtree discretization  
+%of the equivalent-layer model. 
+%
+%By using the quadtree discretization, \cite{barnes-lumley2011} were able to jointly process multiple components of airborne gravity-gradient data using a single layer of equivalent sources. 
+%To our knowledge, \cite{barnes-lumley2011} are the pioneers on processing 
+%full-tensor gravity-gradient data jointly.
+%In addition to computational feasibility,  \citeauthor{barnes-lumley2011}'s (\citeyear{barnes-lumley2011}) method reduces low-frequency noise and can also remove the drift in time-domain from the survey data. 
+%Those authors stressed that the $G_{zz}-$component calculated through the single estimated equivalent-layer model projected on a grid at a constant elevation by inverting full gravity-gradient data
+%has the low-frequency error reduced by a factor of 2.4 as compared to the inversion 
+%of an individual component of the gravity-gradient data.
+%
+%
+%
+%\subsubsection{The reparametrization of the equivalent layer}
+%
+%\cite{oliveirajr-etal2013} reparametrized the whole equivalent-layer model by 
+%a piecewise  bivariate-polynomial function defined on a set of $Q$ equivalent-source windows. 
+%In \citeauthor{oliveirajr-etal2013}'s (\citeyear{oliveirajr-etal2013}) approach, 
+%named polynomial equivalent layer (PEL), the parameter vector within the $k$th equivalent-source window 
+%$\mathbf{p}^{k}$  can be written in matrix notation as  
+%\begin{equation}
+%	\mathbf{p}^{k} = \mathbf{B}^{k} \: \mathbf{c}^{k} \:,  \:\:\:\:\:\:\: k \: = \: 1 \:... \: Q \:, 
+%	\label{eq:p_pel}
+%\end{equation}
+%where $\mathbf{p}^{k}$ is an $M_w$-dimensional vector containing the physical-property distribution
+%within the $k$th equivalent-source window, 
+%$\mathbf{c}^{k}$ is a $P$-dimensional vector whose $l$th element is the $l$th
+%coefficient of the $\alpha$th-order polynomial function and
+%$\mathbf{B}^{k}$ is an $M_w \times P$ matrix containing the first-order derivative of the 
+%$\alpha$th-order polynomial function with respect to one of the $P$ coefficients.
+%
+%By using a regularized potential-field inversion, \cite{oliveirajr-etal2013} estimates the polynomial coefficients for each equivalent-source window by solving the following linear system
+%\begin{equation}
+%	\left( \mathbf{B}^{\top} \: \mathbf{A}^{\top} \: \mathbf{A} \: \mathbf{B}   \: +
+%	 \: \mu \mathbf{I} \right) \:  \mathbf{c}^{\ast}
+%	 \: = \: \mathbf{B}^{\top} \:  \mathbf{A}^{\top} \: \mathbf{d}^{o} \: ,
+%	\label{eq:linear_system_pel}
+%\end{equation}
+%where  $\mu$ is a regularizing parameter, 
+%$\mathbf{c}^{\ast}$ is an estimated $H$-dimensional vector containing all coefficients describing all polynomial functions within  all equivalent-source windows which compose the entire equivalent layer,
+%$\mathbf{I}$ is  an identity matrix of order $H (H = P \dot Q) $ and
+%$\mathbf{B}$ is an $M \times H$  block diagonal matrix such that the main-diagonal blocks 
+%are $\mathbf{B}^{k}$ matrices (equation \ref{eq:p_pel}) and all off-diagonal blocks are zero matrices.
+%For ease of the explanation of equation \ref{eq:linear_system_pel}, we keep only the zeroth-order Tikhonov regularization and omitting the first-order Tikhonov regularization \citep{aster2018parameter} 
+%which was also used  by \cite{oliveirajr-etal2013}.
+%
+%The main advantage of the PEL is solve $H$-dimensional system of equations 
+%(equation \ref{eq:linear_system_pel}), where $H$ totalizes the number of polynomial coefficients
+%composing all equivalent-source windows,  requiring a lower computational effort since $H <<< N$.
+%To avoid the storage of matrices $\mathbf{A}$ and $\mathbf{B}$,  \cite{oliveirajr-etal2013}
+%evaluate an element of the matrix $\mathbf{A} \mathbf{B} $ by calculating the 
+%dot product between the row of matrix $\mathbf{A}$ and the column of the matrix $\mathbf{B}$. 
+%After estimating all polynomial coefficients of all windows, the estimated coefficients 
+%($\mathbf{c}^{\ast}$ in equation \ref{eq:linear_system_pel})
+%are transformed into a single physical-property distribution encompassing the entire equivalent layer. 
+%
+%As stated by \cite{oliveirajr-etal2013}, the computational efficiency of PEL approach
+%stems from the fact that the total number of polynomial coefficients $H$ required to depict the 
+%physical-property distribution within the equivalent layer is generally much smaller than the number of equivalent sources. 
+%Consequently, this leads to a considerably smaller linear system that needs to be solved.
+%Hence, the main strategy of polynomial equivalent layer  is the model dimension reduction.
+%
+%The polynomial equivalent layer was applied to perform upward continuations of gravity and magnetic data 
+%and reduction to the pole of magnetic data.
+%
+%
+%\subsubsection{The iterative scheme without solving a linear system}
+%
+%There exists a class of methods that iteratively estimate the distribution of physical properties 
+%within an equivalent layer without the need to solve linear systems. 
+%The method initially introduced by \cite{cordell1992} and later expanded upon by \cite{guspi-novara2009} updates the physical property of sources, located beneath each potential-field data, by removing the maximum residual between the observed and fitted data. 
+%In addition, \cite{xia-sprowl1991} and \cite{xia-etal1993} have developed efficient iterative algorithms 
+%for updating the distribution of physical properties within the equivalent layer in the wavenumber and space domains, respectively.
+%Specifically, in \citeauthor{xia-sprowl1991}'s (\citeyear{xia-sprowl1991}) method the physical-property distribution is updated by using the ratio between the squared depth to the equivalent source and the gravitational constant multiplied by the residual between the observed and predicted observation at the measurement station. 
+%Neither of these methods solve linear systems.
+%
+%Following this class of methods of iterative equivalent-layer technique that does not solve linear systems, \cite{siqueira-etal2017} developed a fast iterative equivalent-layer technique for processing gravity data
+%in which the sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}) 
+%is replaced by a diagonal matrix $ N \times N$, i.e.:
+%\begin{equation}
+%	\mathbf{\tilde{\tilde{A}}} = 2\: \pi \: \gamma \: \mathbf{{\Delta S}^{-1}}  \: ,
+%	\label{eq:A_siqueira}
+%\end{equation}
+%where $\gamma$ is Newton's gravitational constant  and 
+%$\mathbf{{\Delta S}^{-1}}$ is a diagonal matrix of order $N$ whose diagonal elements ${\Delta s}_{i}$, $i = 1, ..., N$  are the element of area centered at the $i$th horizontal coordinates of the $i$th observation point.
+%The physical foundations of \citeauthor{siqueira-etal2017}'s (\citeyear{siqueira-etal2017}) method  
+%rely on two constraints: i) the excess of mass; and ii)  the positive correlation between the gravity observations and the mass distribution over the equivalent layer.
+%
+%Although \citeauthor{siqueira-etal2017}'s (\citeyear{siqueira-etal2017}) method  does not solve any 
+%linear system of equations, it can be theoretically explained by solving the following linear system
+%at the $k$th iteration:
+%\begin{equation}
+%	\mathbf{\tilde{\tilde{A}}}^{\top} \: \mathbf{\tilde{\tilde{A}}} {{\mathbf{\Delta \: \hat{p}}} }^{k}
+%	 \: = \:  \mathbf{\tilde{\tilde{A}}}^{\top} \: \mathbf{r}^{k} \: ,
+%	\label{eq:linear_system_siqueira}
+%\end{equation}
+%where $ \mathbf{r}^{k} $ is an $N$-dimensional residual vector whose $i$th element is calculated by subtracting the  $i$th observed data $d^{o}_{i}$ from the  $i$th fitted data $d^{k}_{i}$ at the $k$th iteration, i.e.,
+%\begin{equation}
+%	r^{k}_{i} =  d^{o}_{i} \: - \: d^{k}_{i} \:.
+%	\label{eq:r_siqueira}
+%\end{equation}
+%and ${{\mathbf{\Delta \: \hat{p}}} }^{k}$ is an estimated $N$-dimensional vector of parameter correction.
+%
+%Because $\mathbf{\tilde{\tilde{A}}}$,  in equation \ref{eq:linear_system_siqueira}, is a diagonal matrix 
+%(equation \ref{eq:A_siqueira}), the parameter correction estimate is directly calculated  without solving system of linear equations, and thus, an $i$th element of ${{\mathbf{\Delta \: \hat{p}}} }^{k}$  
+%is directly calculated by
+%\begin{equation}
+%	{{\Delta \hat{p}}^{k}}_{i} = \frac{{\Delta s}_{i} \: r^{k}_{i} } 
+%	{2\: \pi \: \gamma}   \: .
+%	\label{eq:deltap_siqueira}
+%\end{equation}
+%The mass distribution over the equivalent layer is updated by: 
+%\begin{equation}
+%	{\hat{p}}^{k+1}_{i} = {\hat{p}}^{k}_{i} \: + \: {{\Delta \hat{p}}^{k}}_{i} \: .
+%	\label{eq:p_siqueira}
+%\end{equation}
+%\citeauthor{siqueira-etal2017}'s (\citeyear{siqueira-etal2017}) method starts from a mass distribution 
+%on the equivalent layer, whose $i$th mass $p^{o}_{i}$ is proportional to the $i$th 
+%observed data $d^{o}_{i}$, i.e.,
+%\begin{equation}
+%	p^{o}_{i} = \frac{{\Delta s}_{i} \: d^{o}_{i} }{2\: \pi \: \gamma}   \: .
+%	\label{eq:po_siqueira}
+%\end{equation}
+%
+%\cite{siqueira-etal2017} applied their fast iterative equivalent-layer 
+%technique to interpolate, calculate the horizontal components, and
+%continue upward (or downward) gravity data.
+%
+%For jointly process two gravity gradient components, 
+%\cite{jirigalatu-ebbing2019} used the Gauss-FFT for forward calculation of potential fields in the wavenumber domain combined with Landweber's iteration coupled with a mask matrix $\mathbf{M}$ to reduce the edge effects without increasing the computation cost.
+%The  mask matrix $\mathbf{M}$ is defined in the following way:
+%if the corresponding pixel does not contain the original data, 
+%the element of  $\mathbf{M}$ is set to zero; otherwise, it is set to one.
+%The $k$th Landweber iteration is given by
+%\begin{equation}
+%	\mathbf{p}_{k+1} =	\mathbf{p}_{k} + \omega
+%	\left[ \mathbf{A_1}^{\top} (\mathbf{d_1} - 
+%	\mathbf{M} \mathbf{A_1}	\mathbf{p}_{k}) +
+%	\mathbf{A_2}^{\top} (\mathbf{d_2} - 
+%	\mathbf{M} \mathbf{A_2}	\mathbf{p}_{k}) \right]	 \:,
+%	\label{eq:p_jirigalatu-ebbing2019}
+%\end{equation}
+%where $\omega$ is a relaxation factor, $\mathbf{d_1}$ and $\mathbf{d_2}$
+%are the two gravity gradient components and $\mathbf{A_1}$ and  
+%$ \mathbf{A_2}$ are the corresponding gravity gradient kernels.
+%\cite{jirigalatu-ebbing2019} applied their method for processing
+%two horizontal curvature components of Falcon airborne gravity gradient.
+%
+%  
+%\subsubsection{The convolutional equivalent layer with BTTB matrices}
+%
+%\citeauthor{takahashi2020} (\citeyear{takahashi2020}, 
+%\citeyear{takahashi2022}) introduced the convolutional equivalent layer for gravimetric and magnetic data processing, respectively.
+%
+%
+%\cite{takahashi2020} demonstrated that the sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}) associated with a planar equivalent layer formed by a set of point masses, each one directly beneath each observation point and considering a regular grid of observation points at a constant height has a symmetric block-Toeplitz Toeplitz-block (BTTB) structure.
+%A symmetric BTTB matrix has, at least, two attractive properties.
+%The first one is that it can be defined by using only
+%the elements forming its first column (or row).
+%The second attractive property is that any BTTB matrix can be
+%embedded into a symmetric Block-Circulat Circulant-Block (BCCB) matrix.
+%This means that the  full sensitivity matrix 
+%$\mathbf{A}$ (equation \ref{eq:predicted-data-vector})  can be 
+%completely reconstruct by using the first column of the BCCB matrix only.
+%In what follows, \cite{takahashi2020} computed the forward modeling 
+%by using only a single equivalent source. 
+%Specifically, it is done by calculating  the eigenvalues of the BCCB matrix
+%that can be efficiently computed by using only the first column of the BCCB matrix via 2D fast Fourier transform (2D FFT).
+%By comparing with the classic approach in the Fourier domain, 
+%the convolutional equivalent layer for gravimetric data processing 
+%proposed by \cite{takahashi2020} performed upward- and downward-continue gravity data with a very small border effects and noise amplification.
+%
+%By using the original idea of the convolutional equivalent layer 
+%proposed by \cite{takahashi2020} for gravimetric data processing, \cite{takahashi2022}  developed the convolutional equivalent layer for magnetic data processing.
+%By assuming a regularly spaced grid of magnetic data  at a constant height 
+%and a planar equivalent layer of dipoles, \cite{takahashi2022} proved that the sensitivity matrix linked with this layer possess a BTTB structure in the specific scenario where each dipole is exactly beneath each observed magnetic data point. 
+%\cite{takahashi2022} used a conjugate gradient least-squares (CGLS) algorithm  which 
+%does not require an inverse matrix or matrix-matrix multiplication. 
+%Rather, it only requires matrix-vector multiplications per iteration, 
+%which can be effectively computed using the 2D FFT as a discrete convolution.
+%The matrix-vector product only uses the elements that constitute the first column of the associated BTTB matrix, resulting in computational time and memory savings.
+%\citeauthor{takahashi2022} (\citeyear{takahashi2022}) showed the robustness of
+%the convolutional equivalent layer  in processing magnetic survey that  
+%violates the requirement of regular grids in the horizontal directions
+%and flat observation surfaces.
+%
+%The matrix-vector product in \citeauthor{takahashi2020} (\citeyear{takahashi2020}, \citeyear{takahashi2022}) 
+%(e.g.,  $\mathbf{d} = \mathbf{A} \mathbf{p}$, such as in equation \ref{eq:predicted-data-vector})
+%is the main issue to be solved.
+%To solve it efficiently, these authors involked the auxiliary linear system
+%\begin{equation}
+%\mathbf{w} = \mathbf{C} \mathbf{v} \: ,
+%\label{eq:aux_system_takahashi}
+%\end{equation}
+%where $\mathbf{w}$ and $\mathbf{v}$ are, respectively, vectors of data and parameters completed 
+%by zeros and $\mathbf{C}$ is a BCCB matrix formed by $2Q \times 2Q$ blocks, where each block 
+%$\mathbf{C}_{q}$, $q = 0, \dots, Q-1$, is a $2P \times 2P$ circulant matrix. 
+%The first column of $\mathbf{C}$ is obtained by rearranging the first column of
+%the sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}).
+%Because a BCCB matrix is diagonalized by the 2D unitary discrete Fourier transform (DFT), 
+%$\mathbf{C}$ can be written as
+%\begin{equation}
+%\mathbf{C} = 
+%\left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right)^{\ast} 
+%\boldsymbol{\Lambda}
+%\left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right) \: ,
+%\label{eq:C-diagonalized_takahashi}
+%\end{equation}
+%where the symbol ``$\otimes$" denotes the Kronecker product \citep{neudecker1969},
+%$\mathbf{F}_{2Q}$ and $\mathbf{F}_{2P}$ are the $2Q \times 2Q$ and $2P \times 2P$ 
+%unitary DFT matrices \citep[][ p. 31]{davis1979}, respectively, the superscritpt 
+%``$\ast$" denotes the complex conjugate and $\boldsymbol{\Lambda}$ is a 
+%$4QP \times 4QP$ diagonal matrix containing the eigenvalues of $\mathbf{C}$.
+%Due to the diagonalization of the matrix $\mathbf{C}$, the auxiliary system 
+%(equation \ref{eq:aux_system_takahashi}) can be rewritten by using equation 
+%\ref{eq:C-diagonalized_takahashi} and premultiplying both sides of the result 
+%by $\left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right)$, i.e.,
+%\begin{equation}
+%\boldsymbol{\Lambda} \left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right) 
+%\mathbf{v} = \left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right) 
+%\mathbf{w} \: .
+%\label{eq:vec-DFT-system_takahashi}
+%\end{equation}
+%By applying the vec-operator \citep{takahashi2020} to both sides of 
+%equation \ref{eq:vec-DFT-system_takahashi}, by premultiplying  both sides of 
+%the result by $\mathbf{F}_{2Q}^{\ast}$ and then postmultiplying both sides of the result by 
+%$\mathbf{F}_{2P}^{\ast}$
+%\begin{equation}
+%\mathbf{F}_{2Q}^{\ast} \left[ 
+%\mathbf{L} \circ \left(\mathbf{F}_{2Q} \, \mathbf{V} \, \mathbf{F}_{2P} \right) 
+%\right] \mathbf{F}_{2P}^{\ast} = \mathbf{W} \: ,
+%\label{eq:DFT-system_takahashi}
+%\end{equation}
+%where ``$\circ$'' denotes the Hadamard product \citep[][ p. 298]{horn_johnson1991} and 
+%$\mathbf{L}$, $\mathbf{V}$ and $\mathbf{W}$ are $2Q \times 2P$ matrices obtained 
+%by rearranging, along their rows, the elements forming the diagonal of matrix 
+%$\boldsymbol{\Lambda}$, vector $\mathbf{v}$ and vector $\mathbf{w}$, respectively.
+%The left side of equation \ref{eq:DFT-system_takahashi} contains the 2D 
+%Inverse Discrete Fourier Transform (IDFT) of the term in brackets, which in turn
+%represents the Hadamard product of matrix $\mathbf{L}$ and the 2D DFT of matrix 
+%$\mathbf{V}$.
+%Matrix $\mathbf{L}$ contains the eigenvalues of $\boldsymbol{\Lambda}$ 
+%(equation \ref{eq:C-diagonalized_takahashi}) and can be 
+%efficiently computed by using only the first column of the BCCB matrix 
+%$\mathbf{C}$ (equation \ref{eq:aux_system_takahashi}).
+%
+%Actually, in \citeauthor{takahashi2020} (\citeyear{takahashi2020}, \citeyear{takahashi2022}) 
+%a fast 2D discrete circular convolution \citep{vanloan1992} is used to  process 
+%very large gravity and magnetic datasets efficiently.
+%The convolutional equivalent layer was applied to perform upward continuation of large magnetic datasets. 
+%Compared to the classical Fourier approach, \citeauthor{takahashi2022}'s (\citeyear{takahashi2022}) method produces smaller border effects without using any padding scheme. 
+%
+%Without taking advantage of the symmetric BTTB structure of the sensitivity matrix (\citeauthor{takahashi2020}, \citeyear{takahashi2020}) 
+%that arises when gravimetric observations are measured on a 
+%horizontally regular grid, on a flat surface and considering a regular grid 
+%of equivalent sources whithin a horizontal layer, \cite{mendoncca2020}  explored the symmetry of the gravity kernel to reduce the number of forward model evaluations.
+%By exploting the symmetries of the gravity kernels and redundancies in the forward model evaluations on a regular grid and combining the subspace solution based on eigenvectors of the gridded dataset, \cite{mendoncca2020}   
+%estimated the mass excess or deficiency produced by anomalous sources with positive or negative density contrast. 
+%
+%\subsubsection{The deconvolutional equivalent layer with BTTB matrices}
+%
+%To avoid the  iterations of the conjugate gradient method in \cite{takahashi2022}, we can employ 
+%the deconvolution process.
+%Equation \ref{eq:DFT-system_takahashi} shows that estimate the  matrix $\mathbf{V}$,
+%containing the elements of parameter vector $\mathbf{p}$, is a inverse problem that could be 
+%solved by deconvolution.
+%From equation \ref{eq:DFT-system_takahashi}, the  matrix $\mathbf{V}$ can be obtain by 
+%deconvolution, i.e.
+%\begin{equation}
+%\mathbf{V} \: = \:  \mathbf{F}_{2Q}^{\ast} \left[ 
+%\frac{\left(\mathbf{F}_{2Q} \mathbf{W} \, \mathbf{F}_{2P} \right) }{\mathbf{L}}
+%\right] \mathbf{F}_{2P}^{\ast} \: .
+%\label{eq:deconvolution_takahashi}
+%\end{equation}
+%Equation \ref{eq:deconvolution_takahashi} shows that the parameter vector (in matrix $\mathbf{V}$) 
+%can be theoretically obtain by dividing each potential-field observations (in matrix $\mathbf{W}$)
+%by each eigenvalues (in matrix $\mathbf{L}$).
+%Hence, the parameter vector is constructed by element-by-element division of data by eigenvalues.
+%
+%However, the deconvolution often is extremely unstable. 
+%This means that a small change in data can lead to an enormous change in the estimated parameter.
+%Hence, equation \ref{eq:deconvolution_takahashi} requires regularization to be useful.
+%We usede wiener deconvolution to obtain a stable solution, i.e.,
+%\begin{equation}
+%\mathbf{V} \: = \:  \mathbf{F}_{2Q}^{\ast} \left[ 
+%\left(\mathbf{F}_{2Q} \mathbf{W} \, \mathbf{F}_{2P} \right)  
+%\frac{\mathbf{L}^{\ast}}{ \left(\mathbf{L} \: \mathbf{L}^{\ast} + \mu \right)}
+%\right] \mathbf{F}_{2P}^{\ast} \: ,
+%\label{eq:wiener_takahashi}
+%\end{equation}
+%where the matrix $\mathbf{L}^{\ast}$ contains the complex conjugate eigenvalues and
+%$\mu$ is a parameter that controls the degree of stabilization. 
+
 \section{Solution stability}
+
+The solution stability of the equivalent-layer methods is rarely addressed.
+Here, we follow the numerical stability analysis presented in \cite{siqueira-etal2017}.
+
+Let us assume noise-free potential-field data $\mathbf{d}$, 
+we estimate a physical-property distribution $\mathbf{p}$ (estimated solution) within the equivalent layer.
+Then, the  noise-free data $\mathbf{d}$ are contaminated with additive $D$ different sequences of 
+pseudorandom Gaussian noise, creating  different noise-corrupted potential-field data
+$\mathbf{d}^\mathbf{o}_\ell$, $\ell = 1, ..., D$.
+From each $\mathbf{d}^\mathbf{o}_\ell$, we estimate a physical-property distribution 
+$\mathbf{\hat{p}}_\ell$ within the equivalent layer. 
+
+Next, for each noise-corrupted data $\mathbf{d}^\mathbf{o}_\ell$
+and estimated solution $\mathbf{\hat{p}}_\ell$, the $\ell$th model perturbation $\delta p_\ell $
+and the $\ell$th data perturbation    $\delta d_\ell$ are,  respectively, evaluated by
+\begin{equation}
+	\delta p_\ell = \frac{\parallel \mathbf{\hat{p}}_\ell - {\mathbf{p}} \parallel_2 }
+	{\parallel {\mathbf{p}} \parallel _2 }, \quad \ell= 1, ..., D,
+	\label{del_p}
+\end{equation}
+and
+\begin{equation}
+	\delta d_\ell = \frac{\parallel \mathbf{d}^\mathbf{o}_\ell - \mathbf{d} \parallel _2 }
+	{\parallel \mathbf{d}\parallel _2}, \quad \ell = 1, ..., D.
+	\label{del_d}
+\end{equation}
+
+Regardless of the particular method used, the following inequality \citep[][ p. 66]{aster2018parameter}  is applicable:
+\begin{equation}
+	\delta p_\ell \leq \kappa \; \delta d_\ell, \quad \ell = 1, ..., D,
+	\label{condition_number}
+\end{equation}
+where $\kappa$ is the constant of proportionality between the model perturbation $\delta p_\ell $ 
+(equation \ref{del_p}) and the data perturbation   $\delta d_\ell$ (equation \ref{del_d}).
+The constant $\kappa$ acts as the condition number of an invertible matrix in a given inversion, and thus
+measures the instability of the solution.
+The larger (smaller) the value of $\kappa$ the more unstable (stable) is the estimated solution.
+
+Equation \ref{condition_number} shows a linear relationship between the model perturbation and 
+the data perturbation.
+By plotting $\delta p_\ell$ (equation \ref{del_p}) against $\delta d_\ell$ (equation \ref{del_d}) 
+produced by a set of $D$ estimated solution obtained by applying a given equivalent-layer method, 
+we obtain a straight line behaviour described by equation \ref{condition_number}.
+By applying a linear regression, we obtain a fitted straight line whose estimated slope 
+($\kappa$ in equation \ref{condition_number}) quantifies the solution stability.
+
+Here, the  analysis of solution stability is numerically conducted by applying
+the classical equivalent-layer technique with zeroth-order Tikhonov regularization,
+the convolutional method for gravimetric and magnetic data,
+the deconvolutional method (equation \ref{eq:deconvolution_takahashi}) and 
+the deconvolutional method with different values for the Wiener stabilization 
+(equation \ref{eq:wiener_takahashi}).%% Methodology
+\section{The Equivalent-Layer Technique}
+
+\subsection{Fundamentals}
+
+Consider a set of $N$ potential-field observations (gravity or magnetic data) 
+$d^{o}_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $, 
+at the $i$th observation point $(x_{i}, y_{i}, z_{i})$ of a Cartesian 
+coordinate system with $x$-, $y$- and $z$-axis pointing to north, east and down, respectively.
+Physically, the discrete set of potential-field observations is produced by a unknown source distribution in the subsurface.
+Mathematically, it represents a discrete set of a harmonic function.
+
+A standard way to deal with the classical equivalent-layer technique is approximate the observed potential-field data by the predicted data,
+which in turn are produced by a fictitious layer of sources, 
+called equivalent layer.
+The equivalent layer is located below the observation surface, at depth 
+$z_0$ ($z_0 > z_i$), and with finite horizontal dimensions being composed by 
+a finite discrete set of equivalent sources (e.g., point masses, dipoles, or prisms). 
+Mathematically, this approximation can be written in matrix notation as
+\begin{equation}
+	\mathbf{d} = \mathbf{A} \mathbf{p} \: ,
+	\label{eq:predicted-data-vector}
+\end{equation}
+where $\mathbf{d}$ is an $N$-dimensional predicted data vector whose $i$th element, $d_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $, is the 
+predicted potential-field observation,
+$\mathbf{p}$ is an $M$-dimensional parameter vector whose $j$th element $p_{j}$
+can be a physical property of the $j$th equivalent source and $\mathbf{A}$ is the $N \times M$ sensitivity matrix whose  $ij$th element $a_{ij}$ is a  harmonic function.
+
+
+\subsection{Computational strategies}
+
+The classical equivalent-layer technique consists of estimating the parameter vector $\mathbf{p}$ from the $N$-dimensional observed data vector 
+$\mathbf{d^{o}}$ whose $i$th element is defined as the 
+$d^{o}_{i}$ $(x_{i}, y_{i}, z_{i})$, $i =  1, \dots, N $.
+Usually, this estimate can be obtained by a regularized least-squares solution.
+The estimated parameter is stable, fits the observed data and can be used to
+yield a desired linear transformation of the data, such as interpolation, upward (or downward) continuation, reduction to the pole,  joint processing of
+gravity gradient data and more.
+Mathematically, the desired linear transformation of the data can be obtained by
+\begin{equation}
+	\hat{\mathbf{t}} = \mathbf{T} \mathbf{p^{\ast}}\: ,
+	\label{eq:t_data}
+\end{equation}
+where $\hat{\mathbf{t}}$ is an $N$-dimensional transformed data vector,
+$\mathbf{p^{\ast}}$ is an $M$-dimensional estimated parameter vector and
+$\mathbf{T}$ is the $N \times M$ matrix of Green's functions whose  $ij$th element  is the transformed field at the $i$th observation point produced by the $j$th equivalent source.
+
+The biggest hurdle to use the classical equivalent-layer technique 
+is the computational complexity to handle large datasets 
+because the sensitivity matrix  $\mathbf{A}$ 
+(equation \ref{eq:predicted-data-vector}) is dense. 
+Usually, the estimated parameter vector $\mathbf{p^{\ast}}$
+requires to solve a large-scale linear inversion which in turn means to deal with some obstacles concerning large computational cost:
+i)   the large computer memory to store large and full matrices;
+ii)  the long computation time to mutiply a matrix by a vector; and
+iii) the long computation time to solve a large linear system of equations.
+
+
+Here, we review some strategies for reducing the computational cost of equivalent-layer technique.
+These strategies are the following:
+
+
+
+\subsubsection{The moving data-window scheme}
+
+\cite{leao-silva1989} reduced the total processing time and memory usage
+of equivalent-layer technique by means of a moving data-window scheme.
+A small moving data window with $N_w$ observations and a small equivalent layer with $M_w$ equivalent sources 
+($M_w > N_w$) located  below the observations are established.
+For each position of a moving-data window, \cite{leao-silva1989} estimate a stable solution 
+$\mathbf{{p_w}^{\ast}}$ by using a data-space approach with the zeroth-order Tikhonov regularization 
+\citep{aster2018parameter}, i.e.,
+\begin{subequations}
+\begin{eqnarray}
+\left( \mathbf{A_w} \mathbf{A_w}^{\top} + \mu \mathbf{I}\right) \mathbf{w} &=& \mathbf{d_w}^{o} \:, \\
+\mathbf{A_w}^{\top} \: \mathbf{w} &=&  \mathbf{{p_w}^{\ast}} \:, 
+\label{eq:p_tk0}
+\end{eqnarray}
+\end{subequations}
+where $\mathbf{w}$ is a dummy vector, 
+$\mu$ is a regularizing parameter, 
+$\mathbf{d_w}^{o}$ is an $N_w$-dimensional vector containing the observed potential-field data, 
+$\mathbf{A_w}$ is an $N_w \times M_w$  sensitivity matrix related to a moving-data window, 
+$\mathbf{I}$ is  an identity matrix of order $N_w$ and 
+the superscript $\top$ stands for a transpose. 
+After estimating an $M_w \times 1$ parameter vector $\mathbf{{p_w}^{\ast}}$  (equation \ref{eq:p_tk0}) 
+the desired transformation of the data is only calculated at the central point of each moving-data window, i.e.:
+\begin{equation}
+	\hat{t}_{k} = \mathbf{t}_k^{\top} \: \mathbf{{p_w}^{\ast}} \: ,
+	\label{eq:t_leaosilva}
+\end{equation}
+where $\hat{t}_{k}$ is the transformed data calculated at the central point ${k}$ of the data window and
+$\mathbf{t}_k$ is an $M_w \times 1$ vector whose elements form the $k$th row of the $N_w \times N_w$ 
+matrix of Green's functions $\mathbf{T}$ (equation \ref{eq:t_data}) of 
+the desired linear transformation of the data.
+
+By shifting the moving-data window with a shift size of one data spacing, 
+a new position of a data window is set up.
+Next, the aforementioned process (equations \ref{eq:p_tk0} and \ref{eq:t_leaosilva}) is repeated  for each position of a moving-data window, until the entire data have been processed.
+Hence, instead of solving a large inverse problem, \cite{leao-silva1989} solve several much smaller ones. 
+
+
+To reduce the size of the linear system to be solved, \cite{soler-uieda2021}  adopted the same strategy proposed, originally, by \cite{leao-silva1989}  of using a small moving-data window sweeping the whole data.
+In \cite{leao-silva1989}, a moving-data window slides to the next adjacent data window following a sequential movement, the predicted data is calculated inside the data window and the desired transformation are only calculated at the center of the moving-data window.
+Unlike \cite{leao-silva1989}, \cite{soler-uieda2021} do not adopt a sequential order of the data windows; rather, they adopt a randomized order of windows in the iterations of the gradient-boosting algorithm 
+(\citeauthor{friedman2001}, \citeyear{friedman2001} and \citeyear{friedman2002}).
+The  gradient-boosting algorithm in \cite{soler-uieda2021} estimates a stable solution using the data and the equivalent sources 
+that fall within a moving-data window; however, it calculates the predicted data and the residual data in the whole survey data. 
+Next, the residual data  that fall within a new position of the data window is used as input data to estimate a new stable solution within the data window
+which in turn is used to calculated a new predicted data and 
+a new residual data in the whole survey data.
+Finally, unlike \cite{leao-silva1989}, in \cite{soler-uieda2021} neither the data nor the equivalent sources need to be distributed in regular grids.
+Indeed, \cite{leao-silva1989} built their method using regular grids, but in fact regular grids are not necessary.
+Regarding the equivalent-source layout, \cite{soler-uieda2021} proposed the block-averaged sources locations in which the survey area is divided into horizontal blocks and one single equivalent source is assigned to each block.
+Each single source per block is placed over the layer with its horizontal coordinates given by the average horizontal positions of observation points.
+According to \cite{soler-uieda2021}, the block-averaged sources layout reduces the number of equivalent sources significantly
+and the gradient-boosting algorithm provides even greater efficiency in terms of data fitting.
+
+
+
+% PENSAR ONDE COLOCAR OS FLOPS
+%In the \cite{leao-silva1989}  equivalent-layer approach, the number of flops  required to solve the linear %system  by Cholesky's decomposition is
+
+
+
+
+\subsubsection{The equivalent-data concept}
+
+To reduced the total processing time and memory usage of equivalent-layer technique, \cite{mendonca-silva1994} proposed a strategy called 'equivalent data concept'.
+The equivalent data concept is grounded on the  principle  that there is a subset of redundant data that does not contribute to the final solution and thus can be dispensed.
+Conversely, there is a subset of observations, called equivalent data, that  contributes effectively to the final solution and fits the remaining observations (redundant data).
+Iteractively, \cite{mendonca-silva1994} selected the subset of equivalent data that is substantially smaller than the original dataset. 
+This selection is carried out by incorporating one data point at a time.
+
+According to \cite{mendonca-silva1994}, the number of equivalent data is about one-tenth 
+of the total number of observations. 
+These authors used the equivalent data concept to carry out an interpolation of gravity data.
+They showed a reduction of the total processing time and memory usage by, at least, 
+two orders of magnitude as opposed to using all observations in the interpolation process 
+via the classical equivalent-layer technique.
+
+
+\subsubsection{The wavelet compression and lower-dimensional subspace}
+
+For large data sets, the  sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}) is a drawback in applying  
+the equivalent-layer technique because it is a large and dense matrix.
+
+\cite{li-oldenburg2010} transformed a large and full sensitivity matrix into a sparse one by using fast wavelet transforms.
+In the wavelet domain, \cite{li-oldenburg2010} applyied a 2D wavelet transform to each row and column of the original sensitivity matrix $\mathbf{A}$ to expand it in the wavelet bases. 
+This operation can be done by premultiplying the original sensitivity matrix $\mathbf{A}$ by a 
+matrix representing the 2D wavelet transform $\mathbf{W_2}$ and then the resulting is postmultiplied by 
+the transpose of $\mathbf{W_2}$ (i.e., $\mathbf{W_2}^{\top}$).
+\begin{equation}
+	\mathbf{\tilde{A}} = \mathbf{W_2} \: \mathbf{A}  \: \mathbf{W_2}^{\top} \:,
+	\label{eq:A_li_oldenburg}
+\end{equation}
+where $\mathbf{\tilde{A}}$ is the expanded original sensitivity matrix in the wavelet bases with many elements zero or close to zero.
+Next, the matrix $\mathbf{\tilde{A}}$ is replaced by its sparse version $\mathbf{\tilde{A}_{s}}$ 
+in the wavelet domain which in turn is obtained by retaining only 
+the large elements of the $\mathbf{\tilde{A}}$.
+Thus, the elements of  $\mathbf{\tilde{A}}$ whose  amplitudes fall below a relative threshold are discarded.
+In \cite{li-oldenburg2010}, the original sensitivity matrix $\mathbf{A}$ is high compressed resulting in 
+a sparce matrix $\mathbf{\tilde{A}_{s}}$ with a few percent of nonzero elements and 
+the the inverse problem is solved in the wavelet domain by using $\mathbf{\tilde{A}_{s}}$ and 
+a incomplete conjugate gradient least squares, without an explicit regularization parameter and 
+a limited number of iterations.
+The solution is obtained by solving the following linear system
+\begin{equation}
+	 \mathbf{\tilde{A}_{L}}^{\top} \: \mathbf{\tilde{A}_{L}} \: \mathbf{\tilde{p}_{L}}^{\ast} \: =  
+	 \mathbf{\tilde{A}_{L}}^{\top} \: \mathbf{\tilde{d}}^{o} \: ,
+	\label{eq:linear_system_li_oldenburg}
+\end{equation}
+where $\mathbf{\tilde{p}_{L}}^{\ast}$ is obtained by solving the linear system given by equation
+\ref{eq:linear_system_li_oldenburg},
+\begin{subequations}
+\begin{eqnarray}
+\mathbf{\tilde{A}_{L}} &=& \mathbf{\tilde{A}_{s}} \: \mathbf{\tilde{L}^{-1}}, \\
+\mathbf{\tilde{p}_{L}} &=& \mathbf{\tilde{L}} \mathbf{\tilde{p}}, \\
+\mathbf{\tilde{d}}^{o} &=&  \mathbf{W_2} \: \mathbf{d}^{o}, 
+\end{eqnarray}
+\label{eq:pl_system_li_oldenburg}
+\end{subequations}
+where $\mathbf{\tilde{L}}$ is a diagonal and invertible weighting matrix representing the finite-difference approximation in the wavelet domain. 
+Finally, the distribution over the equivalent layer in the space domain $\mathbf{p}$ is obtained by applying an inverse wavelet transform in two steps, i.e.:
+\begin{equation}
+	\mathbf{\tilde{p}}  = \mathbf{\tilde{L}}^{-1} \:  \mathbf{\tilde{p}_{L}}^{\ast} \:,
+	\label{eq:ptil_li_oldenburg}
+\end{equation}
+and
+\begin{equation}
+	 \mathbf{p}  = \mathbf{W_2} \: \mathbf{\tilde{p}} \:.
+	\label{eq:p_li_oldenburg}
+\end{equation}
+Although the data misfit quantifying the difference between the observed and  predicted data 
+by the equivalent source is calculated in the wavelet domain, we understand that the desired transformation
+is calculated via equation \ref{eq:t_data} which  uses a full matrix of Green's functions $\mathbf{T}$.
+
+\cite{li-oldenburg2010} used the equivalent-layer technique with a wavelet compression to perform 
+an  upward continuation of total-field anomaly between uneven surfaces.
+For regularly spaced grid of data,  \cite{li-oldenburg2010} reported that high compression ratios 
+are achived with insignificant loss of accuracy.
+As compared to the upward-continued total-field anomaly by equivalent layer using the dense matrix,
+\citeauthor{li-oldenburg2010}'s (\citeyear{li-oldenburg2010}) approach, using the Daubechies wavelet,
+decreased CPU (central processing unit) time by up to two orders of magnitude.
+
+\cite{mendoncca2020} overcame the solution of intractable large-scale equivalent-layer problem by using the subspace method (e.g., 
+\citeauthor{skilling-bryan1984}, \citeyear{skilling-bryan1984};
+\citeauthor{kennett1988}, \citeyear{kennett1988};
+\citeauthor{oldenburg1993}, \citeyear{oldenburg1993};  
+\citeauthor{barbosa-etal1997}, \citeyear{barbosa-etal1997}).
+The subspace method  reduces the dimension of the linear system of equations to be solved. 
+Given a higher-dimensional space (e.g., $M$-dimensional model space, 
+$\mathbb{R}^{M}$), there exists many lower-dimensional subspaces 
+(e.g., $Q$-dimensional subspace) of $\mathbb{R}^{M}$.
+The linear inverse problem related to the equivalent-layer technique 
+consists in finding an $M$-dimension parameter vector $\mathbf{p} \: \in \mathbb{R}^{M}$ which adequately fits the potential-field data.
+The subspace method looks for a parameter vector who lies in a $Q$-dimensional subspace of $\mathbb{R}^{M}$ which, in turn, is spanned by a set of $Q$ vectors 
+$\mathbf{v}_i = 1, ..., Q$, where $\mathbf{v}_i \in \mathbb{R}^{M}$
+In matrix notation,  the parameter vector in the subspace method 
+can be written as  
+\begin{equation}
+	\mathbf{p} = \mathbf{V} \: \boldmath{\alpha}  \:,
+	\label{eq:p_subspace}
+\end{equation}
+where $\mathbf{V}$ is an $M \times Q$ matrix whose columns 
+$\mathbf{v}_i = 1, ..., Q$ form a basis vectors for a subspace $Q$ of 
+$\mathbb{R}^{M}$.
+In equation \ref{eq:p_subspace}, the parameter vector $\mathbf{p}$ 
+is defined as a linear combination in the space spanned by $Q$ basis vectors 
+$\mathbf{v}_i = 1, ..., Q$  and {\boldmath$\alpha$}  is a $Q$-dimensional 
+unknown vector to be determined.
+The main advantage of the subspace method is that the linear system of 
+$M$ equations in $M$ unknowns to be originally solved 
+is reduced to a new linear system of $Q$ equations in $Q$ unknowns
+which requires much less computational effort since $Q << M$, i.e.:
+\begin{equation}
+	 \mathbf{V}^{\top} \:  \mathbf{A}^{\top} \: \mathbf{A} \:  \mathbf{V}  \: \boldmath{\alpha}^{\ast} \: = \:
+	 \mathbf{V}^{\top}  \: \mathbf{d}^{o} \:.
+	\label{eq:linear_system_subspace}
+\end{equation}
+To avoid the storage of matrices $\mathbf{A}$ and $\mathbf{V}$,  \cite{mendoncca2020} 
+evaluates an element of the matrix  $\mathbf{A} \mathbf{V}$ by
+calculating the dot product between the row of matrix $\mathbf{A}$ and the column of the matrix 
+$\mathbf{B}$. 
+After estimating {\boldmath$\alpha^{\ast}$} (equation \ref{eq:linear_system_subspace}) 
+belonging to a $Q$-dimensional subspace of $\mathbb{R}^{M}$,
+the distribution over the equivalent layer  $\mathbf{p}$ in the $\mathbb{R}^{M}$ is obtained by applying equation \ref{eq:p_subspace}.
+The choice of the $Q$ basis vectors $\mathbf{v}_i = 1, ..., Q$ 
+(equation \ref{eq:p_subspace}) in the subspace method is not strict.
+\cite{mendoncca2020}, for example, chose the eigenvectors yielded by 
+applying the singular value decomposition of the matrix containing the gridded data set.
+The number of eigenvectors used to form basis vectors will depend on 
+the singular values. 
+
+The proposed subspace method for solving large-scale equivalent-layer problem by \cite{mendoncca2020} was applied to  estimate the mass excess or deficiency caused by causative gravity sources.
+
+
+\subsubsection{The quadtree discretization}
+
+To make the equivalent-layer technique tractable, \cite{barnes-lumley2011} also transformed the dense sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}) into a sparse matrix.
+In \cite{barnes-lumley2011}, a sparce version of the sensitivity matrix is achived by grouping equivalent sources (e.g., they used prisms) distant from an observation point together to form a larger prism 
+or larger block.
+Each larger block has averaged physical properties and averaged top- and bottom-surfaces of the grouped smaller prisms (equivalent sources) that are encompassed by the larger block.
+The authors called it the 'larger averaged block' and the essence of their method is the reduction 
+in the number of equivalent sources, which means a reduction in the number of parameters to be estimated 
+implying in model dimension reduction.
+
+The key of the \citeauthor{barnes-lumley2011}'s (\citeyear{barnes-lumley2011}) method is the 
+algorithm for deciding how to group the smaller prisms.
+In practice, these authors used a recursive bisection process that results in a quadtree discretization  
+of the equivalent-layer model. 
+
+By using the quadtree discretization, \cite{barnes-lumley2011} were able to jointly process multiple components of airborne gravity-gradient data using a single layer of equivalent sources. 
+To our knowledge, \cite{barnes-lumley2011} are the pioneers on processing 
+full-tensor gravity-gradient data jointly.
+In addition to computational feasibility,  \citeauthor{barnes-lumley2011}'s (\citeyear{barnes-lumley2011}) method reduces low-frequency noise and can also remove the drift in time-domain from the survey data. 
+Those authors stressed that the $G_{zz}-$component calculated through the single estimated equivalent-layer model projected on a grid at a constant elevation by inverting full gravity-gradient data
+has the low-frequency error reduced by a factor of 2.4 as compared to the inversion 
+of an individual component of the gravity-gradient data.
+
+
+
+\subsubsection{The reparametrization of the equivalent layer}
+
+\cite{oliveirajr-etal2013} reparametrized the whole equivalent-layer model by 
+a piecewise  bivariate-polynomial function defined on a set of $Q$ equivalent-source windows. 
+In \citeauthor{oliveirajr-etal2013}'s (\citeyear{oliveirajr-etal2013}) approach, 
+named polynomial equivalent layer (PEL), the parameter vector within the $k$th equivalent-source window 
+$\mathbf{p}^{k}$  can be written in matrix notation as  
+\begin{equation}
+	\mathbf{p}^{k} = \mathbf{B}^{k} \: \mathbf{c}^{k} \:,  \:\:\:\:\:\:\: k \: = \: 1 \:... \: Q \:, 
+	\label{eq:p_pel}
+\end{equation}
+where $\mathbf{p}^{k}$ is an $M_w$-dimensional vector containing the physical-property distribution
+within the $k$th equivalent-source window, 
+$\mathbf{c}^{k}$ is a $P$-dimensional vector whose $l$th element is the $l$th
+coefficient of the $\alpha$th-order polynomial function and
+$\mathbf{B}^{k}$ is an $M_w \times P$ matrix containing the first-order derivative of the 
+$\alpha$th-order polynomial function with respect to one of the $P$ coefficients.
+
+By using a regularized potential-field inversion, \cite{oliveirajr-etal2013} estimates the polynomial coefficients for each equivalent-source window by solving the following linear system
+\begin{equation}
+	\left( \mathbf{B}^{\top} \: \mathbf{A}^{\top} \: \mathbf{A} \: \mathbf{B}   \: +
+	 \: \mu \mathbf{I} \right) \:  \mathbf{c}^{\ast}
+	 \: = \: \mathbf{B}^{\top} \:  \mathbf{A}^{\top} \: \mathbf{d}^{o} \: ,
+	\label{eq:linear_system_pel}
+\end{equation}
+where  $\mu$ is a regularizing parameter, 
+$\mathbf{c}^{\ast}$ is an estimated $H$-dimensional vector containing all coefficients describing all polynomial functions within  all equivalent-source windows which compose the entire equivalent layer,
+$\mathbf{I}$ is  an identity matrix of order $H (H = P \dot Q) $ and
+$\mathbf{B}$ is an $M \times H$  block diagonal matrix such that the main-diagonal blocks 
+are $\mathbf{B}^{k}$ matrices (equation \ref{eq:p_pel}) and all off-diagonal blocks are zero matrices.
+For ease of the explanation of equation \ref{eq:linear_system_pel}, we keep only the zeroth-order Tikhonov regularization and omitting the first-order Tikhonov regularization \citep{aster2018parameter} 
+which was also used  by \cite{oliveirajr-etal2013}.
+
+The main advantage of the PEL is solve $H$-dimensional system of equations 
+(equation \ref{eq:linear_system_pel}), where $H$ totalizes the number of polynomial coefficients
+composing all equivalent-source windows,  requiring a lower computational effort since $H <<< N$.
+To avoid the storage of matrices $\mathbf{A}$ and $\mathbf{B}$,  \cite{oliveirajr-etal2013}
+evaluate an element of the matrix $\mathbf{A} \mathbf{B} $ by calculating the 
+dot product between the row of matrix $\mathbf{A}$ and the column of the matrix $\mathbf{B}$. 
+After estimating all polynomial coefficients of all windows, the estimated coefficients 
+($\mathbf{c}^{\ast}$ in equation \ref{eq:linear_system_pel})
+are transformed into a single physical-property distribution encompassing the entire equivalent layer. 
+
+As stated by \cite{oliveirajr-etal2013}, the computational efficiency of PEL approach
+stems from the fact that the total number of polynomial coefficients $H$ required to depict the 
+physical-property distribution within the equivalent layer is generally much smaller than the number of equivalent sources. 
+Consequently, this leads to a considerably smaller linear system that needs to be solved.
+Hence, the main strategy of polynomial equivalent layer  is the model dimension reduction.
+
+The polynomial equivalent layer was applied to perform upward continuations of gravity and magnetic data 
+and reduction to the pole of magnetic data.
+
+
+\subsubsection{The iterative scheme without solving a linear system}
+
+There exists a class of methods that iteratively estimate the distribution of physical properties 
+within an equivalent layer without the need to solve linear systems. 
+The method initially introduced by \cite{cordell1992} and later expanded upon by \cite{guspi-novara2009} updates the physical property of sources, located beneath each potential-field data, by removing the maximum residual between the observed and fitted data. 
+In addition, \cite{xia-sprowl1991} and \cite{xia-etal1993} have developed efficient iterative algorithms 
+for updating the distribution of physical properties within the equivalent layer in the wavenumber and space domains, respectively.
+Specifically, in \citeauthor{xia-sprowl1991}'s (\citeyear{xia-sprowl1991}) method the physical-property distribution is updated by using the ratio between the squared depth to the equivalent source and the gravitational constant multiplied by the residual between the observed and predicted observation at the measurement station. 
+Neither of these methods solve linear systems.
+
+Following this class of methods of iterative equivalent-layer technique that does not solve linear systems, \cite{siqueira-etal2017} developed a fast iterative equivalent-layer technique for processing gravity data
+in which the sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}) 
+is replaced by a diagonal matrix $ N \times N$, i.e.:
+\begin{equation}
+	\mathbf{\tilde{\tilde{A}}} = 2\: \pi \: \gamma \: \mathbf{{\Delta S}^{-1}}  \: ,
+	\label{eq:A_siqueira}
+\end{equation}
+where $\gamma$ is Newton's gravitational constant  and 
+$\mathbf{{\Delta S}^{-1}}$ is a diagonal matrix of order $N$ whose diagonal elements ${\Delta s}_{i}$, $i = 1, ..., N$  are the element of area centered at the $i$th horizontal coordinates of the $i$th observation point.
+The physical foundations of \citeauthor{siqueira-etal2017}'s (\citeyear{siqueira-etal2017}) method  
+rely on two constraints: i) the excess of mass; and ii)  the positive correlation between the gravity observations and the mass distribution over the equivalent layer.
+
+Although \citeauthor{siqueira-etal2017}'s (\citeyear{siqueira-etal2017}) method  does not solve any 
+linear system of equations, it can be theoretically explained by solving the following linear system
+at the $k$th iteration:
+\begin{equation}
+	\mathbf{\tilde{\tilde{A}}}^{\top} \: \mathbf{\tilde{\tilde{A}}} {{\mathbf{\Delta \: \hat{p}}} }^{k}
+	 \: = \:  \mathbf{\tilde{\tilde{A}}}^{\top} \: \mathbf{r}^{k} \: ,
+	\label{eq:linear_system_siqueira}
+\end{equation}
+where $ \mathbf{r}^{k} $ is an $N$-dimensional residual vector whose $i$th element is calculated by subtracting the  $i$th observed data $d^{o}_{i}$ from the  $i$th fitted data $d^{k}_{i}$ at the $k$th iteration, i.e.,
+\begin{equation}
+	r^{k}_{i} =  d^{o}_{i} \: - \: d^{k}_{i} \:.
+	\label{eq:r_siqueira}
+\end{equation}
+and ${{\mathbf{\Delta \: \hat{p}}} }^{k}$ is an estimated $N$-dimensional vector of parameter correction.
+
+Because $\mathbf{\tilde{\tilde{A}}}$,  in equation \ref{eq:linear_system_siqueira}, is a diagonal matrix 
+(equation \ref{eq:A_siqueira}), the parameter correction estimate is directly calculated  without solving system of linear equations, and thus, an $i$th element of ${{\mathbf{\Delta \: \hat{p}}} }^{k}$  
+is directly calculated by
+\begin{equation}
+	{{\Delta \hat{p}}^{k}}_{i} = \frac{{\Delta s}_{i} \: r^{k}_{i} } 
+	{2\: \pi \: \gamma}   \: .
+	\label{eq:deltap_siqueira}
+\end{equation}
+The mass distribution over the equivalent layer is updated by: 
+\begin{equation}
+	{\hat{p}}^{k+1}_{i} = {\hat{p}}^{k}_{i} \: + \: {{\Delta \hat{p}}^{k}}_{i} \: .
+	\label{eq:p_siqueira}
+\end{equation}
+\citeauthor{siqueira-etal2017}'s (\citeyear{siqueira-etal2017}) method starts from a mass distribution 
+on the equivalent layer, whose $i$th mass $p^{o}_{i}$ is proportional to the $i$th 
+observed data $d^{o}_{i}$, i.e.,
+\begin{equation}
+	p^{o}_{i} = \frac{{\Delta s}_{i} \: d^{o}_{i} }{2\: \pi \: \gamma}   \: .
+	\label{eq:po_siqueira}
+\end{equation}
+
+\cite{siqueira-etal2017} applied their fast iterative equivalent-layer 
+technique to interpolate, calculate the horizontal components, and
+continue upward (or downward) gravity data.
+
+For jointly process two gravity gradient components, 
+\cite{jirigalatu-ebbing2019} used the Gauss-FFT for forward calculation of potential fields in the wavenumber domain combined with Landweber's iteration coupled with a mask matrix $\mathbf{M}$ to reduce the edge effects without increasing the computation cost.
+The  mask matrix $\mathbf{M}$ is defined in the following way:
+if the corresponding pixel does not contain the original data, 
+the element of  $\mathbf{M}$ is set to zero; otherwise, it is set to one.
+The $k$th Landweber iteration is given by
+\begin{equation}
+	\mathbf{p}_{k+1} =	\mathbf{p}_{k} + \omega
+	\left[ \mathbf{A_1}^{\top} (\mathbf{d_1} - 
+	\mathbf{M} \mathbf{A_1}	\mathbf{p}_{k}) +
+	\mathbf{A_2}^{\top} (\mathbf{d_2} - 
+	\mathbf{M} \mathbf{A_2}	\mathbf{p}_{k}) \right]	 \:,
+	\label{eq:p_jirigalatu-ebbing2019}
+\end{equation}
+where $\omega$ is a relaxation factor, $\mathbf{d_1}$ and $\mathbf{d_2}$
+are the two gravity gradient components and $\mathbf{A_1}$ and  
+$ \mathbf{A_2}$ are the corresponding gravity gradient kernels.
+\cite{jirigalatu-ebbing2019} applied their method for processing
+two horizontal curvature components of Falcon airborne gravity gradient.
+
+  
+\subsubsection{The convolutional equivalent layer with BTTB matrices}
+
+\citeauthor{takahashi2020} (\citeyear{takahashi2020}, 
+\citeyear{takahashi2022}) introduced the convolutional equivalent layer for gravimetric and magnetic data processing, respectively.
+
+
+\cite{takahashi2020} demonstrated that the sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}) associated with a planar equivalent layer formed by a set of point masses, each one directly beneath each observation point and considering a regular grid of observation points at a constant height has a symmetric block-Toeplitz Toeplitz-block (BTTB) structure.
+A symmetric BTTB matrix has, at least, two attractive properties.
+The first one is that it can be defined by using only
+the elements forming its first column (or row).
+The second attractive property is that any BTTB matrix can be
+embedded into a symmetric Block-Circulat Circulant-Block (BCCB) matrix.
+This means that the  full sensitivity matrix 
+$\mathbf{A}$ (equation \ref{eq:predicted-data-vector})  can be 
+completely reconstruct by using the first column of the BCCB matrix only.
+In what follows, \cite{takahashi2020} computed the forward modeling 
+by using only a single equivalent source. 
+Specifically, it is done by calculating  the eigenvalues of the BCCB matrix
+that can be efficiently computed by using only the first column of the BCCB matrix via 2D fast Fourier transform (2D FFT).
+By comparing with the classic approach in the Fourier domain, 
+the convolutional equivalent layer for gravimetric data processing 
+proposed by \cite{takahashi2020} performed upward- and downward-continue gravity data with a very small border effects and noise amplification.
+
+By using the original idea of the convolutional equivalent layer 
+proposed by \cite{takahashi2020} for gravimetric data processing, \cite{takahashi2022}  developed the convolutional equivalent layer for magnetic data processing.
+By assuming a regularly spaced grid of magnetic data  at a constant height 
+and a planar equivalent layer of dipoles, \cite{takahashi2022} proved that the sensitivity matrix linked with this layer possess a BTTB structure in the specific scenario where each dipole is exactly beneath each observed magnetic data point. 
+\cite{takahashi2022} used a conjugate gradient least-squares (CGLS) algorithm  which 
+does not require an inverse matrix or matrix-matrix multiplication. 
+Rather, it only requires matrix-vector multiplications per iteration, 
+which can be effectively computed using the 2D FFT as a discrete convolution.
+The matrix-vector product only uses the elements that constitute the first column of the associated BTTB matrix, resulting in computational time and memory savings.
+\citeauthor{takahashi2022} (\citeyear{takahashi2022}) showed the robustness of
+the convolutional equivalent layer  in processing magnetic survey that  
+violates the requirement of regular grids in the horizontal directions
+and flat observation surfaces.
+
+The matrix-vector product in \citeauthor{takahashi2020} (\citeyear{takahashi2020}, \citeyear{takahashi2022}) 
+(e.g.,  $\mathbf{d} = \mathbf{A} \mathbf{p}$, such as in equation \ref{eq:predicted-data-vector})
+is the main issue to be solved.
+To solve it efficiently, these authors involked the auxiliary linear system
+\begin{equation}
+\mathbf{w} = \mathbf{C} \mathbf{v} \: ,
+\label{eq:aux_system_takahashi}
+\end{equation}
+where $\mathbf{w}$ and $\mathbf{v}$ are, respectively, vectors of data and parameters completed 
+by zeros and $\mathbf{C}$ is a BCCB matrix formed by $2Q \times 2Q$ blocks, where each block 
+$\mathbf{C}_{q}$, $q = 0, \dots, Q-1$, is a $2P \times 2P$ circulant matrix. 
+The first column of $\mathbf{C}$ is obtained by rearranging the first column of
+the sensitivity matrix $\mathbf{A}$ (equation \ref{eq:predicted-data-vector}).
+Because a BCCB matrix is diagonalized by the 2D unitary discrete Fourier transform (DFT), 
+$\mathbf{C}$ can be written as
+\begin{equation}
+\mathbf{C} = 
+\left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right)^{\ast} 
+\boldsymbol{\Lambda}
+\left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right) \: ,
+\label{eq:C-diagonalized_takahashi}
+\end{equation}
+where the symbol ``$\otimes$" denotes the Kronecker product \citep{neudecker1969},
+$\mathbf{F}_{2Q}$ and $\mathbf{F}_{2P}$ are the $2Q \times 2Q$ and $2P \times 2P$ 
+unitary DFT matrices \citep[][ p. 31]{davis1979}, respectively, the superscritpt 
+``$\ast$" denotes the complex conjugate and $\boldsymbol{\Lambda}$ is a 
+$4QP \times 4QP$ diagonal matrix containing the eigenvalues of $\mathbf{C}$.
+Due to the diagonalization of the matrix $\mathbf{C}$, the auxiliary system 
+(equation \ref{eq:aux_system_takahashi}) can be rewritten by using equation 
+\ref{eq:C-diagonalized_takahashi} and premultiplying both sides of the result 
+by $\left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right)$, i.e.,
+\begin{equation}
+\boldsymbol{\Lambda} \left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right) 
+\mathbf{v} = \left(\mathbf{F}_{2Q} \otimes \mathbf{F}_{2P} \right) 
+\mathbf{w} \: .
+\label{eq:vec-DFT-system_takahashi}
+\end{equation}
+By applying the vec-operator \citep{takahashi2020} to both sides of 
+equation \ref{eq:vec-DFT-system_takahashi}, by premultiplying  both sides of 
+the result by $\mathbf{F}_{2Q}^{\ast}$ and then postmultiplying both sides of the result by 
+$\mathbf{F}_{2P}^{\ast}$
+\begin{equation}
+\mathbf{F}_{2Q}^{\ast} \left[ 
+\mathbf{L} \circ \left(\mathbf{F}_{2Q} \, \mathbf{V} \, \mathbf{F}_{2P} \right) 
+\right] \mathbf{F}_{2P}^{\ast} = \mathbf{W} \: ,
+\label{eq:DFT-system_takahashi}
+\end{equation}
+where ``$\circ$'' denotes the Hadamard product \citep[][ p. 298]{horn_johnson1991} and 
+$\mathbf{L}$, $\mathbf{V}$ and $\mathbf{W}$ are $2Q \times 2P$ matrices obtained 
+by rearranging, along their rows, the elements forming the diagonal of matrix 
+$\boldsymbol{\Lambda}$, vector $\mathbf{v}$ and vector $\mathbf{w}$, respectively.
+The left side of equation \ref{eq:DFT-system_takahashi} contains the 2D 
+Inverse Discrete Fourier Transform (IDFT) of the term in brackets, which in turn
+represents the Hadamard product of matrix $\mathbf{L}$ and the 2D DFT of matrix 
+$\mathbf{V}$.
+Matrix $\mathbf{L}$ contains the eigenvalues of $\boldsymbol{\Lambda}$ 
+(equation \ref{eq:C-diagonalized_takahashi}) and can be 
+efficiently computed by using only the first column of the BCCB matrix 
+$\mathbf{C}$ (equation \ref{eq:aux_system_takahashi}).
+
+Actually, in \citeauthor{takahashi2020} (\citeyear{takahashi2020}, \citeyear{takahashi2022}) 
+a fast 2D discrete circular convolution \citep{vanloan1992} is used to  process 
+very large gravity and magnetic datasets efficiently.
+The convolutional equivalent layer was applied to perform upward continuation of large magnetic datasets. 
+Compared to the classical Fourier approach, \citeauthor{takahashi2022}'s (\citeyear{takahashi2022}) method produces smaller border effects without using any padding scheme. 
+
+Without taking advantage of the symmetric BTTB structure of the sensitivity matrix (\citeauthor{takahashi2020}, \citeyear{takahashi2020}) 
+that arises when gravimetric observations are measured on a 
+horizontally regular grid, on a flat surface and considering a regular grid 
+of equivalent sources whithin a horizontal layer, \cite{mendoncca2020}  explored the symmetry of the gravity kernel to reduce the number of forward model evaluations.
+By exploting the symmetries of the gravity kernels and redundancies in the forward model evaluations on a regular grid and combining the subspace solution based on eigenvectors of the gridded dataset, \cite{mendoncca2020}   
+estimated the mass excess or deficiency produced by anomalous sources with positive or negative density contrast. 
+
+\subsubsection{The deconvolutional equivalent layer with BTTB matrices}
+
+To avoid the  iterations of the conjugate gradient method in \cite{takahashi2022}, we can employ 
+the deconvolution process.
+Equation \ref{eq:DFT-system_takahashi} shows that estimate the  matrix $\mathbf{V}$,
+containing the elements of parameter vector $\mathbf{p}$, is a inverse problem that could be 
+solved by deconvolution.
+From equation \ref{eq:DFT-system_takahashi}, the  matrix $\mathbf{V}$ can be obtain by 
+deconvolution, i.e.
+\begin{equation}
+\mathbf{V} \: = \:  \mathbf{F}_{2Q}^{\ast} \left[ 
+\frac{\left(\mathbf{F}_{2Q} \mathbf{W} \, \mathbf{F}_{2P} \right) }{\mathbf{L}}
+\right] \mathbf{F}_{2P}^{\ast} \: .
+\label{eq:deconvolution_takahashi}
+\end{equation}
+Equation \ref{eq:deconvolution_takahashi} shows that the parameter vector (in matrix $\mathbf{V}$) 
+can be theoretically obtain by dividing each potential-field observations (in matrix $\mathbf{W}$)
+by each eigenvalues (in matrix $\mathbf{L}$).
+Hence, the parameter vector is constructed by element-by-element division of data by eigenvalues.
+
+However, the deconvolution often is extremely unstable. 
+This means that a small change in data can lead to an enormous change in the estimated parameter.
+Hence, equation \ref{eq:deconvolution_takahashi} requires regularization to be useful.
+We usede wiener deconvolution to obtain a stable solution, i.e.,
+\begin{equation}
+\mathbf{V} \: = \:  \mathbf{F}_{2Q}^{\ast} \left[ 
+\left(\mathbf{F}_{2Q} \mathbf{W} \, \mathbf{F}_{2P} \right)  
+\frac{\mathbf{L}^{\ast}}{ \left(\mathbf{L} \: \mathbf{L}^{\ast} + \mu \right)}
+\right] \mathbf{F}_{2P}^{\ast} \: ,
+\label{eq:wiener_takahashi}
+\end{equation}
+where the matrix $\mathbf{L}^{\ast}$ contains the complex conjugate eigenvalues and
+$\mu$ is a parameter that controls the degree of stabilization. 
+
+
+\subsection{Solution stability}
 
 The solution stability of the equivalent-layer methods is rarely addressed.
 Here, we follow the numerical stability analysis presented in \cite{siqueira-etal2017}.

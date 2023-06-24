@@ -1187,9 +1187,10 @@ of the conjugate gradient method.
 This alternative formulation consists in considering that $\mathbf{v} = \mathbf{p}$ and 
 $\mathbf{w} = \mathbf{d}$ in equation \ref{eq:product-Gv-w}, where $\mathbf{p}$ is the parameter vector (equation \ref{eq:predicted-data-vector})
 and $\mathbf{d}$ the observed data vector.
+In this case, the equality ``$=$" in equation \ref{eq:product-Gv-w} becomes an approximation ``$\approx$".
 Then, equation \ref{eq:aux-BCCB-system-diagonalized-2} is manipulated to obtain
 \begin{equation}
-	\boldsymbol{\mathcal{V}}_{c} = 
+	\boldsymbol{\mathcal{V}}_{c} \approx 
 	\boldsymbol{\mathcal{F}}_{2N_{B}}^{\ast} 
 	\left[ \left( \boldsymbol{\mathcal{F}}_{2N_{B}} \, \boldsymbol{\mathcal{W}}_{c} \, \boldsymbol{\mathcal{F}}_{2N_{b}} \right)
 	\circ \breve{\boldsymbol{\mathcal{L}}} \right] \boldsymbol{\mathcal{F}}_{2N_{b}}^{\ast} \: ,

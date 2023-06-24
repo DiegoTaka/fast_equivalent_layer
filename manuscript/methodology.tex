@@ -1125,6 +1125,10 @@ Note that those authors formulate the overdetermined problem (equation \ref{eq:d
 an estimate $\tilde{\mathbf{p}}$ for the parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) as an \textit{iterative deconvolution} via 
 \textit{conjugate gradient normal equation residual} (CGNR) \citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) 
 \cite[][p. 165]{aster_etal2019} method. 
+They consider $\mathbf{H} = \mathbf{I}_{P}$ (equation \ref{eq:reparameterization}), 
+$\mu = 0$ (equation \ref{eq:function-Gamma}), 
+$\mathbf{W}_{d} = \mathbf{W}_{q} = \mathbf{I}_{P}$ (equations \ref{eq:function-Phi} and \ref{eq:function-Theta})
+and $\bar{\mathbf{p}} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}).
 As shown by \citet{takahashi-etal2020, takahashi-etal2022}, the CGLS produces stable estimates $\tilde{\mathbf{p}}$ for the
 parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) in the presence of 
 noisy potential-field data $\mathbf{d}$. This is a well-known property of the CGLS method \citep[e.g.,][p. 166]{aster_etal2019}.
@@ -1221,6 +1225,13 @@ is equivalent to the number of tentative estimated parameter vectors required to
 direct deconvolution.
 
 \section{Solution stability}
+
+All equivalent-layer methods aims at obtaining an estimate $\tilde{\mathbf{p}}$ for the parameter vector 
+$\mathbf{p}$ (equation \ref{eq:predicted-data-vector}), which contains the physical property of the equivalent sources.
+Some methods do it by first obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$
+(equation \ref{eq:reparameterization}) and then using it to obtain $\tilde{\mathbf{p}}$ (equation \ref{eq:vector-p-tilde}).
+
+PAREI AQUI
 
 The solution stability of the equivalent-layer methods is rarely addressed.
 Here, we follow the numerical stability analysis presented in \cite{siqueira-etal2017}.

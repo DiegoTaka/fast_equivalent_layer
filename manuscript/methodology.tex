@@ -142,6 +142,9 @@ and (ii) both the data and sources are based on planar and regularly spaced grid
 $\mathbf{G}$ exhibits a block-Toeplitz Toeplitz-block (BTTB) structure. 
 In such cases, the product of $\mathbf{G}$ and an arbitrary vector can be efficiently computed using a 2D fast Fourier transform as a discrete convolution.
 
+\section{Linear inverse problem of equivalent-layer technique}
+\label{sec:linear-inverse-problem}
+
 \subsection{General formulation}
 \label{subsec:general-formulation}
 
@@ -268,6 +271,9 @@ where $\mathbf{u}$ is a dummy vector.
 After obtaining $\tilde{\boldsymbol{\delta}}_{q}$ (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}),
 the estimate $\tilde{\mathbf{q}}$ is computed with equation \ref{eq:delta-q-tilde}.
 
+\subsection{Formulation without reparameterization}
+\label{subsec:formulation-without-reparameterization}
+
 Note that, for the particular case in which $\mathbf{H} = \mathbf{I}_{P}$ (equation \ref{eq:reparameterization}), 
 $P = Q$, $\mathbf{p} = \mathbf{q}$, $\bar{\mathbf{p}} = \bar{\mathbf{q}}$ (equation \ref{eq:reparameterization-reference}) and 
 $\tilde{\mathbf{p}} = \tilde{\mathbf{q}}$ (equation \ref{eq:vector-p-tilde}).
@@ -279,29 +285,59 @@ solved for
 \end{equation}
 instead of $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}).
 
-%\subsubsection{Optional normalization strategy}
-%\label{subsubsec:normalization}
-%
-%Setting the regularization parameter $\mu$ (equation \ref{eq:function-Gamma}) can be very difficult due to scale differences
-%between $\mathbf{G}$ and $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) or $\mathbf{G}\mathbf{H}$ and $\mathbf{q}$
-%(equation \ref{eq:reparameterization}. 
-%When faced with this scenario, a popular strategy \cite[e.g.,][]{li-oldenburg_2010, soler-uieda2021}
-%involves creating the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and 
-%\ref{eq:delta-q-tilde-underdetermined}) by substituting $\mathbf{G}\mathbf{H}$ and $\mathbf{q}$ with 
-%\begin{equation}
-%	\mathbf{G}_{n} = \mathbf{G} \, \mathbf{H} \, \mathbf{N} \: , \quad 
-%	\mathbf{q}_{n} = \mathbf{N}^{-1} \mathbf{q} \: ,
-%	\label{eq:normalization}
-%\end{equation}
-%and then finding the solution $\tilde{\mathbf{q}}_{n}$ for the normalized parameter vector $\mathbf{q}_{n}$.
-%The estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$ (equation \ref{eq:reparameterization})
-%is subsequently obtained by removing the normalization as follows:
-%\begin{equation}
-%	\tilde{\mathbf{q}} = \mathbf{N} \, \tilde{\mathbf{q}}_{n} \: ,
-%	\label{eq:normalization-revome}
-%\end{equation}
-%where $\mathbf{N}$ is an invertible normalization matrix.
-%This strategy usually constrains the practical range of the regularization parameter $\mu$ (equation \ref{eq:function-Gamma}).
+\subsection{Linear system solvers}
+\label{subsec:linear-system-solvers}
+
+According to their properties, the linear systems associated with over and underdetermined problems 
+(equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}) can be solved 
+by using \textit{direct methods} such as LU, Cholesky or QR factorization, for example \citep[][sections 3.2, 4.2 and 5.2]{golub-vanloan2013}.
+These methods involve factorizing the linear system matrix in a product of ``simple" matrices 
+(i.e., triangular, diagonal or orthogonal). Here, we consider the \textit{Cholesky factorization}, 
+\citep[][p. 163]{golub-vanloan2013}.
+
+Let us consider a real linear system $\mathbf{M} \, \mathbf{x} = \mathbf{y}$, where 
+$\mathbf{M}$ is a symmetric and positive definite matrix \citep[][p. 159]{golub-vanloan2013}.
+In this case, the Cholesky factorization consists in computing 
+\begin{equation}
+	\mathbf{M} = \boldsymbol{\mathcal{G}} \boldsymbol{\mathcal{G}}^{\top} \: ,
+	\label{eq:Cholesky-factorization}
+\end{equation}
+where $\boldsymbol{\mathcal{G}}$ is a lower triangular matrix called \textit{Cholesky factor} and having positive diagonal entries.
+Given $\boldsymbol{\mathcal{G}}$, the original linear system can be solved in two steps, as follows:
+\begin{equation}
+	\begin{split}
+		\boldsymbol{\mathcal{G}} \, \mathbf{s} &= \mathbf{y} \\
+		\boldsymbol{\mathcal{G}}^{\top} \, \mathbf{x} &= \mathbf{s}
+	\end{split}
+	\label{eq:Cholesky-solver}
+\end{equation}
+where $\mathbf{s}$ is a dummy vector.
+For the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}), 
+$\mathbf{M} = \left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d} \, \mathbf{G} \, \mathbf{H} + 
+\mu \, \mathbf{W}_{q} \right)$, $\mathbf{x} = \tilde{\boldsymbol{\delta}}_{q}$ and
+$\mathbf{y} = \left( \mathbf{H}^{\top} \mathbf{G}^{\top} \mathbf{W}_{d} \: \boldsymbol{\delta}_{d} \right)$.
+For the underdetermined problem (equation \ref{eq:delta-q-tilde-underdetermined}),
+$\mathbf{M} = \left( \mathbf{G} \, \mathbf{H} \, \mathbf{W}_{q}^{-1} \,
+\mathbf{H}^{\top}\mathbf{G}^{\top} + \mu \mathbf{W}_{d}^{-1} \right)$, $\mathbf{x} = \mathbf{u}$ and
+$\mathbf{y} = \boldsymbol{\delta}_{d}$ .
+
+The use of direct methods for solving large linear systems may be problematic due to computer 
+(i) storage of large matrices and (ii) time to perform matrix operations.
+This problem may be specially complicated in equivalent-layer technique for the cases in which 
+the sensitivity matrix $\mathbf{G}$ does not have a well-defined structure (sec. \ref{subsec:sensitivity-matrix})
+
+These problems can be overcame by solving the linear system using an iterative method.
+These methods produce a sequence of vectors that typically converge to the solution at a
+reasonable rate. The main computational cost associated with these methods is usually some matrix-vector products 
+per iteration.
+The conjugate gradient (CG) is a very popular iterative method for solving linear systems in equivalent-layer methods.
+This method was originally developed to solve systems having a square and positive definite matrix.
+There are two adapted versions of the CG method. The first is called \textit{conjugate gradient normal equation residual} (CGNR) 
+\citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) \cite[][p. 165]{aster_etal2019} and is
+used to solve overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}). 
+The second is called \textit{conjugate gradient normal equation error} (CGNE) method 
+\citet[][sec. 11.3]{golub-vanloan2013} and is used to solve the underdetermined problem (equation \ref{eq:delta-q-tilde-underdetermined}).
+
 
 \section{Notation for subvectors and submatrices}
 
@@ -820,9 +856,6 @@ matrix $\boldsymbol{\mathcal{W}}^{\top}$ represents an inverse wavelet transform
 
 \subsection{Iterative methods using the full matrix $\mathbf{G}$}
 
-%In the context of equivalent-layer technique, there are methods \cite[e.g.,][]{li-oldenburg_2010, barnes-lumley_2011} 
-%that modify the original linear system and then iteratively solve this modified system by using the 
-%well-established conjugate gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
 \citet{xia-sprowl1991} introduced an iterative method for estimating the parameter vector $\tilde{\mathbf{p}}$ 
 (equation \ref{eq:predicted-data-vector}), which was subsequently adapted to the Fourier domain by \citet{xia-etal1993}.
 Their method uses the full and dense sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector})
@@ -901,7 +934,7 @@ $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) assumes a \textit{doubly 
 \textit{block-Toeplitz Toeplitz-block} (BTTB) \cite[][p. 67]{chan-jin2007} structure formed by $N_{B} \times N_{B}$
 blocks, where each block has $N_{b} \times N_{b}$ elements, with $D = N_{B} \, N_{b}$.
 This particular structure allows formulating the product
-of $\mathbf{G}$ and an arbitrary vector as a \textit{fast 2D discrete convolution} via 
+of $\mathbf{G}$ and an arbitrary vector as a \textit{fast discrete convolution} via 
 \textit{Fast Fourier Transform} (FFT) \cite[][section 4.2]{vanloan1992}.
 
 Consider, for example, the particular case in which $N_{B} = 4$, $N_{b} = 3$ and $D = 12$. In this case,
@@ -1265,11 +1298,3 @@ We estimate the $\kappa$ (equation \ref{eq:condition-number}) associated with a 
 equivalent-layer method as the slope of the straight line fitted to the $L$ points 
 $\left( \Delta p^{\ell} \: , \: \Delta d^{\ell} \right)$.
 
-PAREI AQUI
-
-Here, the  analysis of solution stability is numerically conducted by applying
-the classical equivalent-layer technique with zeroth-order Tikhonov regularization,
-the convolutional method for gravimetric and magnetic data,
-the deconvolutional method (equation \ref{eq:deconvolution_takahashi}) and 
-the deconvolutional method with different values for the Wiener stabilization 
-(equation \ref{eq:wiener_takahashi}).

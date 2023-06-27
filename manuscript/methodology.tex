@@ -843,13 +843,17 @@ Then, the CGLS (Algorithm \ref{alg:CGLS}) is applied by replacing $\mathbf{G}$ w
 In this case, the linear system is solved by the reparameterized parameter vector $\tilde{\mathbf{q}}$ instead of
 $\tilde{\mathbf{p}}$. At the end, the estimated $\tilde{\mathbf{q}}$ is transformed into $\tilde{\mathbf{p}}$ 
 (equation \ref{eq:vector-p-tilde}).
-Compared to the original CGLS show in Algorithm \ref{alg:CGLS}, the proposed algorithm has the additional flops
+Compared to the original CGLS shown in Algorithm \ref{alg:CGLS}, the algorithm discussed here has the additional flops
 associated with the matrix-matrix product to compute $\mathbf{C}$ and the matrix-vector product of equation \ref{eq:vector-p-tilde} outside the while loop.
 Then, according to table \ref{tab:standard-flops}, the total number of flops given by:
 \begin{equation}
 	f_{\mathtt{reparam.}} = 2Q(DP+D+1) + 2PQ + \mathtt{ITMAX} \left[ 2Q \left( 2D + 3 \right) + 4D \right] \: .
 	\label{flops:reparameterization-cgls}
 \end{equation}
+The important aspect of this approach is that, for the case in which $Q << P$ (equation \ref{eq:reparameterization}),
+the number of flops per iteration can be substantially decreased with respect to those associated with Algorithm \ref{alg:CGLS}.
+In this case, the flops decrease per iteration compensates the additional flops required to compute $\mathbf{C}$ and 
+obtain $\tilde{\mathbf{p}}$ from $\tilde{\mathbf{q}}$ (equation \ref{eq:vector-p-tilde}).
 
 \subsection{Wavelet compression}
 
@@ -942,25 +946,24 @@ vector $\tilde{\mathbf{p}}$ (equation \ref{eq:predicted-data-vector}).
 With the purpose of combining different potential-field data, 
 their method basically modifies that shown in Algorithm \ref{alg:SOB17} by changing the initial approximation 
 and the iterative correction for the parameter vector.
-Specifically, \citet{jirigalatu-ebbing2019} replace line 4 by $\tilde{\mathbf{p}} = \mathbf{0}$, where $\mathbf{0}$ is a vector of zeros,
-and line 9 by $\boldsymbol{\Delta}\mathbf{p} = \omega \, \mathbf{G}^{\top} \mathbf{r}$, where $\omega$ is a positive
+Specifically, \citet{jirigalatu-ebbing2019} replace line $5$ by $\tilde{\mathbf{p}} = \mathbf{0}$, where $\mathbf{0}$ is a vector of zeros,
+and line $11$ by $\boldsymbol{\Delta}\mathbf{p} = \omega \, \mathbf{G}^{\top} \mathbf{r}$, where $\omega$ is a positive
 scalar defined by trial and error.
 Note that this modified approach requires two matrix-vector products involving the full matrix $\mathbf{G}$ per iteration.
 To overcome the high computational cost of these two products, \citet{jirigalatu-ebbing2019} set an equivalent layer formed by
 prisms and compute their predicted potential field in the wavenumber domain by using the Gauss-FFT technique
 \cite{zhao-etal2018}.
 
-Algorithm \ref{alg:SOB17}:
-entrywise product line $4$ ($D$),
-matrix-vector and subtraction line $6$ ($2D^{2} + D$),
-entrywise product line $9$ ($D$),
-addition line $10$ ($D$),
-matrix-vector line $11$ ($2D^{2}$),
-subtraction line $12$ ($D$):
+The iterative method proposed by \citet{siqueira-etal2017} (Algorithm \ref{alg:SOB17}) requires one entrywise product in line $5$ and a matrix-vector followed by subtraction 
+in line $7$ before the while loop. 
+At each iteration, there is another entrywise product (line $11$), a half saxpy 
+(line $12$) and a saxpy (lines $11$ and $12$). Then, we get from table \ref{tab:standard-flops} that the total number of flops is given by:
 \begin{equation}
 	f_{\mathtt{SOB17}} = 2D^{2} + 2D + \mathtt{ITMAX} \left( 2D^{2} + 3D \right) \: .
 	\label{flops:SOB17}
 \end{equation}
+Note that the number of flops per iteration in $f_{\mathtt{SOB17}}$ (equation \ref{flops:SOB17}) has the same order of magnitude, but is smaller than that in
+$f_{\mathtt{CGLS}}$ (equation \ref{flops:cgls}).
 
 \subsection{Iterative deconvolution}
 
@@ -1197,7 +1200,7 @@ These transforms can be efficiently computed by using the 2D Fast Fourier Transf
 Hence, the original matrix-vector products $\mathbf{G}\mathbf{v}$ (equation \ref{eq:product-Gv-w})
 and $\mathbf{G}^{\top}\mathbf{v}$ (equation \ref{eq:product-GTv-w}) can be efficiently computed by using the 2D-FFT.
 
-Algorithms \ref{alg:TOB-2020-2022} and \ref{alg:fast-2D-convolution} show pseudo-codes for the convolutional equivalent-layer 
+Algorithms \ref{alg:TOB20-22} and \ref{alg:fast-2D-convolution} show pseudo-codes for the convolutional equivalent-layer 
 method proposed by \citet{takahashi-etal2020, takahashi-etal2022}.
 Note that those authors formulate the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) of obtaining 
 an estimate $\tilde{\mathbf{p}}$ for the parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) as an \textit{iterative deconvolution} via 
@@ -1211,12 +1214,18 @@ As shown by \citet{takahashi-etal2020, takahashi-etal2022}, the CGLS produces st
 parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) in the presence of 
 noisy potential-field data $\mathbf{d}$. This is a well-known property of the CGLS method \citep[e.g.,][p. 166]{aster_etal2019}.
 
-Algorithm \ref{alg:TOB-2020-2022}:
-2 FFT (FTT = kappa (4D)log2(4D)) lines 4 and 5,
-CONV (= 2FFT + 24D) + inner prod line 8,
-3 saxpy (lines 12, 15 and 16),
-2 inner prod (lines 14 and 17),
-2 CONV lines 13 and 17:
+The key aspect of Algorithm \ref{alg:TOB20-22} is replacing the matrix-vector products of CGLS (Algorithm \ref{alg:CGLS})
+by fast convolutions (Algorithm \ref{alg:fast-2D-convolution}).
+A fast convolution requires one 2D-DFT, one 2D-IDFT and an entrywise product of matrices.
+We consider that the 2D-DFT/IDFT are computed with 2D-FFT and requires $\kappa \, (4D)\log_{2}(4D)$ flops, where $\kappa = 5$ is compatible with a radix-2 FFT 
+\citep[][p. 16]{vanloan1992}, and the entrywise product $24D$ flops because it involves two complex matrices having $4D$ elements
+\citep[][p. 36]{golub-vanloan2013}.
+Hence, Algorithm \ref{alg:fast-2D-convolution} requires $\kappa \, (16D)\log_{2}(4D) + 26D$ flops,
+whereas a conventional matrix-vector multiplication involving a $D \times D$ matrix requires $2D^{2}$ (table \ref{tab:standard-flops}).
+Finally, Algorithm \ref{alg:TOB20-22} requires two 2D-FFTs (lines $4$ and $5$), one fast convolution and an inner product (line $8$)
+previously to the while loop.
+Per iteration, there are three saxpys (lines $12$, $15$ and $16$), two inner products (lines $14$ and $17$) and 
+two fast convolutions (lines $13$ and $17$), so that:
 \begin{equation}
 	f_{\mathtt{CGLS}} = \kappa \, (16D)\log_{2}(4D) + 26D + \mathtt{ITMAX} 
 	\left[
@@ -1259,6 +1268,16 @@ quadrant of $\boldsymbol{\mathcal{V}}_{c}$.
 This procedure represents a \textit{direct deconvolution} \citep[e.g.,][p. 220]{aster_etal2019}
 using a \textit{Wiener filter} \citep[e.g.,][p. 263]{gonzalez-woods2002}.
 
+The required total number of flops associated with the direct deconvolution 
+aggregates one 2D-FFT to compute matrix $\boldsymbol{\mathcal{L}}$ (equation \ref{eq:matrix-L}),
+one entrywise product $\boldsymbol{\mathcal{L}} \circ \boldsymbol{\mathcal{L}}^{\ast}$ involving complex matrices and
+one entrywise division to compute $\breve{\boldsymbol{\mathcal{L}}}$ (equation \ref{eq:matrix-L-Wiener-deconvolution}) and
+a fast convolution (Algorithm \ref{alg:fast-2D-convolution}) to evaluate equation \ref{eq:direct-deconvolution},
+which results in:
+\begin{equation}
+	f_{\mathtt{deconv.}} = \kappa \, (12D)\log_{2}(4D) + 72D \: .
+	\label{flops:direct-deconv}
+\end{equation}
 Differently from the convolutional equivalent-layer method proposed by 
 \citet{takahashi-etal2020, takahashi-etal2022}, the alternative direct deconvolution presented here 
 produces an estimated parameter vector $\tilde{\mathbf{p}}$ directly from the observed data $\mathbf{d}$, in a single step,
@@ -1269,13 +1288,3 @@ This can be made, for example, by using the well-known \textit{L-curve} \citep{h
 From a computational point of view, the number of CGLS iterations in the method proposed by \citet{takahashi-etal2020, takahashi-etal2022}
 is equivalent to the number of tentative estimated parameter vectors required to form the L-curve in the proposed
 direct deconvolution.
-
-Direct deconvolution:
-FFT to compute L,
-LL* eq 69 (24D),
-L*/(LL*) (24D),
-CONV (2FFT + 24D):
-\begin{equation}
-	f_{\mathtt{deconv.}} = \kappa \, (12D)\log_{2}(4D) + 72D \: .
-	\label{flops:direct-deconv}
-\end{equation}

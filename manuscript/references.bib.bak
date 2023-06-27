@@ -1,0 +1,494 @@
+@book{aster_etal2019,
+	title = {Parameter estimation and inverse problems},
+	author = {Aster, Richard C and Borchers, Brian and Thurber, Clifford H},
+	year = {2019},
+	publisher = {Elsevier}
+}
+
+@misc{gonzalez-woods2002,
+  title={Digital Image Processing. Copyright by Prentice Hall},
+  author={Woods, Gonzalez},
+  year={2002},
+  publisher={Inc}
+}
+
+@article{barbosa-etal1997,
+  title={Gravity inversion of basement relief using approximate equality  
+  constraints on depths},
+  author={Barbosa, Valeria Cristina F and Silva, Joao BC and Medeiros, Walter 
+  E},
+  journal={Geophysics},
+  volume={62},
+  number={6},
+  pages={1745--1757},
+  year={1997},
+  publisher={Society of Exploration Geophysicists}
+}
+
+@book{kellogg1967,
+  author = {Kellogg, O. D.},
+  Title = {Foundations of Potential Theory},
+  Publisher = {Frederick Ungar Publishing Company},
+  Year = {1967}
+}
+
+@book{blakely1996,
+	Author = {Richard J. Blakely},
+	Title = {Potential Theory in Gravity and Magnetic Applications},
+	Publisher = {Cambridge University Press},
+	Year = {1996},
+	edition = {1},
+	ISBN = {0-521-57547-8}
+}
+
+@article{barnes-lumley2011,
+    author={Gary Barnes and John Lumley},
+    title = {Processing gravity gradient data},
+    journal = {Geophysics},
+    volume = {76},
+    issue = {2},
+    pages = {I33-I47},
+    year = {2011},
+    doi = {10.1190/1.3548548}
+}
+
+@article{cordell1992,
+	title = {A scattered equivalent-source method for interpolation and 
+	gridding of potential-field data 
+	in three dimensions},
+	author = {Cordell, Lindrith},
+	journal = {Geophysics},
+	volume = {57},
+	number = {4},
+	pages = {629--636},
+	year = {1992},
+	publisher = {Society of Exploration Geophysicists}
+}
+
+
+@article{dampney1969,
+    author = {Dampney, C. N. G.},
+    title = {The equivalent source technique},
+    journal = {Geophysics},
+    volume = {34},
+    issue = {1},
+    pages = {39-53},
+    year = {1969},
+    doi = {10.1190/1.1439996}
+}
+
+@book{davis1979,
+  author = {Davis, Philip J.},
+  Title = {Circulant matrices},
+  Publisher = {John Wiley {\&} Sons, Inc.},
+  Year = {1979}
+}
+
+
+@article{davis_li2011,
+    author = {Davis, Kristofer and Li, Yaoguo},
+    title = "{Fast solution of geophysical inversion using adaptive mesh, space-filling curves and wavelet 
+    compression}",
+    journal = {Geophysical Journal International},
+    volume = {185},
+    number = {1},
+    pages = {157-166},
+    year = {2011},
+    month = {04},
+    issn = {0956-540X},
+    doi = {10.1111/j.1365-246X.2011.04929.x}    
+}
+
+
+
+@article{guspi-novara2009,
+	title = {Reduction to the pole and transformations of scattered magnetic data       using Newtonian equivalent sources},
+	author = {Gusp{\'\i}, Fernando and Novara, Iv{\'a}n},
+	journal = {Geophysics},
+	volume = {74},
+	number = {5},
+	pages = {L67--L73},
+	year = {2009},
+	publisher = {Society of Exploration Geophysicists}
+}
+
+@book{horn_johnson1991,
+  title={Topics in Matrix Analysis},
+  author={R. A. Horn and C. R. Johnson},
+  edition={1},
+  year={1991},
+  publisher={Cambridge University Press},
+  ISBN={0‐521‐30587‐X}
+}
+
+
+@article{jirigalatu-ebbing2019,
+	title = {A fast equivalent source method for airborne gravity gradient data},
+	author = {Jirigalatu, J{\"o}rg and Ebbing},
+	journal = {Geophysics},
+	volume = {84},
+	number = {5},
+	pages = {G75--G82},
+	year = {2019},
+	doi = {10.1190/GEO2018-0366.1},
+	publisher = {Society of Exploration Geophysicists}
+}
+
+@article{leao-silva1989,
+    author = {Le\~{a}o, J. W. D and Silva, J. B. C.},
+    title = {Discrete linear transformations of potential field data},
+    journal = {Geophysics},
+    volume = {54},
+    issue = {4},
+    pages = {497-507},
+    year = {1989},
+    doi = {10.1190/1.1442676}
+}
+
+@article{li-oldenburg_2010,
+    author={Yaoguo Li and Douglas W. Oldenburg},
+    title = {Rapid construction of equivalent sources using wavelets},
+    journal = {Geophysics},
+    volume = {75},
+    issue = {3},
+    pages = {L51-L59},
+    year = {2010},
+    doi = {10.1190/1.3378764}
+}
+
+@article{kennett1988,
+  title={Subspace methods for large inverse problems with multiple parameter 
+  classes},
+  author={Kennett, BLN and Sambridge, MS and Williamson, PR},
+  journal={Geophysical Journal International},
+  volume={94},
+  number={2},
+  pages={237--247},
+  year={1988},
+  publisher={Blackwell Publishing Ltd Oxford, UK}
+}
+
+@article{neudecker1969,
+    author = { H. Neudecker },
+    title = {Some Theorems on Matrix Differentiation with Special Reference to Kronecker Matrix Products},
+    journal = {Journal of the American Statistical Association},
+    volume = {64},
+    issue = {327},
+    pages = {953-963},
+    year  = {1969},
+    publisher = {Taylor & Francis},
+    doi = {10.1080/01621459.1969.10501027},
+    URL = {https://www.tandfonline.com/doi/abs/10.1080/01621459.1969.10501027},
+    eprint = {https://www.tandfonline.com/doi/pdf/10.1080/01621459.1969.10501027}
+}
+
+
+@article{oldenburg1993,
+  title={Generalized subspace methods for large-scale inverse problems},
+  author={Oldenburg, DW and McGillivray, PR and Ellis, RG},
+  journal={Geophysical Journal International},
+  volume={114},
+  number={1},
+  pages={12--20},
+  year={1993},
+  publisher={Blackwell Publishing Ltd Oxford, UK}
+}
+
+
+
+@article{oliveirajr-etal2013,
+    author = {Oliveira{ }Jr., V. C. and Barbosa, V. C. F. and Uieda, L.},
+    title = {Polynomial equivalent layer},
+    journal = {Geophysics},
+    volume = {78},
+    issue = {1},
+    pages = {G1-G13},
+    year = {2013},
+    doi = {10.1190/geo2012-0196.1}
+}
+
+
+
+@article{siqueira-etal2017,
+  title={Fast iterative equivalent-layer technique for gravity data processing: A method grounded on excess mass constraint},
+  author={Siqueira, Fillipe CL and Oliveira{ }Jr, Vanderlei C and Barbosa, Val{\'e}ria CF},
+  journal={Geophysics},
+  volume={82},
+  issue={4},
+  pages={G57--G69},
+  year={2017},
+  publisher={Society of Exploration Geophysicists}
+}
+
+@article{soler-uieda2021,
+    author = {Soler, Santiago R and Uieda, Leonardo},
+    title = "{Gradient-boosted equivalent sources}",
+    journal = {Geophysical Journal International},
+    volume = {227},
+    number = {3},
+    pages = {1768-1783},
+    year = {2021},
+    month = {08},
+    issn = {0956-540X},
+    doi = {10.1093/gji/ggab297}
+}
+
+@article{mendonca-2020,
+  title={Subspace method for solving large-scale equivalent layer and density mapping problems},
+  author={Mendon{\c{c}}a, Carlos A},
+  journal={Geophysics},
+  volume={85},
+  number={3},
+  pages={G57--G68},
+  year={2020},
+  doi = {10.1190/geo2019-0302.1},
+  publisher={Society of Exploration Geophysicists}
+}
+
+@article{mendonca-silva1994,
+    author = {Mendon\c{c}a, C. A. and Silva, J. B. C.},
+    title = {The equivalent data concept applied to the interpolation of     potential field data},
+    journal = {Geophysics},
+    volume = {59},
+    number = {5},
+    pages = {722-732},
+    year = {1994},
+    doi = {10.1190/1.1443630},
+    publisher={Society of Exploration Geophysicists}    
+}
+
+@article{skilling-bryan1984,
+  title={Maximum entropy image reconstruction-general algorithm},
+  author={Skilling, John and Bryan, RK},
+  journal={Monthly Notices of the Royal Astronomical Society, Vol. 211, NO. 1, 
+  P. 111, 1984},
+  volume={211},
+  pages={111},
+  year={1984}
+}
+
+@article{takahashi2020,
+	title = {Convolutional equivalent layer for gravity data processing},
+	author = {Takahashi, Diego and Oliveira Jr, Vanderlei C and Barbosa, Val{\'e}ria    CF},
+	journal = {Geophysics},
+	volume = {85},
+	number = {6},
+	pages = {G129--G141},
+	year = {2020},
+	publisher= {Society of Exploration Geophysicists}
+}
+
+@article{takahashi2022,
+	title = {Convolutional equivalent layer for magnetic data processing},
+	author = {Takahashi, Diego and Oliveira, Vanderlei C and Barbosa, 
+	Val{\'e}ria CF},
+	journal = {Geophysics},
+	volume = {87},
+	number = {5},
+	pages = {1--59},
+	year = {2022},
+	publisher = {Society of Exploration Geophysicists}
+}
+
+@book{vanloan1992,
+  author = {Van{ }Loan, Charles},
+  Title = {Computational Frameworks for the {Fast Fourier Transform}},
+  Publisher = {SIAM},
+  Year = {1992}
+}
+
+@article{friedman2002,
+  title = {Stochastic gradient boosting},
+  author = {Friedman, Jerome H},
+  journal = {Computational statistics and data analysis},
+  volume = {38},
+  number = {4},
+  pages = {367--378},
+  year = {2002},
+  publisher = {Elsevier}
+}
+
+@article{friedman2001,
+  title = {Greedy function approximation: a gradient boosting machine},
+  author = {Friedman, Jerome H},
+  journal = {Annals of statistics},
+  pages = {1189--1232},
+  year = {2001},
+  publisher = {JSTOR}
+}
+
+
+
+@article{xia-sprowl1991,
+	title = {Correction of topographic distortion in gravity data},
+	author = {Xia, Jianghai and Sprowl, Donald R},
+	journal = {Geophysics},
+	volume = {56},
+	number = {4},
+	pages = {537--541},
+	year = {1991},
+	publisher = {Society of Exploration Geophysicists}
+}
+
+@article{xia-etal1993,
+	author = {Xia, Jianghai and Sprowl, Donald R. and Adkins-Heljeson, Dana}, 
+	title = {Correction of topographic distortions in potential-field data; a fast      and accurate approach},
+	volume = {58}, 
+	number = {4}, 
+	pages = {515-523}, 
+	year = {1993}, 
+	doi = {10.1190/1.1443434}, 
+	journal = {Geophysics}
+}
+
+@book{golub-vanloan2013,
+  Author = {Gene H Golub and Charles F Van Loan},
+  Title = {Matrix Computations ({Johns} {Hopkins} Studies in the Mathematical Sciences)},
+  Publisher = {Johns Hopkins University Press},
+  Year = {2013},
+  edition = {4},
+  ISBN = {978-1-4214-0794-4}
+}
+
+@Article{article,
+	author = "Author1 LastName1 and Author2 LastName2 and Author3 LastName3",
+	title = "Article Title",
+	volume = "30",
+	number = "30",
+	pages = "10127-10134",
+	year = "2013",
+	doi = "10.3389/fnins.2013.12345",
+	URL = "http://www.frontiersin.org/Journal/10.3389/fnins.2013.12345/
+	abstract",
+	journal = "Frontiers in Neuroscience"
+}
+
+@book{book,
+  author    = {Author Name}, 
+  title     = {The title of the work},
+  publisher = {The name of the publisher},
+  address   = {The city},
+  year      = 1993,
+}
+
+@incollection{chapter,
+  author       = {Bauthor Surname}, 
+  title        = {The title of the work},
+  editor       = {Editor Name},
+  booktitle    = {The title of the book},
+  publisher    = {The name of the publisher},
+  address      = {The city},
+  year         = 2002,
+  pages        = {201-213},
+}
+
+@InProceedings{conference,
+  author = {Cauthor Name and Dauthor Surname and Fauthor LastName},
+  title = {The title of the work},
+  booktitle = {The title of the conference proceedings},
+  year = 1996,
+  publisher = {The name of the publisher},
+  editor = {Editor Name1 and Editor Name2},
+  pages = {41-50},
+}
+
+@book{cho,
+  author       = {Gauthor Name1}, 
+  title        = {The title of the work},
+  publisher = {Country code and patent number},
+  address      = {Patent Country},
+  year = 2013
+}
+
+@book{patent,
+  author    = {Hauthor Surname1}, 
+  title     = {The title of the work},
+  publisher = {Patent number},
+  address   = {Patent country},
+  year      = 2010,
+}
+
+@article{moroni_etal_2001,
+  title={The Serra Pelada Au-PGE deposit, Serra dos Carajás (Pará State, Brazil): geological and geochemical indications for a composite mineralising process},
+  author={Moroni, M. and Girardi, V.A. and Ferrario, A.},
+  journal={Mineralium Deposita},
+  volume={36},
+  pages={768–785},
+  year={2001},
+  publisher={Springer}
+}
+
+@article{villas_and_santos_2001,
+  title={Gold deposits of the Carajás mineral province: deposit types and metallogenesis},
+  author={Villas,R. N. and  Santos, M.},
+  journal={Mineralium Deposita},
+  volume={36},
+  pages={300–331},
+  year={2001},
+  publisher={Springer}
+}
+
+@phdthesis{amaral_1974,
+    title    = {Geologia Pré-Cambriana da Região Amazônica},
+    school   = {Universidade de São Paulo},
+    author   = {Amaral, G.},
+    year     = {1974}
+}
+
+@article{teixeira_etal_1989,
+title = {A review of the geochronology of the Amazonian Craton: Tectonic implications},
+journal = {Precambrian Research},
+volume = {42},
+number = {3},
+pages = {213-227},
+year = {1989},
+author = {Teixeira, W. and Tassinari, C.C.G. and Cordani, U. G. and Kawashita, K.}
+}
+
+@article{tassinari_and_macambira_1999,
+  title={Geochronological provinces of the Amazonian Craton},
+  author={Tassinari, C. C. and Macambira, M. J.},
+  journal={Episodes},
+  volume={22},
+  pages={174-182},
+  year={1999},
+  publisher={IUGS}
+}
+
+@article{santos_etal_2000,
+title = {A New Understanding of the Provinces of the Amazon Craton Based on Integration of Field Mapping and U-Pb and Sm-Nd Geochronology},
+journal = {Gondwana Research},
+volume = {3},
+number = {4},
+pages = {453-488},
+year = {2000},
+author = {Santos, J. O. S. and Hartmann, L. A. and Gaudette, H. E. and Groves, D. I. and Mcnaughton, M. J. and Fletcher, I. R.}
+}
+
+@article{salomao_etal_2019,
+author = {Salomao, G. N. and Dall'Agnol, R. and Angelica, R. S. and Figueiredo, M. A. and Sahoo, P. K. and Medeiros-filho, C. A. and Costa, M. F.},
+title = {Geochemical mapping and estimation of background concentrations in soils of Carajás mineral province, eastern Amazonian Craton, Brazil},
+journal = {Geochemistry: Exploration, Environment, Analysis},
+volume = {19},
+number = {4},
+pages = {431-447},
+year = {2019}
+}
+
+@article{cunha_etal_2016,
+title = {Mineral chemistry and magnetic petrology of the Archean Planalto Suite, Carajás Province – Amazonian Craton: Implications for the evolution of ferroan Archean granites},
+journal = {Journal of South American Earth Sciences},
+volume = {67},
+pages = {100-121},
+year = {2016},
+author = {Cunha, I. R. and Dall'Agnol, R. and Feio, G. R. L.}
+}
+
+% please use misc for datasets
+@misc{dataset, 
+	author = "Author1 LastName1 and Author2 LastName2 and Author3 LastName3",
+	title = "Data Title",
+	year = "2011",
+	doi = "10.000/55555",
+	URL = "http://www.frontiersin.org/",
+}

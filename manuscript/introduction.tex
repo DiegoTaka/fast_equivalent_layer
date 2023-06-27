@@ -1,16 +1,28 @@
 \section{Introduction}
-%%% The begining of the introduction HERE
-In accordance with potential theory, a continuous potential-field data (gravity and magnetic data) produced by any source can be exactly reproduced by a continuous and infinite 2D physical-property surface distribution  called the equivalent layer. The equivalent layer is a mathematical solution of Laplace’s equation in the source-free region with the observed potential-field data as the Dirichlet boundary condition \citep{kellogg1967}. Grounded on well-established potential theory, the equivalent-layer technique has been used by exploration geophysicists for processing potential-field data since the late 1960s \citep{dampney1969}. 
 
-Although there has always been a high demand for gravity and magnetic data processing, the equivalent-layer technique has not been massively used. 
-This occurs because its high computational cost makes it inefficient for processing massive data sets. 
-In the classic equivalent-layer technique, the continuous problem of the equivalent layer involving integrals is approximated by a discrete form. 
-First, a discrete and finite set of equivalent sources (such as point masses, prisms, magnetic diploes, doublets) is arranged in a layer with finite horizontal dimensions beneath the observation surface. 
-Next, a linear system of equations is set up with a large and full sensitivity matrix. Then, a regularized linear inverse problem is solved to estimate the physical property of each equivalent source within the discrete equivalent layer subject to fitting a discrete set of potential-field observations. 
-Finally, the estimated physical-property distribution within the equivalent layer is used to accomplish the desired processing of the potential-field data (e.g., interpolation, upward/downward continuation,  reduction to the pole). The latter step involves multiplying the matrix of Green’s functions associated with the desired transformation by the estimated physical-property distribution. 
+The equivalent-layer technique has been used by exploration geophysicists for processing potential-field data since the late 1960s 
+\citep{dampney1969}. 
+This technique is based on a widely accepted principle, which states that a discrete set of observed potential-field data due to 3D sources 
+can be approximated by that due to a discrete discrete set of virtual sources (such as point 
+masses, dipoles, prisms, doublets). From a theoretical point of view, the equivalent-layer 
+technique is grounded on potential theory \citep{kellogg1967} and consists in considering 
+that the potential field data can be approximated by a linear combination of harmonic 
+functions describing the potential field due to the virtual sources. These sources, commonly 
+called equivalent sources, are arranged on a layer with finite horizontal dimensions and 
+located below the observations. In the classical approach, a linear inverse problem is 
+solved to estimate the physical property of each equivalent source subject to fit the 
+observations. Then, the estimated physical-property distribution on the equivalent layer is 
+used to accomplish the desired potential-field transformation (e.g., interpolation, 
+upward/downward continuation, reduction to the pole). The later step is done by multiplying 
+the estimated physical-property distribution by the matrix of Green's functions associated 
+with the desired potential-field transformation.
 
-Beginning in the late 1980s, computationally efficient equivalent-layer techniques have arose. 
-To our knowledge, the first method towards improving the efficiency  was proposed by \cite{leao-silva1989}, 
+Because the linear inverse problem to be solved in the equivalent-layer technique is set up  with a full sensitivity matrix, its computational cost strongly depends on the number of 
+potential-field observations and can be very inefficient for dealing with massive data sets. 
+To overcome this problem, computationally efficient methods based on equivalent-layer 
+technique have arose in the late 1980s. 
+To our knowledge, the first method towards improving the efficiency  was proposed by 
+\cite{leao-silva1989}, 
 who used an overlapping moving-window scheme spanning the data set. 
 The strategy adopted in \cite{leao-silva1989} involves solving several smaller, regularized linear inverse problems instead of one large problem. 
 This strategy uses a small data window and distributes equivalent sources 
@@ -48,13 +60,13 @@ By using the subspace method, \cite{mendonca-2020} reparametrizes the equivalent
 reducing the dimension of the linear system from the original parameter-model space to a lower-dimensional subspace.
 The subspace bases span the parameter-model space and they are constructed by applying the singular value decomposition to the matrix containing the gridded data.
 
-Following the strategy of the  wavelet compression, \cite{li-oldenburg_2010} transformed the full sensitivity matrix into a sparse one using the compression of the coefficient matrix via wavelet transforms based on the orthonormal compactly supported wavelets. 
+Following the strategy of the  wavelet compression, \cite{li-oldenburg2010} transformed the full sensitivity matrix into a sparse one using the compression of the coefficient matrix via wavelet transforms based on the orthonormal compactly supported wavelets. 
 
 The strategy named iterative methods estimates iteratively the parameter vector that represents a distribution over an equivalent layer.
 \cite{xia-sprowl1991} and \cite{xia-etal1993} have developed efficient iterative algorithms 
 for updating the distribution of physical properties within the equivalent layer in the wavenumber and space domains, respectively.
 Specifically, in \citeauthor{xia-sprowl1991}'s (\citeyear{xia-sprowl1991}) method the physical-property distribution is updated by using the ratio between the squared depth to the equivalent source and the gravitational constant multiplied by the residual between the observed and predicted observation at the measurement station. 
-\cite{siqueira-etal2017} developed an iterative solution where the sensitivity matrix is transformed into a diagonal matrix with constant terms through the use of the 'excess mass criterion' and of the positive correlation between the observed gravity data and the masses on the equivalent layer.
+\cite{siqueira-etal2017} developed an iterative solution where the sensitivity matrix is transformed into a diagonal matrix with constant terms through the use of the \textit{excess mass criterion} and of the positive correlation between the observed gravity data and the masses on the equivalent layer.
 The fundamentals of the \citeauthor{siqueira-etal2017}'s (\citeyear{siqueira-etal2017}) method
 is  based on the Gauss' theorem \cite[e.g.,][p. 43]{kellogg1967} and the total excess of mass \cite[e.g.,][p. 60]{blakely1996}.
 All these iterative methods use the full and dense sensitivity matrix to calculate the predicted data 
@@ -65,12 +77,12 @@ Hence, the iterative methods proposed by \cite{xia-sprowl1991}, \cite{xia-etal19
 However, in their approach, \cite{jirigalatu-ebbing2019}  efficiently compute  the predicted data and 
 residual data for the entire survey data per iteration in the wavenumber domain.
 
-Following the strategy of the  iterative deconvolution \citeauthor{takahashi2020} (\citeyear{takahashi2020}, \citeyear{takahashi2022}), developed fast and effective equivalent-layer techniques for processing, respectively,  gravity and magnetic data by modifying the forward modeling to estimate the physical-property distribution  over the equivalent layer through a 2D discrete convolution that can be efficiently 
+Following the strategy of the  iterative deconvolution \citeauthor{takahashi-etal2020} (\citeyear{takahashi-etal2020}, \citeyear{takahashi-etal2022}), developed fast and effective equivalent-layer techniques for processing, respectively,  gravity and magnetic data by modifying the forward modeling to estimate the physical-property distribution  over the equivalent layer through a 2D discrete convolution that can be efficiently 
 computed via 2D FFT.
 These methods took advantage of the Block-Toeplitz Toeplitz-block (BTTB) structure of the sensitivity matrices, allowing them to be calculated by using only their first column.
 In practice, the forward modeling uses a single equivalent source, which significantly reduces the the required RAM memory. 
 
-The method introduced by \citeauthor{takahashi2020} (\citeyear{takahashi2020}, \citeyear{takahashi2022}) can be reformulated to eliminate the need for conjugate gradient iterations. 
+The method introduced by \citeauthor{takahashi-etal2020} (\citeyear{takahashi-etal2020}, \citeyear{takahashi-etal2022}) can be reformulated to eliminate the need for conjugate gradient iterations. 
 This reformulation involves employing a \textit{direct deconvolution} approach, similar to the concept described by \citep[e.g.,][p. 220]{aster_etal2019}, utilizing a \textit{Wiener filter} 
 \citep[e.g.,][p. 263]{gonzalez-woods2002}.
 

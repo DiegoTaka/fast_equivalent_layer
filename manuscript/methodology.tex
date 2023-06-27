@@ -113,7 +113,7 @@ In this case, the equivalent layer is formed by punctual sources representing mo
 \cite[e.g.,][]{dampney1969, emilia1973, leao-silva1989, cordell1992, oliveirajr-etal2013, siqueira-etal2017, reis-etal2020, takahashi-etal2020, soler-uieda2021, takahashi-etal2022}.
 Another common approach consists in not defining $g_{ij}$ by using equations \ref{eq:inverse-distance-ij}--\ref{eq:deriv-2-inverse-distance-ij},
 but other harmonic functions obtained by integrating them over the volume of regular prisms 
-\cite[e.g.,][]{li-oldenburg_2010, barnes-lumley_2011, li_etal_2014, jirigalatu-ebbing2019}.
+\cite[e.g.,][]{li-oldenburg2010, barnes-lumley2011, li_etal_2014, jirigalatu-ebbing2019}.
 There are also some less common approaches defining the harmonic function $g_{ij}$ (equation \ref{eq:harmonic-function-g-ij})
 as the potential field due to plane faces with constant physical property \citep{hansen-miyazaki1984}, doublets \citep{silva1986} or
 by computing the double integration of the inverse distance function with respect to $z$ \citep{guspi-novara2009}.
@@ -823,16 +823,16 @@ a regular grid of potential-field data on horizontal plane.
 Another difference is that these authors uses $\mathbf{W}_{q} = \mathbf{I}_{Q}$ (equation \ref{eq:function-Theta}),
 which means that the regularization is defined directly in the $Q$-space.
 
-Before \cite{oliveirajr-etal2013} and \cite{mendonca-2020}, \cite{barnes-lumley_2011} also proposed a computationally
+Before \cite{oliveirajr-etal2013} and \cite{mendonca-2020}, \cite{barnes-lumley2011} also proposed a computationally
 efficient method for equivalent-layer technique based on reparameterization. 
-A key difference, however, is that \cite{barnes-lumley_2011} did not set a $P \times Q$ reparameterization matrix $\mathbf{H}$
+A key difference, however, is that \cite{barnes-lumley2011} did not set a $P \times Q$ reparameterization matrix $\mathbf{H}$
 (equation \ref{eq:reparameterization}) with $Q << P$. 
 Instead, they used a matrix $\mathbf{H}$ with $Q \approx 1.7 \, P$. 
 Their central idea is setting a reparameterization scheme that groups distant equivalent sources into blocks by
 using a bisection process. 
 This scheme leads to a quadtree representation of the physical-property distribution on the equivalent layer, 
 so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-reparameterized}) is notably sparse.
-\cite{barnes-lumley_2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
+\cite{barnes-lumley2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
 (equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
 
 We consider an algorithm (not shown) that solves the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) by
@@ -857,13 +857,13 @@ obtain $\tilde{\mathbf{p}}$ from $\tilde{\mathbf{q}}$ (equation \ref{eq:vector-p
 
 \subsection{Wavelet compression}
 
-Previously to \cite{barnes-lumley_2011}, the idea of transforming the dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
+Previously to \cite{barnes-lumley2011}, the idea of transforming the dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
 into a sparse one has already been used in the context of equivalent-layer technique.
-\cite{li-oldenburg_2010} proposed a method that applies the discrete wavelet transform to introduce sparsity into 
+\cite{li-oldenburg2010} proposed a method that applies the discrete wavelet transform to introduce sparsity into 
 the original dense matrix $\mathbf{G}$.
 Those authors approximate a planar grid of potential-field data by a regularly-spaced grid of equivalent sources,
 so that the number of data $D$ and sources $P$ is the same , i.e., $D = P$.
-Specifically, \cite{li-oldenburg_2010} proposed a method that applies the wavelet transform to the original dense 
+Specifically, \cite{li-oldenburg2010} proposed a method that applies the wavelet transform to the original dense 
 matrix $\mathbf{G}$ and sets to zero the small coefficients that are below a given threshold, which results in an 
 approximating sparse representation of $\mathbf{G}$ in the wavelet domain.
 They first consider the following approximation
@@ -885,7 +885,7 @@ discrete wavelet transform; and $\mathbf{G}_{s}$ is a sparse matrix obtained by 
 \end{equation}
 with absolute value smaller than a given threshold.
 
-\citet{li-oldenburg_2010} solve a normalized inverse problem in the wavelet domain.
+\citet{li-oldenburg2010} solve a normalized inverse problem in the wavelet domain.
 Specifically, they first define a matrix
 \begin{equation}
 	\mathbf{G}_{L} = \mathbf{G}_{s} \, \mathbf{L}^{-1}
@@ -906,7 +906,7 @@ $\mu = 0$ (equation \ref{eq:function-Gamma}),
 $\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}) and 
 $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}) via 
 conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
-Finally, \citet{li-oldenburg_2010} compute an estimate $\tilde{\mathbf{p}}$ for the original parameter vector given by
+Finally, \citet{li-oldenburg2010} compute an estimate $\tilde{\mathbf{p}}$ for the original parameter vector given by
 \begin{equation}
 	\tilde{\mathbf{p}} = \boldsymbol{\mathcal{W}}^{\top} \left( \mathbf{L}^{-1} \, \tilde{\mathbf{p}}_{L} \right) \: ,
 	\label{eq:vector-p-tilde-LO10}

@@ -220,7 +220,7 @@ we obtain
 \end{equation}
 where 
 \begin{equation}
-	\tilde{\boldsymbol{\delta}}_{q} = \tilde{\mathbf{q}} - \bar{\mathbf{q}} \: ,
+	\tilde{\mathbf{q}} = \tilde{\boldsymbol{\delta}}_{q} + \bar{\mathbf{q}} \: ,
 	\label{eq:delta-q-tilde}
 \end{equation}
 \begin{equation}
@@ -275,6 +275,7 @@ the estimate $\tilde{\mathbf{q}}$ is computed with equation \ref{eq:delta-q-tild
 \label{subsec:formulation-without-reparameterization}
 
 Note that, for the particular case in which $\mathbf{H} = \mathbf{I}_{P}$ (equation \ref{eq:reparameterization}), 
+where $\mathbf{I}_{P}$ is the identity of order $P$, 
 $P = Q$, $\mathbf{p} = \mathbf{q}$, $\bar{\mathbf{p}} = \bar{\mathbf{q}}$ (equation \ref{eq:reparameterization-reference}) and 
 $\tilde{\mathbf{p}} = \tilde{\mathbf{q}}$ (equation \ref{eq:vector-p-tilde}).
 In this case, the linear system (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}) is directly 
@@ -303,7 +304,7 @@ In this case, the Cholesky factorization consists in computing
 	\label{eq:Cholesky-factorization}
 \end{equation}
 where $\boldsymbol{\mathcal{G}}$ is a lower triangular matrix called \textit{Cholesky factor} and having positive diagonal entries.
-Given $\boldsymbol{\mathcal{G}}$, the original linear system can be solved in two steps, as follows:
+Given $\boldsymbol{\mathcal{G}}$, the original linear system is replaced by two triangular systems, as follows:
 \begin{equation}
 	\begin{split}
 		\boldsymbol{\mathcal{G}} \, \mathbf{s} &= \mathbf{y} \\
@@ -330,14 +331,154 @@ These problems can be overcame by solving the linear system using an iterative m
 These methods produce a sequence of vectors that typically converge to the solution at a
 reasonable rate. The main computational cost associated with these methods is usually some matrix-vector products 
 per iteration.
-The conjugate gradient (CG) is a very popular iterative method for solving linear systems in equivalent-layer methods.
+The \textit{conjugate gradient} (CG) is a very popular iterative method for solving linear systems in equivalent-layer methods.
 This method was originally developed to solve systems having a square and positive definite matrix.
 There are two adapted versions of the CG method. The first is called \textit{conjugate gradient normal equation residual} (CGNR) 
 \citet[][sec. 11.3]{golub-vanloan2013} or \textit{conjugate gradient least squares} (CGLS) \cite[][p. 165]{aster_etal2019} and is
-used to solve overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}). 
+used to solve overdetermined problems (equation \ref{eq:delta-q-tilde-overdetermined}). 
 The second is called \textit{conjugate gradient normal equation error} (CGNE) method 
-\citet[][sec. 11.3]{golub-vanloan2013} and is used to solve the underdetermined problem (equation \ref{eq:delta-q-tilde-underdetermined}).
+\citet[][sec. 11.3]{golub-vanloan2013} and is used to solve the underdetermined problems (equation \ref{eq:delta-q-tilde-underdetermined}).
+Algorithm \ref{alg:CGLS} outlines the CGLS method applied to the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}).
 
+\begin{algorithm}
+	%\SetAlgoLined
+	\Input{}
+	Compute $\mathbf{C} = \mathbf{G} \, \mathbf{H}$\;
+	Set $\mathbf{r} = \boldsymbol{\delta}_{d}$ and compute $\delta = \nicefrac{\| \mathbf{r} \|}{D}$ \;
+	Compute $\boldsymbol{\vartheta} = \mathbf{C}^{\top} \mathbf{r}$ and $\rho_{0} = \boldsymbol{\vartheta}^{\top} \boldsymbol{\vartheta}$ \;
+	Set $\tilde{\mathbf{q}} = \mathbf{0}$, $\tau = 0$ and $\boldsymbol{\eta} = \mathbf{0}$ \;
+	$m = 1$ \;
+	\While{$(\delta > \epsilon)$ {\bf and} $(m < \mathtt{ITMAX})$}{
+		Update $\boldsymbol{\eta} \gets \boldsymbol{\vartheta} + \tau \, \boldsymbol{\eta}$ \;
+		Compute $\boldsymbol{\nu} = \mathbf{C} \, \boldsymbol{\eta}$\;
+		Compute $\upsilon = \nicefrac{\rho_{0}}{\left( \boldsymbol{\nu}^{\top} \boldsymbol{\nu} \right)}$ \;
+		Update $\tilde{\mathbf{q}} \gets \tilde{\mathbf{q}} + \upsilon \, \boldsymbol{\eta}$ \;
+		Update $\mathbf{r} \gets \mathbf{r} - \upsilon \, \boldsymbol{\nu}$ and $\delta \gets \nicefrac{\| \upsilon \, \boldsymbol{\nu} \|}{D}$ \;
+		Compute $\boldsymbol{\vartheta} = \mathbf{C}^{\top} \mathbf{r}$ and $\rho = \boldsymbol{\vartheta}^{\top} \boldsymbol{\vartheta}$ \;
+		Compute $\tau = \nicefrac{\rho}{\rho_{0}}$ \;
+		Update $\rho_{0} \gets \rho$ \;
+		$m \gets m + 1$ \;
+	}
+	\caption{
+		Generic pseudo-code for the CGLS applied to the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined})
+		for the particular case in which $\mathbf{W}_{d} = \mathbf{I}_{D}$, where $\mathbf{I}_{D}$ is the identity of order $D$, and $\mu = 0$.}
+	\label{alg:CGLS}
+\end{algorithm}
+
+\section{Floating-point operations}
+\label{sec:flops}
+
+Two important factors affecting the efficiency of a given matrix algorithm are the storage and amount of required arithmetic. 
+Here, we quantify this last factor associated with different computational strategies to solve the linear system of the
+equivalent-layer technique (section \ref{sec:computational-strategies}). To do it, we opted by counting \textit{flops},
+which are floating point additions, subtractions, multiplications or divisions \cite[][ p. 12--14]{golub-vanloan2013}.
+This is a non-hardware dependent approach that allows us to do direct comparison between different equivalent-layer methods.
+Most of the flops count used here can be found in \citet[][p. 12, 106, 107 and 164]{golub-vanloan2013}.
+
+Let us consider the case in which the overdetermined problem
+(equation \ref{eq:delta-q-tilde-overdetermined}) is solved by Cholesky factorization (equation \ref{eq:Cholesky-factorization} and \ref{eq:Cholesky-solver})
+directly for the parameter vector $\tilde{\mathbf{p}}$ by considering 
+the particular case in which $\mathbf{H} = \mathbf{I}_{P}$ (equation \ref{eq:reparameterization} and 
+subsection \ref{subsec:formulation-without-reparameterization}),
+$\mu = 0$ (equation \ref{eq:function-Gamma}), 
+$\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}) and
+$\bar{\mathbf{p}} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), 
+where $\mathbf{I}_{P}$ and $\mathbf{I}_{D}$ are the identities of order $P$ and $D$, respectively.
+Based on the information provided in table \ref{tab:standard-flops}, the total number of flops can be determined by aggregating the flops required for various computations. These computations include the matrix-matrix and matrix-vector products $\mathbf{G}^{\top}\mathbf{G}$ and $\mathbf{G}^{\top}\mathbf{d}$, 
+the Cholesky factor $\boldsymbol{\mathcal{G}}$, and the solution of triangular systems. Thus, we can express the total number of flops as follows:
+\begin{equation}
+	f_{\mathtt{Cholesky}} = \nicefrac{1}{3}D^{3} + 2 D^{2} + 2 \left( P^{2} + P \right) D \: .
+	\label{flops:cholesky}
+\end{equation}
+The same particular overdetermined problem can be solved by using the CGLS method (Algorithm \ref{alg:CGLS}).
+In this case, we use table \ref{tab:standard-flops} again to combine the total number of
+flops associated with the matrix-vector and inner products defined in line 3, before 
+starting the iteration, and the $3$ saxpys, $2$ inner products and $2$ matrix-vector products
+per iteration (lines $7-12$). By considering a maximum number of iterations $\mathtt{ITMAX}$, we obtain
+\begin{equation}
+	f_{\mathtt{CGLS}} = 2P(D+1) + \mathtt{ITMAX} \left[ 2P \left( 2D + 3 \right) + 4D \right] \: .
+	\label{flops:cgls}
+\end{equation}
+The same approach used to deduce equations \ref{flops:cholesky} and \ref{flops:cgls} is
+applied to compute the total number of flops for the selected equivalent-layer 
+methods discussed in section \ref{sec:computational-strategies}.
+
+%To simplify our analysis, we do not consider the number of flops required to compute the sensitivity matrix 
+%$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) or the auxiliary matrices $\mathbf{A}$, $\mathbf{H}$, $\mathbf{W}_{d}$, $\mathbf{W}_{q}$ 
+%(equations \ref{eq:transformation}, \ref{eq:reparameterization}, \ref{eq:function-Phi} and \ref{eq:function-Theta}).
+%We also neglect the required flops to compute $\bar{p}$ (equation \ref{eq:reparameterization-reference}), 
+%retrieve $\tilde{\mathbf{q}}$ from $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}) and computing
+%$\boldsymbol{\delta}_{d}$ (equation \ref{eq:delta-d}).
+
+%Figure \ref{fig:1} shows the total flops count for the different methods presented in this review for different number of potential-field data 
+%ranging from $10,000$ to $1,000,000$.
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{c c c}
+		Reference & Term & flops \\
+		\hline
+		eq. \ref{eq:predicted-data-vetor-reparameterized} & $\mathbf{G \, H}$ & $2DQP$ \\
+		eq. \ref{eq:vector-p-tilde} & $\mathbf{H} \, \tilde{\mathbf{q}}$ & $2PQ$ \\
+		eq. \ref{eq:delta-q-tilde-overdetermined} & $\left(\mathbf{G \, H}\right)^{\top}\left(\mathbf{G \, H}\right)$ & $2Q^{2}D$ \\
+		eq. \ref{eq:delta-q-tilde-overdetermined} & $\left(\mathbf{G \, H}\right)^{\top}\boldsymbol{\delta}_{d} $ & $2QD$ \\
+		eq. \ref{eq:delta-q-tilde-underdetermined} & $\left(\mathbf{G \, H}\right) \, \left(\mathbf{G \, H}\right)^{\top}$ & $2D^{2}Q$ \\
+		eq. \ref{eq:delta-q-tilde-underdetermined} & $\left(\mathbf{G \, H}\right)^{\top}\mathbf{u}$ & $2QD$ \\
+		eq. \ref{eq:Cholesky-factorization} & lower triangle of $\boldsymbol{\mathcal{G}}$ & $\nicefrac{D^{3}}{3}$ or $\nicefrac{Q^{3}}{3}$ \\
+		eq. \ref{eq:Cholesky-solver} & solve triangular systems & $2D^{2}$ or $2Q^{2}$ \\
+		Alg. \ref{alg:CGLS} & $\boldsymbol{\eta} \gets \boldsymbol{\vartheta} + \tau \, \boldsymbol{\eta}$ & 2Q \\
+	\end{tabular}
+	\caption{
+		Total number of flops associated with some useful terms according to \citet[][p. 12]{golub-vanloan2013}.
+		The flops associated with equations \ref{eq:Cholesky-factorization} and \ref{eq:Cholesky-solver} depends if the
+		problem is over or underdetermined.
+		Note that $P = Q$ for the case in which $\mathbf{H} = \mathbf{I}_{P}$ (subsection \ref{subsec:formulation-without-reparameterization}).
+		The term associated with Algorithm \ref{alg:CGLS} is a vector update called \textit{saxpy} \citep[][p. 4]{golub-vanloan2013}.
+		The terms defined here are references to compute the total number of flops throughout the manuscript.
+		}
+	\label{tab:standard-flops}
+\end{table}
+
+\section{Numerical stability}
+
+All equivalent-layer methods aim at obtaining an estimate $\tilde{\mathbf{p}}$ for the parameter vector 
+$\mathbf{p}$ (equation \ref{eq:predicted-data-vector}), which contains the physical property of the equivalent sources.
+Some methods do it by first obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$
+(equation \ref{eq:reparameterization}) and then using it to obtain $\tilde{\mathbf{p}}$ (equation \ref{eq:vector-p-tilde}).
+The stability of a solution $\tilde{\mathbf{p}}$ against noise in the observed data is rarely addressed.
+Here, we follow the numerical stability analysis presented in \citet{siqueira-etal2017}.
+
+For a given equivalent-layer method (section \ref{sec:computational-strategies}), we obtain an estimate 
+$\tilde{\mathbf{p}}$ assuming noise-free potential-field data $\mathbf{d}$.
+Then, we create $L$ different noise-corrupted data $\mathbf{d}^{\ell}$, $\ell \in \{1:L\}$, by adding 
+$L$ different sequences of pseudorandom Gaussian noise to $\mathbf{d}$, all of them having zero mean. 
+From each $\mathbf{d}^{\ell}$, we obtain an estimate $\tilde{\mathbf{p}}^{\ell}$. 
+Regardless of the particular equivalent-layer method used, the following inequality \citep[][ p. 66]{aster_etal2019} 
+holds true:
+\begin{equation}
+	\Delta p^{\ell} \leq \kappa \; \Delta d^{\ell} \: , \quad \ell \in \{1:L\} \: ,
+	\label{eq:condition-number}
+\end{equation}
+where $\kappa$ is the constant of proportionality between the model perturbation
+\begin{equation}
+	\Delta p^{\ell} = \frac{\| \tilde{\mathbf{p}}^{\ell} - \tilde{\mathbf{p}} \|}{\| \tilde{\mathbf{p}} \|}
+	\: , \quad \ell \in \{1:L\} \: ,
+	\label{eq:model-perturbation}
+\end{equation}
+and the data perturbation
+\begin{equation}
+	\Delta d^{\ell} = \frac{\| \mathbf{d}^{\ell} - \mathbf{d} \|}{\| \mathbf{d} \|}
+	\: , \quad \ell \in \{1:L\} \: ,
+	\label{eq:data-perturbation}
+\end{equation}
+with $\| \cdot \|$ representing the Euclidean norm.
+The constant $\kappa$ acts as the condition number associated with the pseudo-inverse in a given linear inversion.
+The larger (smaller) the value of $\kappa$, the more unstable (stable) is the estimated solution.
+Equation \ref{eq:condition-number} shows a linear relationship between the model perturbation $\Delta p^{\ell}$ and 
+the data perturbation $\Delta d^{\ell}$ (equations \ref{eq:model-perturbation} and \ref{eq:data-perturbation}).
+We estimate the $\kappa$ (equation \ref{eq:condition-number}) associated with a given 
+equivalent-layer method as the slope of the straight line fitted to the $L$ points 
+$\left( \Delta p^{\ell} \: , \: \Delta d^{\ell} \right)$.
 
 \section{Notation for subvectors and submatrices}
 
@@ -388,19 +529,19 @@ which contains the contiguous elements of $\mathbf{G}$ from rows $2$ to $5$ and 
 $3$ to $7$.
 
 \section{Computational strategies}
+\label{sec:computational-strategies}
 
-Here, we review some strategies for reducing the computational cost of equivalent-layer technique.
-Typically, estimating a parameter vector $\tilde{\mathbf{p}}$ or $\tilde{\mathbf{q}}$ 
-requires to solve a large-scale linear inversion (equations \ref{eq:delta-q-tilde-overdetermined} and \ref{eq:delta-q-tilde-underdetermined}).
-This, in turn, means to deal with some obstacles concerning large computational cost:
+The linear inverse problem of the equivalent-layer technique (section \ref{sec:linear-inverse-problem}) for the case
+in which there are large volumes of potential-field data requires dealing with:
 \begin{itemize}
 	\item[(i)] the large computer memory to store large and full matrices;
 	\item[(ii)] the long computation time to multiply a matrix by a vector; and
 	\item[(iii)] the long computation time to solve a large linear system of equations.
 \end{itemize}
-Two important factors affecting the efficiency of a given matrix algorithm are the 
-storage and amount of required arithmetic. Here, we quantify this last factor by counting \textit{flops},
-which are floating point additions, subtractions, multiplications or divisions \cite[][ p. 12--14]{golub-vanloan2013}.
+Here, we review the computational cost associated with the direct and iterative methods via Cholesky factorization 
+and CG (subsection \ref{subsec:linear-system-solvers}), respectively, and use them as references. 
+Then we review some strategies for reducing the computational cost of the equivalent-layer technique with respect to
+the reference approaches. 
 We focus on the overall strategies used by the selected methods.
 
 \subsection{Moving window}
@@ -480,6 +621,21 @@ each data window without explicitly computing and storing an estimated for $\mat
 It means that their method allows computing a single potential-field transformation. 
 A different transformation or the same one evaluated at different points require running their moving-data window method again.
 
+The total number of flops in Algorithm \ref{alg:LS89} depends on computing the $P' \times D'$
+matrix $\mathbf{B}'$ (equation \ref{eq:dummy-matrix-LS89}) in line 6 and use it to define
+the $1 \times P'$ vector $\left(\mathbf{a}' \right)^{\top} \mathbf{B}'$ (line 7) before 
+starting the iterations and computing an inner product (equation \ref{eq:transformed-field-tmc-LS89}) per iteration.
+We consider that the total number of flops associated with $\mathbf{B}'$ is obtained by 
+the matrix-matrix product $\mathbf{G}' \left(\mathbf{G}'\right)^{\top}$, its inverse
+and then the premultiplication by $\left(\mathbf{G}'\right)^{\top}$.
+By using table \ref{tab:standard-flops} and considering that inverse is computed via  Cholesky factorization, we obtain that the total number of flops for lines $6$ and $7$ is
+$2(D')^{2}P' + \nicefrac{7 (D')^{3}}{6} + 2(D')^{2}P'$.
+Then, the total number of flops for Algorithm \ref{alg:LS89} is
+\begin{equation}
+	f_{\mathtt{LS89}} = \nicefrac{7}{6}(D')^{3} + 4P'(D')^{2} + M \, 2 P' \: .
+	\label{flops:LS89}
+\end{equation}
+
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
@@ -541,9 +697,22 @@ positions of observation points.
 According to \cite{soler-uieda2021}, the block-averaged sources layout may prevent aliasing of the interpolated 
 values, specially when the observations are unevenly sampled.
 This strategy also reduces the number of equivalent sources without affecting the accuracy of the potential-field interpolation. 
-This reduction reduces the computational load for estimating the physical property on the equivalent layer.
+Besides, it reduces the computational load for estimating the physical property on the equivalent layer.
 This block-averaged sources layout is not included in the Algorithm \ref{alg:SU21}.
 
+Algorithm \ref{alg:SU21}: $\left(\mathbf{G}^{m}\right)^{\top}\mathbf{G}^{m}$ ($2(P')^{2}D'$), 
+$\left(\mathbf{G}^{m}\right)^{\top}\mathbf{d}^{m}$ ($2P'D'$),
+Cholesky factor $\nicefrac{(P')^3}{3}$ and 
+triangular systems $2(P')^{2}$ in line $10$,
+saxpy without scalar-vector product in line $11$ ($P'$),
+matrix-vector product in line 12 ($2D'P'$):
+\begin{equation}
+	f_{\mathtt{SU21}} = M \, 
+	\left[ \nicefrac{1}{3}(P')^3 + 2(D'+1)(P')^{2} + (4D'+1)P' \right] \: ,
+	\label{flops:SU21}
+\end{equation}
+where $P'$ and $D'$ represent, respectively, the average number of equivalent sources and 
+data at each window.
 
 \begin{algorithm}
 	%\SetAlgoLined
@@ -555,11 +724,11 @@ This block-averaged sources layout is not included in the Algorithm \ref{alg:SU2
 	Set a $P \times 1$ vector $\tilde{\mathbf{p}} = \mathbf{0}$ \;
 	$m = 1$ \;
 	\While{$m < M$}{
-		Set the matrix $\mathbf{W}^{m}_{d}$ \;	
-		Compute the matrix $\mathbf{G}^{m}$ \;
-		Compute $\tilde{\mathbf{p}}^{m}$ (equation \ref{eq:p-tilde-m-SU21}) \;
-		$\tilde{\mathbf{p}}[\mathbf{j}^{m}] \gets \tilde{\mathbf{p}}[\mathbf{j}^{m}] + \tilde{\mathbf{p}}^{m}$ \;
-		$\mathbf{r} \gets \mathbf{r} - \mathbf{G}[:,\mathbf{j}^{m}] \, \tilde{\mathbf{p}}^{m}$ \;
+		Set the matrix $\mathbf{W}^{m}_{d}$\;	
+		Compute the matrix $\mathbf{G}^{m}$\;
+		Compute $\tilde{\mathbf{p}}^{m}$ (equation \ref{eq:p-tilde-m-SU21})\;
+		$\tilde{\mathbf{p}}[\mathbf{j}^{m}] \gets \tilde{\mathbf{p}}[\mathbf{j}^{m}] + \tilde{\mathbf{p}}^{m}$\;
+		$\mathbf{r} \gets \mathbf{r} - \mathbf{G}[:,\mathbf{j}^{m}] \, \tilde{\mathbf{p}}^{m}$\;
 		$m \gets m + 1$ \;
 	}
 	\caption{Generic pseudo-code for the method proposed by \cite{soler-uieda2021}.}
@@ -613,6 +782,14 @@ uses a single equivalent source positioned below a measurement station to comput
 This approach entails a computational strategy where a single column of the sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
 is calculated per iteration.
 
+Algorithm \ref{alg:C92}: 
+find maximum absolute value in line $6$ ($D \log_{2}(D)$) \cite[][p. 420]{press-etal2007},
+saxpy in line $11$ ($2D$),
+find maximum absolute value in line $12$ ($D \log_{2}(D)$):
+\begin{equation}
+	f_{\mathtt{C92}} = D \log(D) + \mathtt{ITMAX} \left[2D + D \log_{2}(D) \right] \: .
+	\label{flops:C92}
+\end{equation}
 
 \begin{algorithm}
 	%\SetAlgoLined
@@ -794,6 +971,16 @@ so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-rep
 \cite{barnes-lumley_2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
 (equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
 
+Consider the reparameterization combined with CGLS:
+matrix-vector product $\mathbf{G \, H}$ ($2DQP$),
+matrix-matrix product $\left(\mathbf{G \, H}\right)^{\top}\left(\mathbf{G \, H}\right)$ ($2Q^{2}D$),
+matrix-vector product $\left(\mathbf{G \, H}\right)^{\top}\boldsymbol{\delta}_{d}$ ($2QD$),
+matrix-vector product $\mathbf{H} \tilde{\mathbf{q}}$ ($2PQ$)
+\begin{equation}
+	f_{\mathtt{reparam.}} = 2Q(DP+D+1) + 2PQ + \mathtt{ITMAX} \left[ 2Q \left( 2D + 3 \right) + 4D \right] \: .
+	\label{flops:reparameterization-cgls}
+\end{equation}
+
 \subsection{Wavelet compression}
 
 Previously to \cite{barnes-lumley_2011}, the idea of transforming the dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
@@ -867,7 +1054,7 @@ the \textit{Gauss' theorem} \cite[e.g.,][p. 43]{kellogg1967} and the \textit{tot
 Besides, \citet{siqueira-etal2017} have included a numerical analysis showing that their method produces very stable solutions, 
 even for noise-corrupted potential-field data.
 
-The iterative method proposed by \citet{siqueira-etal2017} is outlined in Algorithm \ref{alg:XS91-SOB17},
+The iterative method proposed by \citet{siqueira-etal2017} is outlined in Algorithm \ref{alg:SOB17},
 presumes an equivalent layer formed by monopoles (point masses) and can be applied to
 irregularly-spaced data on an undulating surface.
 Note that the residuals $\mathbf{r}$ are used to compute a correction $\boldsymbol{\Delta}\mathbf{p}$
@@ -883,7 +1070,7 @@ classical \textit{Dirichlet’s problem} or the \textit{first boundary value pro
 Recently, \citet{jirigalatu-ebbing2019} presented another iterative method for estimating a parameter 
 vector $\tilde{\mathbf{p}}$ (equation \ref{eq:predicted-data-vector}). 
 With the purpose of combining different potential-field data, 
-their method basically modifies that shown in Algorithm \ref{alg:XS91-SOB17} by changing the initial approximation 
+their method basically modifies that shown in Algorithm \ref{alg:SOB17} by changing the initial approximation 
 and the iterative correction for the parameter vector.
 Specifically, \citet{jirigalatu-ebbing2019} replace line 4 by $\tilde{\mathbf{p}} = \mathbf{0}$, where $\mathbf{0}$ is a vector of zeros,
 and line 9 by $\boldsymbol{\Delta}\mathbf{p} = \omega \, \mathbf{G}^{\top} \mathbf{r}$, where $\omega$ is a positive
@@ -893,28 +1080,44 @@ To overcome the high computational cost of these two products, \citet{jirigalatu
 prisms and compute their predicted potential field in the wavenumber domain by using the Gauss-FFT technique
 \cite{zhao-etal2018}.
 
+Algorithm \ref{alg:SOB17}:
+entrywise product line $4$ ($D$),
+matrix-vector and subtraction line $6$ ($2D^{2} + D$),
+entrywise product line $9$ ($D$),
+addition line $10$ ($D$),
+matrix-vector line $11$ ($2D^{2}$),
+subtraction line $12$ ($D$):
+\begin{equation}
+	f_{\mathtt{SOB17}} = 2D^{2} + 2D + \mathtt{ITMAX} \left( 2D^{2} + 3D \right) \: .
+	\label{flops:SOB17}
+\end{equation}
+
+
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
 	Set $P$ equivalent sources on a horizontal plane $z_{0}$ \;
 	Set a tolerance $\epsilon$ \;
+	Set a maximum number of iterations $\mathtt{ITMAX}$ \;
 	Set an auxiliary vector $\boldsymbol{\sigma}$ \;
 	Compute $\tilde{\mathbf{p}} = \boldsymbol{\sigma} \circ \mathbf{d}$ \;
 	Compute $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) \;
 	Compute $\mathbf{r} = \mathbf{d} - \mathbf{G} \, \tilde{\mathbf{p}}$ \;
 	Compute $\delta = \nicefrac{\| \mathbf{r} \|}{D}$ \;
-	\While{$(\delta > \epsilon)$}{
+	$m = 1$\;
+	\While{$(\delta > \epsilon)$ {\bf and} $(m < \mathtt{ITMAX})$}{
 		Compute $\boldsymbol{\Delta}\mathbf{p} = \boldsymbol{\sigma} \circ \mathbf{r}$ \;
 		Update $\tilde{\mathbf{p}} \gets \tilde{\mathbf{p}} + \boldsymbol{\Delta}\mathbf{p}$ \;
 		Compute $\boldsymbol{\nu} = \mathbf{G} \, \boldsymbol{\Delta}\mathbf{p}$ \;
 		Update $\mathbf{r} \gets \mathbf{r} - \boldsymbol{\nu}$ \;
 		Compute $\delta = \nicefrac{\| \boldsymbol{\nu} \|}{D}$ \;
+		$m \gets m + 1$\;
 	}
 	\caption{Generic pseudo-code for the iterative method proposed by \cite{siqueira-etal2017}.
 	The symbol ``$\circ$'' denotes the entrywise or Hadamard product \cite[e.g.,][p. 298]{horn-johnson1991} and
 	$\boldsymbol{\sigma}$ is a $P \times 1$ vector whose $j$-th element is the ratio of a predefined element of area centered at the $j$-th
 	equivalent source and the term $2 \pi \gamma$, where $\gamma$ is the gravitational constant.}
-	\label{alg:XS91-SOB17}
+	\label{alg:SOB17}
 \end{algorithm}
 
 \subsection{Iterative deconvolution}
@@ -1166,6 +1369,21 @@ As shown by \citet{takahashi-etal2020, takahashi-etal2022}, the CGLS produces st
 parameter vector $\mathbf{p}$ (equation \ref{eq:predicted-data-vector}) in the presence of 
 noisy potential-field data $\mathbf{d}$. This is a well-known property of the CGLS method \citep[e.g.,][p. 166]{aster_etal2019}.
 
+Algorithm \ref{alg:TOB-2020-2022}:
+2 FFT (FTT = kappa (4D)log2(4D)) lines 4 and 5,
+CONV (= 2FFT + 24D) + inner prod line 8,
+3 saxpy (lines 12, 15 and 16),
+2 inner prod (lines 14 and 17),
+2 CONV lines 13 and 17:
+\begin{equation}
+	f_{\mathtt{CGLS}} = \kappa \, (16D)\log_{2}(4D) + 26D + \mathtt{ITMAX} 
+	\left[
+	\kappa \, (16D)\log_{2}(4D) + 58D
+	\right] \: .
+	\label{flops:TOB20}
+\end{equation}
+
+
 \begin{algorithm}
 	%\SetAlgoLined
 	\Input{}
@@ -1187,7 +1405,7 @@ noisy potential-field data $\mathbf{d}$. This is a well-known property of the CG
 		Compute $\boldsymbol{\nu} = \mathbf{G} \, \boldsymbol{\eta}$ (Algorithm \ref{alg:fast-2D-convolution})\;
 		Compute $\upsilon = \nicefrac{\rho_{0}}{\left( \boldsymbol{\nu}^{\top} \boldsymbol{\nu} \right)}$ \;
 		Update $\tilde{\mathbf{p}} \gets \tilde{\mathbf{p}} + \upsilon \, \boldsymbol{\eta}$ \;
-		Update $\mathbf{r} \gets \mathbf{r} - \upsilon \, \boldsymbol{\nu}$ and compute $\delta \gets \nicefrac{\| \upsilon \, \boldsymbol{\nu} \|}{D}$ \;
+		Update $\mathbf{r} \gets \mathbf{r} - \upsilon \, \boldsymbol{\nu}$ and $\delta \gets \nicefrac{\| \upsilon \, \boldsymbol{\nu} \|}{D}$ \;
 		Compute $\boldsymbol{\vartheta} = \mathbf{G}^{\top} \, \mathbf{r}$ (Algorithm \ref{alg:fast-2D-convolution}) and $\rho = \boldsymbol{\vartheta}^{\top} \boldsymbol{\vartheta}$ \;
 		Compute $\tau = \nicefrac{\rho}{\rho_{0}}$ \;
 		Update $\rho_{0} \gets \rho$ \;
@@ -1258,43 +1476,12 @@ From a computational point of view, the number of CGLS iterations in the method 
 is equivalent to the number of tentative estimated parameter vectors required to form the L-curve in the proposed
 direct deconvolution.
 
-\section{Numerical stability}
-
-All equivalent-layer methods aims at obtaining an estimate $\tilde{\mathbf{p}}$ for the parameter vector 
-$\mathbf{p}$ (equation \ref{eq:predicted-data-vector}), which contains the physical property of the equivalent sources.
-Some methods do it by first obtaining an estimate $\tilde{\mathbf{q}}$ for the reparameterized parameter vector $\mathbf{q}$
-(equation \ref{eq:reparameterization}) and then using it to obtain $\tilde{\mathbf{p}}$ (equation \ref{eq:vector-p-tilde}).
-The stability of a solution $\tilde{\mathbf{p}}$ against noise in the observed data is rarely addressed.
-Here, we follow the numerical stability analysis presented in \citet{siqueira-etal2017}.
-
-For a given equivalent-layer method, we obtain an estimate $\tilde{\mathbf{p}}$ assuming noise-free potential-field data $\mathbf{d}$.
-Then, we create $L$ different noise-corrupted data $\mathbf{d}^{\ell}$, $\ell \in \{1:L\}$, by adding 
-$L$ different sequences of pseudorandom Gaussian noise to $\mathbf{d}$, all of them having zero mean. 
-From each $\mathbf{d}^{\ell}$, we obtain an estimate $\tilde{\mathbf{p}}^{\ell}$. 
-Regardless of the particular equivalent-layer method used, the following inequality \citep[][ p. 66]{aster_etal2019} 
-holds true:
+Direct deconvolution:
+FFT to compute L,
+LL* eq 69 (24D),
+L*/(LL*) (24D),
+CONV (2FFT + 24D):
 \begin{equation}
-	\Delta p^{\ell} \leq \kappa \; \Delta d^{\ell} \: , \quad \ell \in \{1:L\} \: ,
-	\label{eq:condition-number}
+	f_{\mathtt{deconv.}} = \kappa \, (12D)\log_{2}(4D) + 72D \: .
+	\label{flops:direct-deconv}
 \end{equation}
-where $\kappa$ is the constant of proportionality between the model perturbation
-\begin{equation}
-	\Delta p^{\ell} = \frac{\| \tilde{\mathbf{p}}^{\ell} - \tilde{\mathbf{p}} \|}{\| \tilde{\mathbf{p}} \|}
-	\: , \quad \ell \in \{1:L\} \: ,
-	\label{eq:model-perturbation}
-\end{equation}
-and the data perturbation
-\begin{equation}
-	\Delta d^{\ell} = \frac{\| \mathbf{d}^{\ell} - \mathbf{d} \|}{\| \mathbf{d} \|}
-	\: , \quad \ell \in \{1:L\} \: ,
-	\label{eq:data-perturbation}
-\end{equation}
-with $\| \cdot \|$ representing the Euclidean norm.
-The constant $\kappa$ acts as the condition number associated with the pseudo-inverse in a given linear inversion.
-The larger (smaller) the value of $\kappa$, the more unstable (stable) is the estimated solution.
-Equation \ref{eq:condition-number} shows a linear relationship between the model perturbation $\Delta p^{\ell}$ and 
-the data perturbation $\Delta d^{\ell}$ (equations \ref{eq:model-perturbation} and \ref{eq:data-perturbation}).
-We estimate the $\kappa$ (equation \ref{eq:condition-number}) associated with a given 
-equivalent-layer method as the slope of the straight line fitted to the $L$ points 
-$\left( \Delta p^{\ell} \: , \: \Delta d^{\ell} \right)$.
-

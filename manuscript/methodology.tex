@@ -825,18 +825,6 @@ a regular grid of potential-field data on horizontal plane.
 Another difference is that these authors uses $\mathbf{W}_{q} = \mathbf{I}_{Q}$ (equation \ref{eq:function-Theta}),
 which means that the regularization is defined directly in the $Q$-space.
 
-Before \cite{oliveirajr-etal2013} and \cite{mendonca-2020}, \cite{barnes-lumley2011} also proposed a computationally
-efficient method for equivalent-layer technique based on reparameterization. 
-A key difference, however, is that \cite{barnes-lumley2011} did not set a $P \times Q$ reparameterization matrix $\mathbf{H}$
-(equation \ref{eq:reparameterization}) with $Q << P$. 
-Instead, they used a matrix $\mathbf{H}$ with $Q \approx 1.7 \, P$. 
-Their central idea is setting a reparameterization scheme that groups distant equivalent sources into blocks by
-using a bisection process. 
-This scheme leads to a quadtree representation of the physical-property distribution on the equivalent layer, 
-so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-reparameterized}) is notably sparse.
-\cite{barnes-lumley2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
-(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
-
 We consider an algorithm (not shown) that solves the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) by
 combining the reparameterization with CGLS method (Algorithm \ref{alg:CGLS}).
 It starts with a reparameterization step defined by defining a matrix $\mathbf{C} = \mathbf{G \, H}$ 
@@ -857,12 +845,10 @@ the number of flops per iteration can be substantially decreased with respect to
 In this case, the flops decrease per iteration compensates the additional flops required to compute $\mathbf{C}$ and 
 obtain $\tilde{\mathbf{p}}$ from $\tilde{\mathbf{q}}$ (equation \ref{eq:vector-p-tilde}).
 
-\subsection{Wavelet compression}
+\subsection{Sparsity induction}
 
-Previously to \cite{barnes-lumley2011}, the idea of transforming the dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
-into a sparse one has already been used in the context of equivalent-layer technique.
 \cite{li-oldenburg2010} proposed a method that applies the discrete wavelet transform to introduce sparsity into 
-the original dense matrix $\mathbf{G}$.
+the original dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}).
 Those authors approximate a planar grid of potential-field data by a regularly-spaced grid of equivalent sources,
 so that the number of data $D$ and sources $P$ is the same , i.e., $D = P$.
 Specifically, \cite{li-oldenburg2010} proposed a method that applies the wavelet transform to the original dense 
@@ -916,6 +902,29 @@ Finally, \citet{li-oldenburg2010} compute an estimate $\tilde{\mathbf{p}}$ for t
 where the term within parenthesis is an estimate $\tilde{\mathbf{p}}_{w}$ of the parameter vector $\mathbf{p}_{w}$
 (equation \ref{eq:vectors-dw-pw}) in the wavelet domain and 
 matrix $\boldsymbol{\mathcal{W}}^{\top}$ represents an inverse wavelet transform. 
+
+\citet{barnes-lumley2011} also proposed a computationally efficient method for equivalent-layer technique 
+by inducing sparsity into the original sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}). 
+Their approach consists in setting a $P \times Q$ reparameterization matrix $\mathbf{H}$
+(equation \ref{eq:reparameterization}) with $Q \approx 1.7 \, P$.
+Note that, differently from \citet{oliveirajr-etal2013} and \citet{mendonca-2020}, \citet{barnes-lumley2011}
+do not use the reparameterization with the purpose of reducing the number of the parameters.
+Instead, they use a reparameterization scheme that groups distant equivalent sources into blocks by
+using a bisection process. 
+This scheme leads to a quadtree representation of the physical-property distribution on the equivalent layer, 
+so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-reparameterized}) is notably sparse.
+\cite{barnes-lumley2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
+(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
+
+It is difficult to predict the exact sparsity obtained from the methods proposed by \citet{li-oldenburg2010} and \citet{barnes-lumley2011} 
+because it depends on several factors, including the observed potential-field data.
+According to \citet{li-oldenburg2010}, their wavelet approach results in a sparse matrix having $\approx 2\%$ 
+of the elements in $\mathbf{G}_{w}$ (equation \ref{eq:matrix-Gw}).
+The reparameterization proposed by \citet{barnes-lumley2011} leads to a sparse matrix $\mathbf{G \, H}$ (equation \ref{eq:predicted-data-vetor-reparameterized})
+with only $\approx 1\%$ of non-zero elements.
+These sparsity patterns can be efficiently explored, for example, in computing the required matrix-vector products
+along the iterations of the CGLS method (Algorithm \ref{alg:CGLS}).
+
 
 \subsection{Iterative methods using the full matrix $\mathbf{G}$}
 

@@ -71,13 +71,11 @@ By using the subspace method, \cite{mendonca-2020} reparametrizes the equivalent
 reducing the dimension of the linear system from the original parameter-model space to a lower-dimensional subspace.
 The subspace bases span the parameter-model space and they are constructed by applying the singular value decomposition to the matrix containing the gridded data.
 
-@@@@@@ \textbf{Sparsity induction}?
-Following the strategy of the reparametrization, 
-\cite{barnes-lumley2011} proposed a method that uses quadtree discretization to group equivalent sources far from the computation points.
-They have shown that estimating the physical property distribution for these source groups can be very efficient because
-it involves solving a sparse linear system.
-The idea of 
-Following the strategy of the  wavelet compression, \cite{li-oldenburg2010} transformed the full sensitivity matrix into a sparse one using the compression of the coefficient matrix via wavelet transforms based on the orthonormal compactly supported wavelets. 
+Following the strategy of sparsity induction, 
+\cite{li-oldenburg2010} transformed the full sensitivity matrix into a sparse one using orthonormal compactly supported wavelets. 
+\cite{barnes-lumley2011} proposed an alternative approach to introduce sparsity based on the use of 
+quadtree discretization to group equivalent sources far from the computation points.
+Those authors explore the induced sparsity by using specific iterative methods to solve the linear system.
 
 The strategy named iterative methods estimates iteratively the parameter vector that represents a distribution over an equivalent layer.
 \cite{xia-sprowl1991} and \cite{xia-etal1993} have developed efficient iterative algorithms 

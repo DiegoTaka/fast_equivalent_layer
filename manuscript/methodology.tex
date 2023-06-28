@@ -82,7 +82,14 @@ for example, and consists in setting one equivalent source below each datum at a
 proportional to the horizontal distance to the nearest neighboring data points.
 \citet{soler-uieda2021} have compared different strategies for defining the equivalent sources depth for the specific
 problem of interpolating gravity data, but they have not found significant differences between them.
-
+Regarding the horizontal layout, \cite{soler-uieda2021} proposed the block-averaged sources locations 
+in which the survey area is divided into horizontal blocks and one single equivalent source is assigned to each block. 
+The horizontal coordinates of the single source in a given block is defined by the average horizontal 
+coordinates of the observation points at the block. 
+According to \cite{soler-uieda2021}, this block-averaged layout may prevent aliasing of the interpolated 
+values, specially when the observations are unevenly sampled.
+This strategy also reduces the number of equivalent sources without affecting the accuracy of the potential-field interpolation. 
+Besides, it reduces the computational load for estimating the physical property on the equivalent layer.
 
 \subsection{Matrix $\mathbf{G}$}
 \label{subsec:sensitivity-matrix}
@@ -378,12 +385,16 @@ The same approach used to deduce equations \ref{flops:cholesky} and \ref{flops:c
 applied to compute the total number of flops for the selected equivalent-layer 
 methods discussed in section \ref{sec:computational-strategies}.
 
-%To simplify our analysis, we do not consider the number of flops required to compute the sensitivity matrix 
-%$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) or the auxiliary matrices $\mathbf{A}$, $\mathbf{H}$, $\mathbf{W}_{d}$, $\mathbf{W}_{q}$ 
-%(equations \ref{eq:transformation}, \ref{eq:reparameterization}, \ref{eq:function-Phi} and \ref{eq:function-Theta}).
-%We also neglect the required flops to compute $\bar{p}$ (equation \ref{eq:reparameterization-reference}), 
-%retrieve $\tilde{\mathbf{q}}$ from $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}) and computing
-%$\boldsymbol{\delta}_{d}$ (equation \ref{eq:delta-d}).
+To simplify our analysis, we do not consider the number of flops required to compute the sensitivity matrix 
+$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) or the matrix $\mathbf{A}$ associated with a given
+potential-field transformation (equation \ref{eq:transformation})
+because they depend on the specific harmonic functions $g_{ij}$ and $a_{ij}$
+(equations \ref{eq:harmonic-function-g-ij} and \ref{eq:harmonic-function-a-kj}).
+We also neglect the required flops to compute $\mathbf{H}$, $\mathbf{W}_{d}$, $\mathbf{W}_{q}$ 
+(equations \ref{eq:reparameterization}, \ref{eq:function-Phi} and \ref{eq:function-Theta}), 
+$\bar{p}$ (equation \ref{eq:reparameterization-reference}), 
+retrieve $\tilde{\mathbf{q}}$ from $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}) and computing
+$\boldsymbol{\delta}_{d}$ (equation \ref{eq:delta-d}).
 
 %Figure \ref{fig:1} shows the total flops count for the different methods presented in this review for different number of potential-field data 
 %ranging from $10,000$ to $1,000,000$.
@@ -607,8 +618,8 @@ and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so 
 Unlike \cite{leao-silva1989}, \cite{soler-uieda2021} do not adopt a sequential order of the data windows; 
 rather, they adopt a randomized order of windows in their  iterations.
 The overall steps of the method proposed by \cite{soler-uieda2021} are defined by the Algorithm \ref{alg:SU21}.
-For convenience, we have omitted  the details about the randomized window order and the normalization strategy 
-employed by \cite{soler-uieda2021}. 
+For convenience, we have omitted the details about the randomized window order, normalization strategy 
+employed and block-averaged sources layout proposed by those authors (see subsection \ref{subsec:spatial-distribution-sources}). 
 Note that this algorithm starts with a residuals vector $\mathbf{r}$ that is iteratively updated.
 The  iterative algorithm in \cite{soler-uieda2021} estimates a solution 
 ($\tilde{\mathbf{p}}^{m}$ in equation \ref{eq:p-tilde-m-SU21}) using the data and 
@@ -617,15 +628,6 @@ the residual data in the whole survey data.
 Next, the residual data  that fall within a new position of the data window is used as input data to estimate a new 
 solution within the data window which, in turn, is used to calculated a new predicted data and a new residual data 
 in the whole survey data.
-Regarding the equivalent-source layout, \cite{soler-uieda2021} proposed the block-averaged sources locations 
-in which the survey area is divided into horizontal blocks and one single equivalent source is assigned to each block. 
-Each single source per block is placed over the layer with its horizontal coordinates given by the average horizontal 
-positions of observation points. 
-According to \cite{soler-uieda2021}, the block-averaged sources layout may prevent aliasing of the interpolated 
-values, specially when the observations are unevenly sampled.
-This strategy also reduces the number of equivalent sources without affecting the accuracy of the potential-field interpolation. 
-Besides, it reduces the computational load for estimating the physical property on the equivalent layer.
-This block-averaged sources layout is not included in the Algorithm \ref{alg:SU21}.
 
 The computational cost of Algorithm \ref{alg:SU21} can be defined in terms of the linear
 system (equation \ref{eq:p-tilde-m-SU21}) to be solved for each window (line $10$) and the 

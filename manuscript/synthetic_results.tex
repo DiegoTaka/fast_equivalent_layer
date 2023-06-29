@@ -16,8 +16,22 @@ $\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}) and
 $\bar{\mathbf{p}} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), 
 where $\mathbf{I}_{P}$ and $\mathbf{I}_{D}$ are the identities of order $P$ and $D$, respectively.
 The flops are computed for different number of potential-field data ranging from $10,000$ to $1,000,000$.
+Figure \ref{fig:1} shows that the moving data-window strategy by using 
+\citeauthor{leao-silva1989}'s \citeyear{leao-silva1989} method and direct deconvolution are the fastest methods.
 
-FALTOU DEFINIR OS PARÂMETROS ESPECÍFICOS DE CADA MÉTODO
+The control parameters to run the equivalent-layer methods shown in Figure 
+ \ref{fig:1}  are the following: 
+i) in CGLS, 
+\cite{cordell1992}, 
+reparameterization approaches \cite[e.g.,][]{oliveirajr-etal2013; mendonca-2020}, 
+\cite{siqueira-etal2017}, and 
+\cite{takahashi-etal2020}
+(equations \ref{flops:cgls} \ref{flops:C92}), 
+\ref{flops:reparameterization-cgls},  \ref{flops:SOB17} and \ref{flops:TOB20}) we set ITMAX = 50; 
+ii) in \cite{leao-silva1989} (equation \ref{flops:LS89}) we set 
+$D'= 49 \: (7 \times 7)$ and $P' = 225 \: (15 \times 15) $; and
+iii) in \cite{soler-uieda2021} (equation  \ref{flops:SU21}) we set 
+$D'= P' = 900 \: (30 \times 30)$.
 
 \subsection{Synthetic potential-field data}
 \label{subsec:synthetic-data}
@@ -45,7 +59,7 @@ Figures \ref{fig:4}B and \ref{fig:7}B show, respectively, the gravity disturbanc
 corrupted with maximum noise level.
 The remaining noise-corrupted gravity and magnetic data are not shown.
 
-\subsection{Stability analysis}
+\subsection{Stability analysis and upward-continued data}
 
 We set two planar equivalent layers having one source below each datum at a constant vertical coordinate $z = 300 \: \mathrm{m}$.
 Note that, in this case, both layers have a number of sources $P$ equal to the number of data $D$.
@@ -75,30 +89,46 @@ subsection \ref{subsec:formulation-without-reparameterization}),
 $\mathbf{W}_{d} = \mathbf{W}_{q} = \mathbf{I}$ (equations \ref{eq:function-Phi} and \ref{eq:function-Theta}) and
 $\bar{\mathbf{p}} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), where $\mathbf{I}$ is the identity of order $D$.
 
-COMENTARIOS SOBRE AS CURVAS DE ESTABILIDADE (NECESSITA REVISÃO) $\Longrightarrow$
-		
-Figure \ref{fig:3} shows how the euclidian norm of the equivalent sources residuals varies as the level of the noise is increased for the gravimetric data. We can see that for all methods, a linear tendency can be observed as it is expected. The inclination of the straight line is a indicative of the stability of each method. As show in the graph the deconvolutional method is very unstable and it is really necessary to use a stabilization method to have a good parameter estimative. In contrast, a correct value of the stabilization parameter is necessary to not overshoot the smootheness of the solution as it is the case for the zeroth-order Tikhonov regularization as well. Using this gravimetric data, the optimal value for the Wiener stabilization parameter is $\mu = 10^{-20}$. 
+Figure \ref{fig:3} shows how the numerical stability curves vary as the level of the noise is increased for the gravimetric data. We can see that for all methods, a linear tendency is observed as it is expected. The inclination of the straight line indicates the stability of each method. 
+As shown in Figure \ref{fig:3}, the deconvolutional method without stabilization parameter (blue dots with $\zeta = 0$ ) exhibits high instability, emphasizing the necessity of using the Wiener filter 
+($\zeta > 0$ in equation \ref{eq:matrix-L-Wiener-deconvolution}) to achieve accurate parameter estimation. 
+Using these gravimetric data, an optimal stabilization parameter 
+$\zeta = 10^{-22}$ (green dots) is necessary to yield a stable solution and prevent overshooting the smootheness of the solution.
+For the magnetic data, Figure \ref{fig:6} shows a very similar behavior of the stability as the previous case. 
+In this case, the Wiener parameter seems to have the best solution for $\zeta = 10^{-14}$ (green dots). 
 
-For the magnetic data, figure \ref{fig:6} shows a very similar behavior of the stability as the previous case. The Wiener parameter seems to have the best solution for $\mu = 10^{-13}$. For both types of data the best Wiener parameter seems to be one that produces a low slope for the straight line in the stability analysis, discordant from the classical and convolutional methods. 
+For both potential-field data, the estimated slopes (Figures \ref{fig:3} and \ref{fig:6}) obtained by using direct deconvolution with an optimum $\zeta$ (green dots), Cholesky factorization (black dots) and iterative deconvolution (red dots) proposed by \cite{takahashi-etal2020} are close to each other.
+This result suggest that the direct deconvolution with an optimum Wiener parameter seems to be one that produces a low slope for the straight line in the stability analysis.
 
-$\Longleftarrow$ COMENTARIOS SOBRE AS CURVAS DE ESTABILIDADE (NECESSITA REVISÃO)
+Figures \ref{fig:5} and \ref{fig:8} present the comparison between the residuals due the equivalent layers obtained with the Cholesky factorization, 
+iterative deconvolution and direct deconvolution with optimum $\zeta$ using, respectively, gravity and magnetic data (Figures \ref{fig:3} and \ref{fig:6}).
+The inverted data are those corrupted with the highest noise level (Figures \ref{fig:4}B and \ref{fig:7}B).
 
-COMENTARIOS SOBRE OS DADOS PREDITOS (NECESSITA REVISÃO) $\Longrightarrow$
+Using the gravimetric data, the Cholesky factorization (Figure \ref{fig:5}A), the iterative deconvolution (Figure \ref{fig:5}B) proposed by \cite{takahashi-etal2020}, and the direct deconvolution with an optimum $\zeta = 10^{-22}$ (Figure \ref{fig:5}E) yield acceptable data fitting despite their significant difference in floating-point operations.
+In contrast, the residuals obtained using direct deconvolutional method with a Wiener stabilization  $\zeta$ equal to 
+zero (Figure \ref{fig:5}C), 
+a high value of $\zeta = 10^{-20}$ (Figure \ref{fig:5}D), and 
+a low value of  $\zeta = 10^{-24}$ (Figure \ref{fig:5}F)
+result in unacceptable data fitting.
 
-Figure \ref{fig:5} shows the comparison of the predicted data for each method with the original data (figure \ref{fig:4}) using the most noised-corrupted data from the set of the stability analysis. The classical with zeroth-order Tikhonov regularization and the convolutional methods (figures \ref{fig:5}(A) and \ref{fig:5}(B)) yield very similar results for the predicted data confirming its similarities with the stabilization despite the bid difference in floating-point operations. Figure \ref{fig:5}(C) shows the deconvolutional method without a stabilization and demonstrates the necessity to use it for this method. Figure \ref{fig:5}(D) shows the deconvolutional method with Wiener stabilization $\mu = 10^{-15}$ which is too high, demonstrating the over smoothness of the predicted data. Figures \ref{fig:5}(E) and \ref{fig:5}(F) shows the predicted data for an optimal value of the Wiener parameter $\mu = 10^{-20}$ and a low value $\mu = 10^{-25}$, respectively.
+Using the magnetic data, Figure \ref{fig:8} shows a very similar behavior 
+as in the previous case, indicating a similar pattern.
+Hence, the residuals obtained using the Cholesky factorization 
+(Figure \ref{fig:8}A), the iterative deconvolution (Figure \ref{fig:8}B) proposed by \cite{takahashi-etal2020}, and the direct deconvolution with an optimum $\zeta = 10^{-14}$ (Figure \ref{fig:8}E) show acceptable data fittings. 
+The remainder residuals (direct deconvolutional method with $\zeta =0$ 
+in Figure \ref{fig:8}C, $\zeta = 10^{-12}$ in Figure \ref{fig:8}D, and 
+$\zeta = 10^{-16}$ in Figure \ref{fig:8}F) show that the estimated equivalent layers do not fit the noisy magnetic data.
 
-Figure \ref{fig:8} shows the comparison of the predicted data for each method with the original magnetic data in figure \ref{fig:7} using the most noised-corrupted data modeled from the stability analyis. As the previous case the classical (figure \ref{fig:8}(A)) and the convolutional (figure \ref{fig:8}(B)) methods have very similar predicted data but estimated with less orders of magnitude in floating-point operations. The deconvoutional (figure \ref{fig:8}(C)) have have a strong disagreement with the observed data showing the need for a stabilization method.
-Figure \ref{fig:8}(D) has a value of $\mu = 10^{-10}$ and the predicted data became to smooth by it. The optimal value of the Wiener parameter is shown in figure \ref{fig:8}(E) with $\mu = 10^{-13}$ and figure \ref{fig:8}(F) shows a predicted data with a low stablization value with $\mu = 10^{-16}$.
+The upward continuation of the potential-field data is a processing technique to predict the data in a higher altitude. 
+In practice, the interpreter expects a lower amplitude signal and smoother data as the high frequency anomalies tends to disapear. 
+Figure  \ref{fig:grav_up}A shows the true modeled upward gravity data at a height of $-500$ m. 
+Figures \ref{fig:grav_up}B--E show the results of the upward processing obtained by using the Cholesky factorization,  the iterative deconvolution proposed by \cite{takahashi-etal2020} and the direct deconvolution with $\zeta = 0$ and $\zeta = 10^{-22}$ (optimum value), respectively.
+Except the direct deconvolutional method without stabilization ($\zeta = 0$, Figure \ref{fig:grav_up}D), all the three most stable equivalent-layer methods predict the upward-continued gravity data very reasonable.
 
-$\Longleftarrow$ COMENTARIOS SOBRE OS DADOS PREDITOS (NECESSITA REVISÃO)
-
-COMENTARIOS SOBRE AS TRANSFORMAÇÕES (NECESSITA REVISÃO) $\Longrightarrow$
-
-The upward continuation is a processing technique to visualize the data in a higher altitude. In practice is expected a lower amplitude signal and a smoother data as the high frequency anomalies tends to disapear. Figure  \ref{fig:grav_up}(A) shows the true modeled upward data at an height of $-500$ m. Figures \ref{fig:grav_up}(B), (C), (D) and (E) show the result of the upward processing for the classical, convolutional, deconvolutional and the deconvolutional with Wiener parameter $\mu = 10^{-20}$, respectively. It is clear that all methods seems to predict the upward data very reasonable, except the deconvolutional method without stabilization.
-
-Figure \ref{fig:mag_up}(A) shows the true modeled upward data at an height of $-1400$ m. Figures \ref{fig:mag_up}(B), (C), (D) and (E) show the result of the upward processing for the classical, convolutional, deconvolutional and the deconvolutional with Wiener parameter $\mu = 10^{-13}$, respectively. As in the gravimetric case, all methods seems to predict the upward data, except the deconvolutional method without stabilization.
-
-$\Longleftarrow$ COMENTARIOS SOBRE AS TRANSFORMAÇÕES (NECESSITA REVISÃO)
+Figure \ref{fig:mag_up} shows the comparison between the true
+(Figure \ref{fig:mag_up}A)  and the predicted  (Figures \ref{fig:mag_up}B--E) upward-continued magnetic data at a height of $-1400$ m. 
+As in the gravimetric case, the predicted upward-continued magnetic data via Cholesky factorization (Figure \ref{fig:mag_up}C),  the iterative deconvolution proposed by \cite{takahashi-etal2020} (Figure \ref{fig:mag_up}D) and the direct deconvolution with optimum value of  $\zeta = 10^{-14}$  
+(Figure \ref{fig:mag_up}E) are acceptable, except the direct deconvolutional method without stabilization ($\zeta = 0$, Figure Figure \ref{fig:mag_up}D).
 
 %Gravity synthetic statistics to be included:
 %Means

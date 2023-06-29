@@ -1226,19 +1226,20 @@ noisy potential-field data $\mathbf{d}$. This is a well-known property of the CG
 The key aspect of Algorithm \ref{alg:TOB20-22} is replacing the matrix-vector products of CGLS (Algorithm \ref{alg:CGLS})
 by fast convolutions (Algorithm \ref{alg:fast-2D-convolution}).
 A fast convolution requires one 2D-DFT, one 2D-IDFT and an entrywise product of matrices.
-We consider that the 2D-DFT/IDFT are computed with 2D-FFT and requires $\kappa \, (4D)\log_{2}(4D)$ flops, where $\kappa = 5$ is compatible with a radix-2 FFT 
+We consider that the 2D-DFT/IDFT are computed with 2D-FFT and requires $\lambda \, (4D)\log_{2}(4D)$ flops, 
+where $\lambda = 5$ is compatible with a radix-2 FFT 
 \citep[][p. 16]{vanloan1992}, and the entrywise product $24D$ flops because it involves two complex matrices having $4D$ elements
 \citep[][p. 36]{golub-vanloan2013}.
-Hence, Algorithm \ref{alg:fast-2D-convolution} requires $\kappa \, (16D)\log_{2}(4D) + 26D$ flops,
+Hence, Algorithm \ref{alg:fast-2D-convolution} requires $\lambda \, (16D)\log_{2}(4D) + 26D$ flops,
 whereas a conventional matrix-vector multiplication involving a $D \times D$ matrix requires $2D^{2}$ (table \ref{tab:standard-flops}).
 Finally, Algorithm \ref{alg:TOB20-22} requires two 2D-FFTs (lines $4$ and $5$), one fast convolution and an inner product (line $8$)
 previously to the while loop.
 Per iteration, there are three saxpys (lines $12$, $15$ and $16$), two inner products (lines $14$ and $17$) and 
 two fast convolutions (lines $13$ and $17$), so that:
 \begin{equation}
-	f_{\mathtt{TOB20}} = \kappa \, (16D)\log_{2}(4D) + 26D + \mathtt{ITMAX} 
+	f_{\mathtt{TOB20}} = \lambda \, (16D)\log_{2}(4D) + 26D + \mathtt{ITMAX} 
 	\left[
-	\kappa \, (16D)\log_{2}(4D) + 58D
+	\lambda \, (16D)\log_{2}(4D) + 58D
 	\right] \: .
 	\label{flops:TOB20}
 \end{equation}
@@ -1284,7 +1285,7 @@ one entrywise division to compute $\breve{\boldsymbol{\mathcal{L}}}$ (equation \
 a fast convolution (Algorithm \ref{alg:fast-2D-convolution}) to evaluate equation \ref{eq:direct-deconvolution},
 which results in:
 \begin{equation}
-	f_{\mathtt{deconv.}} = \kappa \, (12D)\log_{2}(4D) + 72D \: .
+	f_{\mathtt{deconv.}} = \lambda \, (12D)\log_{2}(4D) + 72D \: .
 	\label{flops:direct-deconv}
 \end{equation}
 Differently from the convolutional equivalent-layer method proposed by 

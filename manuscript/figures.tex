@@ -186,37 +186,61 @@
 	\label{fig:mag_up}
 \end{figure}
 
-%\begin{figure}[htbp]
-%	\begin{center}
-%		\includegraphics[width=10cm]{Fig/carajas_gz_real_data_1000x500}
-%	\end{center}
-%	\caption{Gridded real aerogravimetric data from Carajás, Brazil. A regular grid of $1,000 \times 500$ is being used, totalizing $N,M = 500, 000$ obsevation points and equivalent sources.}
-%	\label{fig:9}
-%\end{figure}
-%
-%\begin{figure}[htbp]
-%	\begin{center}
-%		\includegraphics[width=10cm]{Fig/carajas_gz_predito_1000x500}
-%	\end{center}
-%	\caption{Panel \textbf{(A)} shows the Carajás predicted gravimetric data from convolutional equivalent layer method. Panel \textbf{(B)} shows the residual from the convolutional equivalent layer method. Panel \textbf{(C)} shows the predicted data from deconvolutional equivalent layer method. Panel \textbf{(D)} shows the residual from the deconvolutional equivalent layer method. Panel \textbf{(E)} shows the upward continuation at $z_i = -3500$ m for the convolutional method and Panel \textbf{(F)} shows the upward continuation at $z_i = -3500$ m for the deconvolutional method.}
-%	\label{fig:10}
-%\end{figure}
-%
-%\begin{figure}[htbp]
-%	\begin{center}
-%		\includegraphics[width=10cm]{Fig/carajas_tf_real_data_1000x500}
-%	\end{center}
-%	\caption{Gridded real aeromagnetic data from Carajás, Brazil. A regular grid of $1,000 \times 500$ is being used, totalizing $N,M = 500, 000$ obsevation points and equivalent sources.}
-%	\label{fig:11}
-%\end{figure}
-%
-%\begin{figure}[htbp]
-%	\begin{center}
-%		\includegraphics[width=10cm]{Fig/carajas_tf_predito_1000x500}
-%	\end{center}
-%	\caption{Panel \textbf{(A)} shows the Carajás predicted magnetic data from convolutional equivalent layer method. Panel \textbf{(B)} shows the residual from the convolutional equivalent layer method. Panel \textbf{(C)} shows the predicted data from deconvolutional equivalent layer method. Panel \textbf{(D)} shows the residual from the deconvolutional equivalent layer method. Panel \textbf{(E)} shows the upward continuation at $z_i = -3500$ m for the convolutional method and Panel \textbf{(F)} shows the upward continuation at $z_i = -3500$ m for the deconvolutional method.}
-%	\label{fig:12}
-%\end{figure}
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/carajas_gz_real_data_1000x500}
+	\end{center}
+	\caption{
+		Field aerogravimetric data over Caraj{\'a}s, Brazil. 
+		There are $D = 500, 000$ observations located on regular grid of $1,000 \times 500$ poins.
+		}
+	\label{fig:9}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/carajas_gz_predito_1000x500}
+	\end{center}
+	\caption{
+		Upward continuation of the aerogravimetric data over Caraj{\'a}s, Brazil.
+		\textbf{(A)} Predicted data due to the equivalent layer obtained from the iterative deconvolution 
+		(Algorithm \ref{alg:TOB20-22}) with $50$ iterations.
+		\textbf{(B)} Residuals between the predicted data shown in \textbf{(A)} and the observed data (Figure \ref{fig:9}). 
+		\textbf{(C)} Predicted data due to the equivalent layer obtained from the direct deconvolution computed with $\zeta = 10^{-22}$
+		(equation \ref{eq:matrix-L-Wiener-deconvolution}). 
+		\textbf{(D)} Residuals between the predicted data shown in \textbf{(C)} and the observed data (Figure \ref{fig:9}). 
+		\textbf{(E)} and \textbf{(F)} Continued field at $z = -3500 \mathrm{m}$ obtained from iterative and direct deconvolutions.
+		}
+	\label{fig:10}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/carajas_tf_real_data_1000x500}
+	\end{center}
+	\caption{
+		Field aeromagnetic data over Caraj{\'a}s, Brazil. 
+		There are $D = 500, 000$ observations located on regular grid of $1,000 \times 500$ poins.
+		}
+	\label{fig:11}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/carajas_tf_predito_1000x500}
+	\end{center}
+	\caption{
+		Upward continuation of the aeromagnetic data over Caraj{\'a}s, Brazil.
+		\textbf{(A)} Predicted data due to the equivalent layer obtained from the iterative deconvolution 
+		(Algorithm \ref{alg:TOB20-22}) with $200$ iterations.
+		\textbf{(B)} Residuals between the predicted data shown in \textbf{(A)} and the observed data (Figure \ref{fig:11}). 
+		\textbf{(C)} Predicted data due to the equivalent layer obtained from the direct deconvolution computed with $\zeta = 10^{-16}$
+		(equation \ref{eq:matrix-L-Wiener-deconvolution}). 
+		\textbf{(D)} Residuals between the predicted data shown in \textbf{(C)} and the observed data (Figure \ref{fig:11}). 
+		\textbf{(E)} and \textbf{(F)} Continued field at $z = -3500 \mathrm{m}$ obtained from iterative and direct deconvolutions.
+		}
+	\label{fig:12}
+\end{figure}
 
 %%% If you are submitting a figure with subfigures please combine these into one image file with part labels integrated.
 %%% If you don't add the figures in the LaTeX files, please upload them when submitting the article.

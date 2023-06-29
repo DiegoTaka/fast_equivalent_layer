@@ -1,21 +1,81 @@
 \section{Real data results}
 \label{sec:real_data}
 
-In this section, we show the applications of the convolutional and the deconvolutional strategies in a real data set from the North of Brazil. The region is located in the Carajás Mineral Province (CMP) in the Amazon craton \citep{moroni-etal2001,villas-santos2001}. This area is known for its intensive mineral exploration such as iron, copper, gold, manganese, and, recently, bauxite.
+In this section, we show the applications of the iterative and direct deconvolutions to field data sets 
+over the Caraj{\'a}s Mineral Province (CMP) in the Amazon craton \citep{moroni-etal2001,villas-santos2001}. 
+This area is known for its intensive mineral exploration such as iron, copper, gold, manganese, and, recently, bauxite.
 
 \subsection{Geological setting}
 
-The Amazon craton is one of the largest and least-known Archean-Proterozoic areas in the world, comprehending a region with a thousand square kilometers. It is one of the main tectonic units in South America, which is covered by five Phanerozoic basins: Maranhão (Northeast), Amazon (Central), Xingu-Alto Tapajós (South), Parecis (Southwest), and Solimões (West). The craton is limited by the Andean Orogenic Belt to the west and the by Araguaia Fold Belt to the east and southeast. The Amazon craton has been subdivided into provinces according to two models, one geochronological and the other geophysical-structural \citep{amaral1974, teixeira-etal1989, tassinari-macambira1999}. Thus, seven geological provinces with distinctive ages, evolution, and structural patterns can be observed, namely : (i) Carajás with two domains - the Mesoarchean Rio Maria and Neoarchean Carajás; (ii) Archean-Paleoproterozoic Central Amazon, with Iriri-Xingu and Curuá-Mapuera domains; (ii) Trans-Amazonian (Ryacian), with the Amapá and Bacajá domains; (iv) the Orosinian Tapajós-Parima, with Peixoto de Azevedo, Tapajós, Uaimiri, and Parima domains; (v) Rondônia-Juruena (Statherian), with Jamari, Juruena, and Jauru domains; (vi) The Statherian Rio Negro, with Rio Negro and Imeri domains; and (vii) Sunsás (Meso-Neoproterozoic), with Santa Helena and Nova Brasilândia domains \citep{santos-etal2000}. Nevertheless, we focus this work only on the Carajás Province. 
+The Amazon Craton is one of the largest and least-known Archean-Proterozoic areas in the world, comprehending a region with a thousand square kilometers. 
+It is one of the main tectonic units in South America, which is covered by five Phanerozoic basins: 
+Maranh{\~a}o (Northeast), Amazon (Central), Xingu-Alto Tapaj{\'o}s (South), Parecis (Southwest), and Solim{\~o}es (West). 
+The Craton is limited by the Andean Orogenic Belt to the west and the by Araguaia Fold Belt to the east and southeast. 
+The Amazon craton has been subdivided into provinces according to two models, one geochronological and the other geophysical-structural 
+\citep{amaral1974, teixeira-etal1989, tassinari-macambira1999}. Thus, seven geological provinces with distinctive ages, evolution, and structural 
+patterns can be observed, namely : (i) Caraj{\'a}s with two domains - the Mesoarchean Rio Maria and Neoarchean Caraj{\'a}s; 
+(ii) Archean-Paleoproterozoic Central Amazon, with Iriri-Xingu and Curuá-Mapuera domains; (ii) Trans-Amazonian (Ryacian), with the Amap{\'a} 
+and Bacaj{\'a} domains; (iv) the Orosinian Tapaj{\'o}s-Parima, with Peixoto de Azevedo, Tapaj{\'o}s, Uaimiri, and Parima domains; 
+(v) Rond{\^o}nia-Juruena (Statherian), with Jamari, Juruena, and Jauru domains; (vi) The Statherian Rio Negro, with Rio Negro and 
+Imeri domains; and (vii) Suns{\'a}s (Meso-Neoproterozoic), with Santa Helena and Nova Brasil{\^a}ndia domains \citep{santos-etal2000}. 
+Nevertheless, we focus this work only on the Caraj{\'a}s Province. 
 
-The Carajás Mineral Province (CMP) is located in the east-southeast region of the craton, within an old tectonically stable nucleus in the South American Plate that became tectonically stable at the beginning of Neoproterozoic \citep{salomao-etal2019}. This area has been the target of intensive exploration at least since the final of the '60s, after the discovery of large iron ore deposits. There are several greenstone belts in the region, among them are the Andorinhas, Inajá, Cumaru, Carajás, Serra Leste, Serra Pelada, and Sapucaia \citep{santos-etal2000}. The mineralogic and petrologic studies in granite stocks show a variety of minerals found in the province, such as amphibole, plagioclase, biotite, ilmenite, and magnetite \citep{cunha-etal2016}. These two latter minerals contribute to the high magnetic response in the CMP area. This fact opens the opportunity for potential field applications for the geophysical description of the area. 
+The Caraj{\'a}s Mineral Province (CMP) is located in the east-southeast region of the craton, within an old tectonically stable nucleus in the 
+South American Plate that became tectonically stable at the beginning of Neoproterozoic \citep{salomao-etal2019}. 
+This area has been the target of intensive exploration at least since the final of the '60s, after the discovery of large iron ore deposits. 
+There are several greenstone belts in the region, among them are the Andorinhas, Inajá, Cumaru, Caraj{\'a}s, Serra Leste, Serra Pelada, and Sapucaia 
+\citep{santos-etal2000}. The mineralogic and petrologic studies in granite stocks show a variety of minerals found in the province, such as 
+amphibole, plagioclase, biotite, ilmenite, and magnetite \citep{cunha-etal2016}. These two latter minerals contribute to the high magnetic 
+response in the CMP area. This fact opens the opportunity for potential field applications for the geophysical description of the area. 
 
 \subsection{Potential field data applications}
 
-Here we compare the performance of the convolutional and deconvolutional algorithms in a real potential field data set. We focus the application on a region in the Southeast of the State of Pará. The aeromagnetic data were acquired by the Geological Survey of Brazil-CPRM. The survey area covers $\approx 58000 \, km^2$ with high-resolution gravity and magnetic data. The flight and the tie lines were acquired and spaced at $3 \, km$  and $12 \, km$ oriented in the directions $N-S$ and $E-W$, respectively, with a mean flight height of $900\, m$ above the ground. For both applications, we interpolated gravity and magnetic anomalies data, calculating the data set in a grid of $1000 \times 500$ ($N = 500000$ observation points) at the same mean flight height. About the computational resources, we processed both data on an Intel Core i7 7700HQ@2.8 GHz processor and 16GB RAM. We show in Figure \ref{fig:9} and Figure \ref{fig:11} the interpolated aerogravimetric and aeromagnetic data, respectively. We also use the same equivalent layer grid configuration in gravity and magnetic applications. This setup is composed by a grid of $1000 \times 500$ equivalent sources (a total number of $M = 500000$ points) positioned below the observation plane, but a different depth in each application.
+We focus the applications on a region in the Southeast of the State of Par{\'a}. 
+The aeromagnetic data were acquired by the Geological Survey of Brazil-CPRM (ACHO QUE A CPRM NÃO ADQUIRI DADOS).
+The survey area covers $\approx 58000 \: \mathrm{km}^2$ with high-resolution gravity and magnetic data. 
+The flight and the tie lines were acquired and spaced at $3 \: \mathrm{km}$  and $12 \: \mathrm{km}$ oriented in the 
+directions $N-S$ and $E-W$, respectively, with a mean flight height of $900 \: \mathrm{m}$ above the ground. 
+For both applications, we have interpolated gravity and magnetic anomalies data, calculating the data set in a grid of 
+$1000 \times 500$ ($D = 500,000$ observation points) at the same mean flight height. 
+%About the computational resources, we processed both data on an Intel Core i7 7700HQ@2.8 GHz processor and 16GB RAM. 
+The interpolated aerogravimetric and aeromagnetic data are shwon, respectively, in Figures \ref{fig:9} and \ref{fig:11}. 
 
-We apply both strategies to the gravimetric case. We set a depth for the equivalent layer equal to $1200 \, m$ below the observation plane. Figure \ref{fig:10}A and Figure \ref{fig:10}C show the predicted data for convolutional and deconvolutional strategies. The residual maps (the difference between the observed and predicted data) are show in figures \ref{fig:10}B and \ref{fig:10}D for the convolutional and deconvolutional equivalent-layer technique, respectively. For the convolutional case, the mean residual and standard deviation values are $\approx 0.00 \, mGal$ and $\approx 0.15 \, mGal$, respectively. For the deconvolutional case, the mean residual and standard deviation values are $\approx 0.46 \, mGal$ and $\approx 1.23 \, mGal$, respectively. These last results show that the estimated density distributions (not shown) fit the observed data for both applications. To show the performance of the algorithms, we performed an upward continuation by using the estimated density distributions (figures \ref{fig:10}E and \ref{fig:10}F). There is a little difference on the processing time between both strategies. The convolutional algorithm took $\approx 9.18 s$ and the deconvolutional algorithm took $\approx 0.53 s$. We conclude that both strategies are capable of processing gravimetric observations from large areas with dense coverage data. Despite a little difference in processing time, the deconvolutional equivalent-layer technique proved to be faster than the convolutional strategy.
+PAREI AQUI
 
-Finally, we test the convolutional and deconvolutional algorithms for processing total-field anomalies. We stress that the Carajás area is very large and the main field direction varies significantly. For this reason, we consider a mean direction for the main field equal to $-19.865^{\circ}$ and $-7.43915^{\circ}$ (the same as the mid location of the area) for the inclination and declination, respectively. Furthermore, we are not considering the knowledge about the magnetization direction of the sources, and choose a magnetization direction for the equivalent layer equal to the main field direction. For this application, we set a depth of $900 \, m$ (below the observation plane) for the equivalent layer. Figure \ref{fig:11}A and Figure \ref{fig:11}C show the predicted data for convolutional and deconvolutional algorithms. The residual maps (the difference between the observed and predicted data) are show in figures \ref{fig:11}B and \ref{fig:11}D for the convolutional and deconvolutional techniques, respectively. The convolutional equivalent layer produced a mean residual and standard deviation values of $\approx 0.06 \, nT$ and $\approx 1.97 \, nT$, respectively. The deconvolutional algorithm produced a mean residual and standard deviation values of $\approx 18.99 \, nT$ and $\approx 33.64 \, nT$, respectively. To show the performance of the algorithms, we performed an upward continuation (figures \ref{fig:11}E and \ref{fig:11}F) by using the estimated magnetic-moment distributions (not shown). Similarly to the gravity application, the deconvolutional equivalent layer presents faster results than the convolutional algorithm. The deconvolutional and the convolutional approaches took $\approx 0.89 \, s$ and $\approx 82.08 \, s$, respectively. Despite the difference between the processing time of both strategies and considering the mean value of residuals and standard deviations, we conclude that the convolutional strategy fits the observation data better than the deconvolutional approach.
+We set the same equivalent sources layout for both applications, with one source located below each datum on a horizontal
+plane distant $1200 \: \mathrm{m}$ from the that containing the observations, so that $P=D$.
+
+This setup is composed by a grid of $1000 \times 500$ equivalent sources (a total number of $M = 500000$ points) 
+positioned below the observation plane, but a different depth in each application.
+
+We apply both strategies to the gravimetric case. We set a depth for the equivalent layer equal to $1200 \, m$ below the observation plane. 
+Figure \ref{fig:10}A and Figure \ref{fig:10}C show the predicted data for convolutional and deconvolutional strategies. 
+The residual maps (the difference between the observed and predicted data) are show in figures \ref{fig:10}B and \ref{fig:10}D 
+for the convolutional and deconvolutional equivalent-layer technique, respectively. For the convolutional case, the mean 
+residual and standard deviation values are $\approx 0.00 \, mGal$ and $\approx 0.15 \, mGal$, respectively. 
+For the deconvolutional case, the mean residual and standard deviation values are $\approx 0.46 \, mGal$ and $\approx 1.23 \, mGal$, respectively. 
+These last results show that the estimated density distributions (not shown) fit the observed data for both applications. 
+To show the performance of the algorithms, we performed an upward continuation by using the estimated density distributions 
+(figures \ref{fig:10}E and \ref{fig:10}F). There is a little difference on the processing time between both strategies. 
+The convolutional algorithm took $\approx 9.18 s$ and the deconvolutional algorithm took $\approx 0.53 s$. 
+We conclude that both strategies are capable of processing gravimetric observations from large areas with dense coverage data. 
+Despite a little difference in processing time, the deconvolutional equivalent-layer technique proved to be faster than the convolutional strategy.
+
+Finally, we test the convolutional and deconvolutional algorithms for processing total-field anomalies. 
+We stress that the Carajás area is very large and the main field direction varies significantly. 
+For this reason, we consider a mean direction for the main field equal to $-19.865^{\circ}$ and $-7.43915^{\circ}$ 
+(the same as the mid location of the area) for the inclination and declination, respectively. 
+Furthermore, we are not considering the knowledge about the magnetization direction of the sources, and choose a magnetization 
+direction for the equivalent layer equal to the main field direction. For this application, we set a depth of $900 \, m$ 
+(below the observation plane) for the equivalent layer. Figure \ref{fig:11}A and Figure \ref{fig:11}C show the predicted data 
+for convolutional and deconvolutional algorithms. The residual maps (the difference between the observed and predicted data) are 
+show in figures \ref{fig:11}B and \ref{fig:11}D for the convolutional and deconvolutional techniques, respectively. 
+The convolutional equivalent layer produced a mean residual and standard deviation values of $\approx 0.06 \, nT$ and $\approx 1.97 \, nT$, respectively. 
+The deconvolutional algorithm produced a mean residual and standard deviation values of $\approx 18.99 \, nT$ and $\approx 33.64 \, nT$, respectively. 
+To show the performance of the algorithms, we performed an upward continuation (figures \ref{fig:11}E and \ref{fig:11}F) by using the 
+estimated magnetic-moment distributions (not shown). Similarly to the gravity application, the deconvolutional equivalent layer presents 
+faster results than the convolutional algorithm. The deconvolutional and the convolutional approaches took $\approx 0.89 \, s$ and $\approx 82.08 \, s$, respectively. Despite the difference between the processing time of both strategies and considering the mean value of residuals and standard 
+deviations, we conclude that the convolutional strategy fits the observation data better than the deconvolutional approach.
 
 %\section{Real data application}
 %\label{sec:real_data}

@@ -396,9 +396,6 @@ $\bar{p}$ (equation \ref{eq:reparameterization-reference}),
 retrieve $\tilde{\mathbf{q}}$ from $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}) and computing
 $\boldsymbol{\delta}_{d}$ (equation \ref{eq:delta-d}).
 
-%Figure \ref{fig:1} shows the total flops count for the different methods presented in this review for different number of potential-field data 
-%ranging from $10,000$ to $1,000,000$.
-
 \section{Numerical stability}
 
 All equivalent-layer methods aim at obtaining an estimate $\tilde{\mathbf{p}}$ for the parameter vector 
@@ -434,10 +431,11 @@ and the data perturbation
 with $\| \cdot \|$ representing the Euclidean norm.
 The constant $\kappa$ acts as the condition number associated with the pseudo-inverse in a given linear inversion.
 The larger (smaller) the value of $\kappa$, the more unstable (stable) is the estimated solution.
+Because of that, we designate $\kappa$ as \textit{stability parameter}.
 Equation \ref{eq:condition-number} shows a linear relationship between the model perturbation $\Delta p^{\ell}$ and 
 the data perturbation $\Delta d^{\ell}$ (equations \ref{eq:model-perturbation} and \ref{eq:data-perturbation}).
 We estimate the $\kappa$ (equation \ref{eq:condition-number}) associated with a given 
-equivalent-layer method as the slope of the straight line fitted to the $L$ points 
+equivalent-layer method as the slope of the straight line fitted to the \textit{numerical stability curve} formed by the $L$ points 
 $\left( \Delta p^{\ell} \: , \: \Delta d^{\ell} \right)$.
 
 \section{Notation for subvectors and submatrices}
@@ -585,7 +583,7 @@ starting the iterations and computing an inner product (equation \ref{eq:transfo
 We consider that the total number of flops associated with $\mathbf{B}'$ is obtained by 
 the matrix-matrix product $\mathbf{G}' \left(\mathbf{G}'\right)^{\top}$, its inverse
 and then the premultiplication by $\left(\mathbf{G}'\right)^{\top}$.
-By using table \ref{tab:standard-flops} and considering that inverse is computed via  Cholesky factorization, we obtain that the total number of flops for lines $6$ and $7$ is
+By using table \ref{tab:standard-flops} and considering that inverse is computed via Cholesky factorization, we obtain that the total number of flops for lines $6$ and $7$ is
 $2(D')^{2}P' + \nicefrac{7 (D')^{3}}{6} + 2(D')^{2}P'$.
 Then, the total number of flops for Algorithm \ref{alg:LS89} is
 \begin{equation}

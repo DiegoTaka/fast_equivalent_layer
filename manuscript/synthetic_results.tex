@@ -1,11 +1,81 @@
-\section{Synthetic data simulations}
-\label{sec:synthetic_simulations}
+\section{Numerical simulations}
+\label{sec:numerical-simulations}
 
-For all applications, we generate a model composed by two spheres and a poligonal prism in a regular spaced grid of $50 \times 50$. The upper left sphere has a density contrast of $600 \, kg/m^3$, the right upper sphere a negative contrast of $-500 \, kg/m^3$ and the bottom prism is equal to $550 \, kg/m^3$. To generate the magnetic data, the bodies are in the same position and all of them have the same magnetization intensity and direction ($3.46 \, A/m$ intensity, $35.26^{\circ}$ inclination and $45.0^{\circ}$ declination) within a simulated geomagnetic field direction of $20.0^{\circ}$ inclination and $35.0^{\circ}$ declination. These synthetic datas are shown in figures \ref{fig:4} and \ref{fig:7}, respectively.
+\subsection{Flops count}
+\label{subsec:flops-count}
+
+Figure \ref{fig:1} shows the total number of flops for solving the overdetermined problem
+(equation \ref{eq:delta-q-tilde-overdetermined}) with different equivalent-layer methods
+(equations \ref{flops:cholesky}, \ref{flops:cgls}, \ref{flops:LS89}, \ref{flops:SU21}, 
+\ref{flops:C92}, \ref{flops:reparameterization-cgls}, \ref{flops:SOB17}, \ref{flops:TOB20},
+and \ref{flops:direct-deconv}), by considering 
+the particular case in which $\mathbf{H} = \mathbf{I}_{P}$ (equation \ref{eq:reparameterization} and 
+subsection \ref{subsec:formulation-without-reparameterization}),
+$\mu = 0$ (equation \ref{eq:function-Gamma}), 
+$\mathbf{W}_{d} = \mathbf{I}_{D}$ (equation \ref{eq:function-Phi}) and
+$\bar{\mathbf{p}} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), 
+where $\mathbf{I}_{P}$ and $\mathbf{I}_{D}$ are the identities of order $P$ and $D$, respectively.
+The flops are computed for different number of potential-field data ranging from $10,000$ to $1,000,000$.
+
+FALTOU DEFINIR OS PARÂMETROS ESPECÍFICOS DE CADA MÉTODO
+
+\subsection{Synthetic potential-field data}
+\label{subsec:synthetic-data}
+
+We create a model composed of three synthetic bodies:
+a sphere centered at $(x, y, z) = (3, -2, 2) \: \mathrm{km}$, with radius of $1 \: \mathrm{km}$;
+a sphere centered at $(x, y, z) = (1, 2.5, 1.8) \: \mathrm{km}$, with radius of $750 \: \mathrm{m}$; and
+a right prism having polygonal horizontal cross-section, top at $z = 900 \: \mathrm{m}$ and thickness $600 \: \mathrm{m}$.
+The density contrasts of the upper left sphere, upper right sphere and prism are, respectively, 
+$600 \: \mathrm{kg}/\mathrm{m}^{3}$, $-500 \: \mathrm{kg}/\mathrm{m}^{3}$ and to $550 \: \mathrm{kg}/\mathrm{m}^{3}$. 
+All synthetic bodies have a total-magnetization vector with intensity $3.46 \: \mathrm{A}/\mathrm{m}$, inclination $35.26^{\circ}$
+and declination $45.0^{\circ}$.
+We consider a main geomagnetic field with constant inclination $20.0^{\circ}$ and declination $35.0^{\circ}$.
+
+We have computed noise-free gravity disturbance and total-field anomaly data $\mathbf{d}$ produced by the
+model on the same regularly spaced grid of $50 \times 50$ points at $z = 50 \: \mathrm{m}$
+(Figures \ref{fig:4}A and \ref{fig:7}A).
+We have also simulated additional $L = 20$ gravity data sets $\mathbf{d}^{\ell}$, $\ell \in \{1:L\}$, 
+by adding pseudo-random Gaussian noise 
+with zero mean and crescent standard deviations to the noise-free data (Figure \ref{fig:1}A).
+The standard deviations vary from $0.5\%$ to $10\%$ of the maximum absolute value in the noise-free data.
+We applied the same procedure to produce additional $20$ noise-corrupted magnetic data sets from the
+noise-free data shown in Figure \ref{fig:7}A.
+Figures \ref{fig:4}B and \ref{fig:7}B show, respectively, the gravity disturbance and total-field anomaly data 
+corrupted with maximum noise level.
+The remaining noise-corrupted gravity and magnetic data are not shown.
 
 \subsection{Stability analysis}
 
-For the stability analysis we show the comparison of the Cholesky factorization (equations \ref{eq:Cholesky-factorization} and \ref{eq:Cholesky-solver}) to solve overdetermined problems (equation \ref{eq:delta-q-tilde-overdetermined}), the iterative deconvolutional method (algorithms \ref{alg:TOB20-22} and \ref{alg:fast-2D-convolution}) and the deconvolutional method with different values for the Wiener stabilization (equation \ref{eq:matrix-L-Wiener-deconvolution}). We create $21$ data sets, for both gravity and magnetic data, adding a crescent pseudo-random noise to the original data, which varies from $0\%$ to $10\%$ of the maximum anomaly value in intervals of $0.5\%$. These noises has mean equal to zero and a Gaussian distribution. These synthetic datas are shown in figures \ref{fig:4} and \ref{fig:7}, where panel (A) of each figure represents the noise free data and panel (B) is the maximum noised data for gravity and magnetic, respectively.
+We set two planar equivalent layers having one source below each datum at a constant vertical coordinate $z = 300 \: \mathrm{m}$.
+Note that, in this case, both layers have a number of sources $P$ equal to the number of data $D$.
+One layer is formed by point masses and is applied to the synthetic gravity data.
+The other is applied to the synthetic magnetic data and is composed of dipoles.
+
+We have applied the Cholesky factorization (equations \ref{eq:Cholesky-factorization} and \ref{eq:Cholesky-solver}), 
+the iterative deconvolution (Algorithms \ref{alg:TOB20-22} and \ref{alg:fast-2D-convolution}) proposed by 
+\citet{takahashi-etal2020, takahashi-etal2022} and the direct deconvolution (equations \ref{eq:direct-deconvolution} and \ref{eq:matrix-L-Wiener-deconvolution})
+with four different values for the parameter $\zeta$ to the $21$ gravity and $21$ magnetic data sets.
+
+For each method, we have obtained one estimate $\tilde{\mathbf{p}}$ from the noise-free gravity data $\mathbf{d}$
+and $L=20$ estimates $\tilde{\mathbf{p}}^{\ell}$ from the noise-corrupted gravity data $\mathbf{d}^{\ell}$, $\ell \in \{1:L\}$,
+for the planar equivalent layer of point masses, totaling $21$ estimated parameter vectors and 
+$20$ pairs $\left( \Delta p^{\ell} \: , \: \Delta d^{\ell} \right)$ of model and data perturbations
+(equations \ref{eq:model-perturbation} and \ref{eq:data-perturbation}).
+Other $21$ estimates for the parameter vector and 
+$20$ pairs $\left( \Delta p^{\ell} \: , \: \Delta d^{\ell} \right)$ were obtained in the same way for the 
+equivalent layer of dipoles by using the synthetic magnetic data.
+Figures \ref{fig:3} and \ref{fig:6} show the numerical stability curves computed with each method for 
+synthetic gravity and magnetic data, respectively.
+
+All these $42$ estimated parameters vectors ($21$ for gravity and $21$ for magnetic data) were obtained by solving 
+the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) with the same method for the particular case in which
+$\mathbf{H} = \mathbf{I}$ (equation \ref{eq:reparameterization} and 
+subsection \ref{subsec:formulation-without-reparameterization}),
+$\mathbf{W}_{d} = \mathbf{W}_{q} = \mathbf{I}$ (equations \ref{eq:function-Phi} and \ref{eq:function-Theta}) and
+$\bar{\mathbf{p}} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), where $\mathbf{I}$ is the identity of order $D$.
+
+PAREI AQUI
 		
 Figure \ref{fig:3} shows how the euclidian norm of the equivalent sources residuals varies as the level of the noise is increased for the gravimetric data. We can see that for all methods, a linear tendency can be observed as it is expected. The inclination of the straight line is a indicative of the stability of each method. As show in the graph the deconvolutional method is very unstable and it is really necessary to use a stabilization method to have a good parameter estimative. In contrast, a correct value of the stabilization parameter is necessary to not overshoot the smootheness of the solution as it is the case for the zeroth-order Tikhonov regularization as well. Using this gravimetric data, the optimal value for the Wiener stabilization parameter is $\mu = 10^{-20}$. 
 

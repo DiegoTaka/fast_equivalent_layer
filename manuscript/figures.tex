@@ -114,37 +114,77 @@
 	\label{fig:6}
 \end{figure}
 
-%\begin{figure}[htbp]
-%	\begin{center}
-%		\includegraphics[width=10cm]{Fig/stability_grav_comparison}
-%	\end{center}
-%	\caption{Predicted gravity data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the classical method, \textbf{(B)} is the convolutional, \textbf{(C)} is the deconvolutional, \textbf{(D)} is the deconvolutional method using Wiener stabilization with a too high value for $\mu$, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu$ and \textbf{(F)} is the deconvolutional method using Wiener stabilization with a too low value for $\mu$.}
-%	\label{fig:5}
-%\end{figure}
-%
-%\begin{figure}[htbp]
-%	\begin{center}
-%		\includegraphics[width=10cm]{Fig/grav_upward}
-%	\end{center}
-%	\caption{True noiseless upward gravimetric data at $z_i = -500$ m height and predicted data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the true upward gravity data, Panel \textbf{(B)} is the classical method, \textbf{(C)} is the convolutional, \textbf{(D)} is the deconvolutional, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu = 10^{-20}$.}
-%	\label{fig:grav_up}
-%\end{figure}
-%
-%\begin{figure}[htbp]
-%	\begin{center}
-%		\includegraphics[width=10cm]{Fig/stability_mag_comparison}
-%	\end{center}
-%	\caption{Predicted magnetic data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the classical method, \textbf{(B)} is the convolutional, \textbf{(C)} is the deconvolutional, \textbf{(D)} is the deconvolutional method using Wiener stabilization with a too high value for $\mu$, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu$ and \textbf{(F)} is the deconvolutional method using Wiener stabilization with a too low value for $\mu$.}
-%	\label{fig:8}
-%\end{figure}
-%
-%\begin{figure}[htbp]
-%	\begin{center}
-%		\includegraphics[width=10cm]{Fig/mag_upward}
-%	\end{center}
-%	\caption{True noiseless upward magnetic data at $z_i = -1400$ m height and predicted data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the true upward magnetic data, Panel \textbf{(B)} is the classical method, \textbf{(C)} is the convolutional, \textbf{(D)} is the deconvolutional, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu = 10^{-13}$.}
-%	\label{fig:mag_up}
-%\end{figure}
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/stability_grav_comparison}
+	\end{center}
+	\caption{
+		Predicted data $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) due to the estimated parameter vector
+		$\tilde{\mathbf{p}}$ obtained with the gravity data having maximum noise level (Figure \ref{fig:4}B) by using
+		\textbf{(A)} the Cholesky factorization with $\mu \approx 10^{-22}$, 
+		\textbf{(B)} the iterative deconvolution ($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2020} with $40$ 
+		iterations (Algorithm \ref{alg:TOB20-22}) and
+		\textbf{(C)}--\textbf{(F)} the direct deconvolution ($\mathtt{deconv.}$) computed, respectively, with four different 
+		values for $\zeta$ (equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$, $10^{-20}$ (overshoot), $10^{-22}$ (optimal)
+		and $10^{-24}$ (suboptimal).
+		All values are in $\mathrm{mGal}$.
+		}
+	\label{fig:5}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/stability_mag_comparison}
+	\end{center}
+	\caption{
+		Predicted data $\mathbf{f}$ (equation \ref{eq:predicted-data-vector}) due to the estimated parameter vector
+		$\tilde{\mathbf{p}}$ obtained with the magnetic data having maximum noise level (Figure \ref{fig:7}B) by using
+		\textbf{(A)} the Cholesky factorization with $\mu \approx 10^{-14}$, 
+		\textbf{(B)} the iterative deconvolution ($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2022} with $40$ 
+		iterations (Algorithm \ref{alg:TOB20-22}) and
+		\textbf{(C)}--\textbf{(F)} the direct deconvolution ($\mathtt{deconv.}$) computed with four different 
+		values for $\zeta$ (equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$, $10^{-12}$ (overshoot), $10^{-14}$ (optimal)
+		and $10^{-16}$ (suboptimal).
+		All values are in $\mathrm{nT}$.
+		}
+	\label{fig:8}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/grav_upward}
+	\end{center}
+	\caption{
+		Upward continuation of the synthetic gravity data with maximum noise level (Figure \ref{fig:4}B).
+		\textbf{(A)} Noise-free gravity data produced by the model at $z = -500 \: \mathrm{m}$. 
+		\textbf{(B)}--\textbf{(E)} Continued data due to the estimated parameter vector $\tilde{\mathbf{p}}$ obtained, respectively,
+		by using the Cholesky factorization with $\mu \approx 10^{-22}$, 
+		the iterative deconvolution ($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2020} with $40$ 
+		iterations (Algorithm \ref{alg:TOB20-22}) and
+		the direct deconvolution ($\mathtt{deconv.}$) computed, respectively, with two different 
+		values for $\zeta$ (equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$ and $10^{-22}$ (optimal).
+		All values are in $\mathrm{mGal}$.
+		}
+	\label{fig:grav_up}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/mag_upward}
+	\end{center}
+	\caption{
+		Upward continuation of the synthetic magnetic data with maximum noise level (Figure \ref{fig:7}B).
+		\textbf{(A)} Noise-free magnetic data produced by the model at $z = -1400 \: \mathrm{m}$. 
+		\textbf{(B)}--\textbf{(E)} Continued data due to the estimated parameter vector $\tilde{\mathbf{p}}$ obtained, respectively,
+		by using the Cholesky factorization with $\mu \approx 10^{-14}$, 
+		the iterative deconvolution ($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2022} with $40$ 
+		iterations (Algorithm \ref{alg:TOB20-22}) and
+		the direct deconvolution ($\mathtt{deconv.}$) computed, respectively, with two different 
+		values for $\zeta$ (equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$ and $10^{-14}$ (optimal).
+		All values are in $\mathrm{nT}$.
+		}
+	\label{fig:mag_up}
+\end{figure}
 
 %\begin{figure}[htbp]
 %	\begin{center}

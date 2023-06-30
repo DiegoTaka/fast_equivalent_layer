@@ -32,7 +32,13 @@
 \begin{center}
 \includegraphics[width=9cm]{Fig/flops_grav}% This is a *.eps file
 \end{center}
-\caption{Number of \textit{flops} for many of the methods described in this work to estimate the equivalent sources using gravity data. The range of observations varies from $10,000$ to $1,000,000$.}
+\caption{
+	Total number of flops for different equivalent-layer methods
+	(equations \ref{flops:cholesky}, \ref{flops:cgls}, \ref{flops:LS89}, \ref{flops:SU21}, 
+	\ref{flops:C92}, \ref{flops:reparameterization-cgls}, \ref{flops:SOB17}, \ref{flops:TOB20},
+	and \ref{flops:direct-deconv}). 
+	The number of potential-field data $D$ varies from $10,000$ to $1,000,000$.
+	}
 \label{fig:1}
 \end{figure}
 
@@ -46,65 +52,137 @@
 
 \begin{figure}[htbp]
 	\begin{center}
+			\includegraphics[width=9cm]{Fig/synthetic_grav}
+		\end{center}
+	\caption{
+		Synthetic gravity disturbance data (in $\mathrm{mGal}$). 
+		The data are located on a regular grid of $50 \times 50$ points. 
+		Panel (A) shows the noise-free data. Panel (B) shows the synthetic data corrupted 
+		with a pseudorandom Gaussian noise having zero mean and standard deviation equal to $10\%$
+		of the maximum absolute value in the noise-free data.
+		The black lines represent the projection of the synthetic bodies on the $xy$ plane.
+		}
+	\label{fig:4}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+			\includegraphics[width=10cm]{Fig/synthetic_mag}
+		\end{center}
+	\caption{
+		Synthetic total-field anomaly data (in $\mathrm{nT}$). 
+		The data are located on a regular grid of $50 \times 50$ points. 
+		Panel (A) shows the noise-free data. Panel (B) shows the synthetic data corrupted 
+		with a pseudorandom Gaussian noise having zero mean and standard deviation equal to $10\%$
+		of the maximum absolute value in the noise-free data.
+		The black lines represent the projection of the synthetic bodies on the $xy$ plane.
+		}
+	\label{fig:7}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
 		\includegraphics[width=9cm]{Fig/stability_grav}
 	\end{center}
-	\caption{Stability analysis of some of the equivalent layer methods of the gravimetric case.}
+	\caption{
+		Numerical stability curves obtained for the $21$ synthetic gravity data sets 
+		by using the Cholesky factorization with $\mu \approx 10^{-22}$, the iterative deconvolution
+		($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2020} with $40$ iterations (Algorithm \ref{alg:TOB20-22}) 
+		and the direct deconvolution ($\mathtt{deconv.}$) computed with four different values for $\zeta$ 
+		(equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$, $10^{-20}$ (overshoot), $10^{-22}$ (optimal)
+		and $10^{-24}$ (suboptimal).
+		The stability parameter $\kappa$ (equation \ref{eq:condition-number}) obtained for the six curves
+		described above are $24.66$ ($\mathtt{Cholesky}$), $25.81$ ($\mathtt{TOB20}$), $90.93$, $1.95$, $17.47$ and $41.24$ ($\mathtt{deconv.}$ with null, overshoot, optimal and suboptimal $\zeta$).
+		}
 	\label{fig:3}
 \end{figure}
 
 \begin{figure}[htbp]
 	\begin{center}
-		\includegraphics[width=9cm]{Fig/synthetic_grav}
-	\end{center}
-	\caption{Synthetic data of the gravimetric case. The observations points are placed in a regular grid of $50 \times 50$. Panel (A) shows the noise-free data and panel (B) shows the maximum noised data ($10\%$).}
-	\label{fig:4}
+			\includegraphics[width=10cm]{Fig/stability_mag}
+		\end{center}
+	\caption{
+		Numerical stability curves obtained for the $21$ synthetic magnetic data sets 
+		by using the Cholesky factorization with $\mu \approx 10^{-14}$, the iterative deconvolution
+		($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2022} with $40$ iterations (Algorithm \ref{alg:TOB20-22}) 
+		and the direct deconvolution ($\mathtt{deconv.}$) computed with four different values for $\zeta$ 
+		(equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$, $10^{-12}$ (overshoot), $10^{-14}$ (optimal)
+		and $10^{-16}$ (suboptimal).
+		The stability parameter $\kappa$ (equation \ref{eq:condition-number}) obtained for the six curves
+		described above are $2.46$ ($\mathtt{Cholesky}$), $4.29$ ($\mathtt{TOB20}$), $44.04$, $0.49$, $3.15$ and $6.83$ ($\mathtt{deconv.}$ with null, overshoot, optimal and suboptimal $\zeta$).
+		}
+	\label{fig:6}
 \end{figure}
 
 \begin{figure}[htbp]
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/stability_grav_comparison}
 	\end{center}
-	\caption{Predicted gravity data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the classical method, \textbf{(B)} is the convolutional, \textbf{(C)} is the deconvolutional, \textbf{(D)} is the deconvolutional method using Wiener stabilization with a too high value for $\mu$, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu$ and \textbf{(F)} is the deconvolutional method using Wiener stabilization with a too low value for $\mu$.}
+	\caption{
+		Residuals between the predicted data (equation \ref{eq:predicted-data-vector}) due to the estimated parameter vector
+		$\tilde{\mathbf{p}}$ obtained with the gravity data having maximum noise level (Figure \ref{fig:4}B) by using
+		\textbf{(A)} the Cholesky factorization with $\mu \approx 10^{-22}$, 
+		\textbf{(B)} the iterative deconvolution ($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2020} with $40$ 
+		iterations (Algorithm \ref{alg:TOB20-22}) and
+		\textbf{(C)}--\textbf{(F)} the direct deconvolution ($\mathtt{deconv.}$) computed, respectively, with four different 
+		values for $\zeta$ (equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$, $10^{-20}$ (overshoot), $10^{-22}$ (optimal)
+		and $10^{-24}$ (suboptimal).
+		All values are in $\mathrm{mGal}$.
+		}
 	\label{fig:5}
-\end{figure}
-
-\begin{figure}[htbp]
-	\begin{center}
-		\includegraphics[width=10cm]{Fig/grav_upward}
-	\end{center}
-	\caption{True noiseless upward gravimetric data at $z_i = -500$ m height and predicted data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the true upward gravity data, Panel \textbf{(B)} is the classical method, \textbf{(C)} is the convolutional, \textbf{(D)} is the deconvolutional, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu = 10^{-20}$.}
-	\label{fig:grav_up}
-\end{figure}
-
-\begin{figure}[htbp]
-	\begin{center}
-		\includegraphics[width=10cm]{Fig/stability_mag}
-	\end{center}
-	\caption{Stability analysis of some of the equivalent layer methods of the magnetic case.}
-	\label{fig:6}
-\end{figure}
-
-\begin{figure}[htbp]
-	\begin{center}
-		\includegraphics[width=10cm]{Fig/synthetic_mag}
-	\end{center}
-	\caption{Synthetic data of the magnetic case. The observations points are placed in a regular grid of $50 \times 50$. Panel (A) shows the noise-free data and panel (B) shows the maximum noised data ($10\%$).}
-	\label{fig:7}
 \end{figure}
 
 \begin{figure}[htbp]
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/stability_mag_comparison}
 	\end{center}
-	\caption{Predicted magnetic data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the classical method, \textbf{(B)} is the convolutional, \textbf{(C)} is the deconvolutional, \textbf{(D)} is the deconvolutional method using Wiener stabilization with a too high value for $\mu$, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu$ and \textbf{(F)} is the deconvolutional method using Wiener stabilization with a too low value for $\mu$.}
+	\caption{
+		Residuals between the predicted data (equation \ref{eq:predicted-data-vector}) due to the estimated parameter vector
+		$\tilde{\mathbf{p}}$ obtained with the magnetic data having maximum noise level (Figure \ref{fig:7}B) by using
+		\textbf{(A)} the Cholesky factorization with $\mu \approx 10^{-14}$, 
+		\textbf{(B)} the iterative deconvolution ($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2022} with $40$ 
+		iterations (Algorithm \ref{alg:TOB20-22}) and
+		\textbf{(C)}--\textbf{(F)} the direct deconvolution ($\mathtt{deconv.}$) computed with four different 
+		values for $\zeta$ (equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$, $10^{-12}$ (overshoot), $10^{-14}$ (optimal)
+		and $10^{-16}$ (suboptimal).
+		All values are in $\mathrm{nT}$.
+		}
 	\label{fig:8}
+\end{figure}
+
+\begin{figure}[htbp]
+	\begin{center}
+		\includegraphics[width=10cm]{Fig/grav_upward}
+	\end{center}
+	\caption{
+		Upward continuation of the synthetic gravity data with maximum noise level (Figure \ref{fig:4}B).
+		\textbf{(A)} Noise-free gravity data produced by the model at $z = -500 \: \mathrm{m}$. 
+		\textbf{(B)}--\textbf{(E)} Continued data due to the estimated parameter vector $\tilde{\mathbf{p}}$ obtained, respectively,
+		by using the Cholesky factorization with $\mu \approx 10^{-22}$, 
+		the iterative deconvolution ($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2020} with $40$ 
+		iterations (Algorithm \ref{alg:TOB20-22}) and
+		the direct deconvolution ($\mathtt{deconv.}$) computed, respectively, with two different 
+		values for $\zeta$ (equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$ and $10^{-22}$ (optimal).
+		All values are in $\mathrm{mGal}$.
+		}
+	\label{fig:grav_up}
 \end{figure}
 
 \begin{figure}[htbp]
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/mag_upward}
 	\end{center}
-	\caption{True noiseless upward magnetic data at $z_i = -1400$ m height and predicted data for different methods of the equivalent layer with maximum level of noise. Panel \textbf{(A)} is the true upward magnetic data, Panel \textbf{(B)} is the classical method, \textbf{(C)} is the convolutional, \textbf{(D)} is the deconvolutional, \textbf{(E)} is the deconvolutional method using Wiener stabilization with a optimal value for $\mu = 10^{-13}$.}
+	\caption{
+		Upward continuation of the synthetic magnetic data with maximum noise level (Figure \ref{fig:7}B).
+		\textbf{(A)} Noise-free magnetic data produced by the model at $z = -1400 \: \mathrm{m}$. 
+		\textbf{(B)}--\textbf{(E)} Continued data due to the estimated parameter vector $\tilde{\mathbf{p}}$ obtained, respectively,
+		by using the Cholesky factorization with $\mu \approx 10^{-14}$, 
+		the iterative deconvolution ($\mathtt{TOB20}$) proposed by \citet{takahashi-etal2022} with $40$ 
+		iterations (Algorithm \ref{alg:TOB20-22}) and
+		the direct deconvolution ($\mathtt{deconv.}$) computed, respectively, with two different 
+		values for $\zeta$ (equation \ref{eq:matrix-L-Wiener-deconvolution}): $0$ and $10^{-14}$ (optimal).
+		All values are in $\mathrm{nT}$.
+		}
 	\label{fig:mag_up}
 \end{figure}
 
@@ -112,7 +190,10 @@
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/carajas_gz_real_data_1000x500}
 	\end{center}
-	\caption{Gridded real aerogravimetric data from Carajás, Brazil. A regular grid of $1,000 \times 500$ is being used, totalizing $N,M = 500, 000$ obsevation points and equivalent sources.}
+	\caption{
+		Field aerogravimetric data over Caraj{\'a}s, Brazil. 
+		There are $D = 500, 000$ observations located on regular grid of $1,000 \times 500$ poins.
+		}
 	\label{fig:9}
 \end{figure}
 
@@ -120,7 +201,16 @@
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/carajas_gz_predito_1000x500}
 	\end{center}
-	\caption{Panel \textbf{(A)} shows the Carajás predicted gravimetric data from convolutional equivalent layer method. Panel \textbf{(B)} shows the residual from the convolutional equivalent layer method. Panel \textbf{(C)} shows the predicted data from deconvolutional equivalent layer method. Panel \textbf{(D)} shows the residual from the deconvolutional equivalent layer method. Panel \textbf{(E)} shows the upward continuation at $z_i = -3500$ m for the convolutional method and Panel \textbf{(F)} shows the upward continuation at $z_i = -3500$ m for the deconvolutional method.}
+	\caption{
+		Upward continuation of the aerogravimetric data over Caraj{\'a}s, Brazil.
+		\textbf{(A)} Predicted data due to the equivalent layer obtained from the iterative deconvolution 
+		(Algorithm \ref{alg:TOB20-22}) with $50$ iterations.
+		\textbf{(B)} Residuals between the predicted data shown in \textbf{(A)} and the observed data (Figure \ref{fig:9}). 
+		\textbf{(C)} Predicted data due to the equivalent layer obtained from the direct deconvolution computed with $\zeta = 10^{-22}$
+		(equation \ref{eq:matrix-L-Wiener-deconvolution}). 
+		\textbf{(D)} Residuals between the predicted data shown in \textbf{(C)} and the observed data (Figure \ref{fig:9}). 
+		\textbf{(E)} and \textbf{(F)} Continued field at $z = -3500 \mathrm{m}$ obtained from iterative and direct deconvolutions.
+		}
 	\label{fig:10}
 \end{figure}
 
@@ -128,7 +218,10 @@
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/carajas_tf_real_data_1000x500}
 	\end{center}
-	\caption{Gridded real aeromagnetic data from Carajás, Brazil. A regular grid of $1,000 \times 500$ is being used, totalizing $N,M = 500, 000$ obsevation points and equivalent sources.}
+	\caption{
+		Field aeromagnetic data over Caraj{\'a}s, Brazil. 
+		There are $D = 500, 000$ observations located on regular grid of $1,000 \times 500$ poins.
+		}
 	\label{fig:11}
 \end{figure}
 
@@ -136,7 +229,16 @@
 	\begin{center}
 		\includegraphics[width=10cm]{Fig/carajas_tf_predito_1000x500}
 	\end{center}
-	\caption{Panel \textbf{(A)} shows the Carajás predicted magnetic data from convolutional equivalent layer method. Panel \textbf{(B)} shows the residual from the convolutional equivalent layer method. Panel \textbf{(C)} shows the predicted data from deconvolutional equivalent layer method. Panel \textbf{(D)} shows the residual from the deconvolutional equivalent layer method. Panel \textbf{(E)} shows the upward continuation at $z_i = -3500$ m for the convolutional method and Panel \textbf{(F)} shows the upward continuation at $z_i = -3500$ m for the deconvolutional method.}
+	\caption{
+		Upward continuation of the aeromagnetic data over Caraj{\'a}s, Brazil.
+		\textbf{(A)} Predicted data due to the equivalent layer obtained from the iterative deconvolution 
+		(Algorithm \ref{alg:TOB20-22}) with $200$ iterations.
+		\textbf{(B)} Residuals between the predicted data shown in \textbf{(A)} and the observed data (Figure \ref{fig:11}). 
+		\textbf{(C)} Predicted data due to the equivalent layer obtained from the direct deconvolution computed with $\zeta = 10^{-16}$
+		(equation \ref{eq:matrix-L-Wiener-deconvolution}). 
+		\textbf{(D)} Residuals between the predicted data shown in \textbf{(C)} and the observed data (Figure \ref{fig:11}). 
+		\textbf{(E)} and \textbf{(F)} Continued field at $z = -3500 \mathrm{m}$ obtained from iterative and direct deconvolutions.
+		}
 	\label{fig:12}
 \end{figure}
 

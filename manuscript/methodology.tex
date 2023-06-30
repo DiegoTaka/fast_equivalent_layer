@@ -82,7 +82,14 @@ for example, and consists in setting one equivalent source below each datum at a
 proportional to the horizontal distance to the nearest neighboring data points.
 \citet{soler-uieda2021} have compared different strategies for defining the equivalent sources depth for the specific
 problem of interpolating gravity data, but they have not found significant differences between them.
-
+Regarding the horizontal layout, \cite{soler-uieda2021} proposed the block-averaged sources locations 
+in which the survey area is divided into horizontal blocks and one single equivalent source is assigned to each block. 
+The horizontal coordinates of the single source in a given block is defined by the average horizontal 
+coordinates of the observation points at the block. 
+According to \cite{soler-uieda2021}, this block-averaged layout may prevent aliasing of the interpolated 
+values, specially when the observations are unevenly sampled.
+This strategy also reduces the number of equivalent sources without affecting the accuracy of the potential-field interpolation. 
+Besides, it reduces the computational load for estimating the physical property on the equivalent layer.
 
 \subsection{Matrix $\mathbf{G}$}
 \label{subsec:sensitivity-matrix}
@@ -378,15 +385,16 @@ The same approach used to deduce equations \ref{flops:cholesky} and \ref{flops:c
 applied to compute the total number of flops for the selected equivalent-layer 
 methods discussed in section \ref{sec:computational-strategies}.
 
-%To simplify our analysis, we do not consider the number of flops required to compute the sensitivity matrix 
-%$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) or the auxiliary matrices $\mathbf{A}$, $\mathbf{H}$, $\mathbf{W}_{d}$, $\mathbf{W}_{q}$ 
-%(equations \ref{eq:transformation}, \ref{eq:reparameterization}, \ref{eq:function-Phi} and \ref{eq:function-Theta}).
-%We also neglect the required flops to compute $\bar{p}$ (equation \ref{eq:reparameterization-reference}), 
-%retrieve $\tilde{\mathbf{q}}$ from $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}) and computing
-%$\boldsymbol{\delta}_{d}$ (equation \ref{eq:delta-d}).
-
-%Figure \ref{fig:1} shows the total flops count for the different methods presented in this review for different number of potential-field data 
-%ranging from $10,000$ to $1,000,000$.
+To simplify our analysis, we do not consider the number of flops required to compute the sensitivity matrix 
+$\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) or the matrix $\mathbf{A}$ associated with a given
+potential-field transformation (equation \ref{eq:transformation})
+because they depend on the specific harmonic functions $g_{ij}$ and $a_{ij}$
+(equations \ref{eq:harmonic-function-g-ij} and \ref{eq:harmonic-function-a-kj}).
+We also neglect the required flops to compute $\mathbf{H}$, $\mathbf{W}_{d}$, $\mathbf{W}_{q}$ 
+(equations \ref{eq:reparameterization}, \ref{eq:function-Phi} and \ref{eq:function-Theta}), 
+$\bar{p}$ (equation \ref{eq:reparameterization-reference}), 
+retrieve $\tilde{\mathbf{q}}$ from $\tilde{\boldsymbol{\delta}}_{q}$ (equation \ref{eq:delta-q-tilde}) and computing
+$\boldsymbol{\delta}_{d}$ (equation \ref{eq:delta-d}).
 
 \section{Numerical stability}
 
@@ -423,10 +431,11 @@ and the data perturbation
 with $\| \cdot \|$ representing the Euclidean norm.
 The constant $\kappa$ acts as the condition number associated with the pseudo-inverse in a given linear inversion.
 The larger (smaller) the value of $\kappa$, the more unstable (stable) is the estimated solution.
+Because of that, we designate $\kappa$ as \textit{stability parameter}.
 Equation \ref{eq:condition-number} shows a linear relationship between the model perturbation $\Delta p^{\ell}$ and 
 the data perturbation $\Delta d^{\ell}$ (equations \ref{eq:model-perturbation} and \ref{eq:data-perturbation}).
 We estimate the $\kappa$ (equation \ref{eq:condition-number}) associated with a given 
-equivalent-layer method as the slope of the straight line fitted to the $L$ points 
+equivalent-layer method as the slope of the straight line fitted to the \textit{numerical stability curve} formed by the $L$ points 
 $\left( \Delta p^{\ell} \: , \: \Delta d^{\ell} \right)$.
 
 \section{Notation for subvectors and submatrices}
@@ -574,7 +583,7 @@ starting the iterations and computing an inner product (equation \ref{eq:transfo
 We consider that the total number of flops associated with $\mathbf{B}'$ is obtained by 
 the matrix-matrix product $\mathbf{G}' \left(\mathbf{G}'\right)^{\top}$, its inverse
 and then the premultiplication by $\left(\mathbf{G}'\right)^{\top}$.
-By using table \ref{tab:standard-flops} and considering that inverse is computed via  Cholesky factorization, we obtain that the total number of flops for lines $6$ and $7$ is
+By using table \ref{tab:standard-flops} and considering that inverse is computed via Cholesky factorization, we obtain that the total number of flops for lines $6$ and $7$ is
 $2(D')^{2}P' + \nicefrac{7 (D')^{3}}{6} + 2(D')^{2}P'$.
 Then, the total number of flops for Algorithm \ref{alg:LS89} is
 \begin{equation}
@@ -607,8 +616,8 @@ and $\bar{p} = \mathbf{0}$ (equation \ref{eq:reparameterization-reference}), so 
 Unlike \cite{leao-silva1989}, \cite{soler-uieda2021} do not adopt a sequential order of the data windows; 
 rather, they adopt a randomized order of windows in their  iterations.
 The overall steps of the method proposed by \cite{soler-uieda2021} are defined by the Algorithm \ref{alg:SU21}.
-For convenience, we have omitted  the details about the randomized window order and the normalization strategy 
-employed by \cite{soler-uieda2021}. 
+For convenience, we have omitted the details about the randomized window order, normalization strategy 
+employed and block-averaged sources layout proposed by those authors (see subsection \ref{subsec:spatial-distribution-sources}). 
 Note that this algorithm starts with a residuals vector $\mathbf{r}$ that is iteratively updated.
 The  iterative algorithm in \cite{soler-uieda2021} estimates a solution 
 ($\tilde{\mathbf{p}}^{m}$ in equation \ref{eq:p-tilde-m-SU21}) using the data and 
@@ -617,15 +626,6 @@ the residual data in the whole survey data.
 Next, the residual data  that fall within a new position of the data window is used as input data to estimate a new 
 solution within the data window which, in turn, is used to calculated a new predicted data and a new residual data 
 in the whole survey data.
-Regarding the equivalent-source layout, \cite{soler-uieda2021} proposed the block-averaged sources locations 
-in which the survey area is divided into horizontal blocks and one single equivalent source is assigned to each block. 
-Each single source per block is placed over the layer with its horizontal coordinates given by the average horizontal 
-positions of observation points. 
-According to \cite{soler-uieda2021}, the block-averaged sources layout may prevent aliasing of the interpolated 
-values, specially when the observations are unevenly sampled.
-This strategy also reduces the number of equivalent sources without affecting the accuracy of the potential-field interpolation. 
-Besides, it reduces the computational load for estimating the physical property on the equivalent layer.
-This block-averaged sources layout is not included in the Algorithm \ref{alg:SU21}.
 
 The computational cost of Algorithm \ref{alg:SU21} can be defined in terms of the linear
 system (equation \ref{eq:p-tilde-m-SU21}) to be solved for each window (line $10$) and the 
@@ -823,18 +823,6 @@ a regular grid of potential-field data on horizontal plane.
 Another difference is that these authors uses $\mathbf{W}_{q} = \mathbf{I}_{Q}$ (equation \ref{eq:function-Theta}),
 which means that the regularization is defined directly in the $Q$-space.
 
-Before \cite{oliveirajr-etal2013} and \cite{mendonca-2020}, \cite{barnes-lumley2011} also proposed a computationally
-efficient method for equivalent-layer technique based on reparameterization. 
-A key difference, however, is that \cite{barnes-lumley2011} did not set a $P \times Q$ reparameterization matrix $\mathbf{H}$
-(equation \ref{eq:reparameterization}) with $Q << P$. 
-Instead, they used a matrix $\mathbf{H}$ with $Q \approx 1.7 \, P$. 
-Their central idea is setting a reparameterization scheme that groups distant equivalent sources into blocks by
-using a bisection process. 
-This scheme leads to a quadtree representation of the physical-property distribution on the equivalent layer, 
-so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-reparameterized}) is notably sparse.
-\cite{barnes-lumley2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
-(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
-
 We consider an algorithm (not shown) that solves the overdetermined problem (equation \ref{eq:delta-q-tilde-overdetermined}) by
 combining the reparameterization with CGLS method (Algorithm \ref{alg:CGLS}).
 It starts with a reparameterization step defined by defining a matrix $\mathbf{C} = \mathbf{G \, H}$ 
@@ -855,12 +843,10 @@ the number of flops per iteration can be substantially decreased with respect to
 In this case, the flops decrease per iteration compensates the additional flops required to compute $\mathbf{C}$ and 
 obtain $\tilde{\mathbf{p}}$ from $\tilde{\mathbf{q}}$ (equation \ref{eq:vector-p-tilde}).
 
-\subsection{Wavelet compression}
+\subsection{Sparsity induction}
 
-Previously to \cite{barnes-lumley2011}, the idea of transforming the dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}) 
-into a sparse one has already been used in the context of equivalent-layer technique.
 \cite{li-oldenburg2010} proposed a method that applies the discrete wavelet transform to introduce sparsity into 
-the original dense matrix $\mathbf{G}$.
+the original dense matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}).
 Those authors approximate a planar grid of potential-field data by a regularly-spaced grid of equivalent sources,
 so that the number of data $D$ and sources $P$ is the same , i.e., $D = P$.
 Specifically, \cite{li-oldenburg2010} proposed a method that applies the wavelet transform to the original dense 
@@ -914,6 +900,29 @@ Finally, \citet{li-oldenburg2010} compute an estimate $\tilde{\mathbf{p}}$ for t
 where the term within parenthesis is an estimate $\tilde{\mathbf{p}}_{w}$ of the parameter vector $\mathbf{p}_{w}$
 (equation \ref{eq:vectors-dw-pw}) in the wavelet domain and 
 matrix $\boldsymbol{\mathcal{W}}^{\top}$ represents an inverse wavelet transform. 
+
+\citet{barnes-lumley2011} also proposed a computationally efficient method for equivalent-layer technique 
+by inducing sparsity into the original sensitivity matrix $\mathbf{G}$ (equation \ref{eq:predicted-data-vector}). 
+Their approach consists in setting a $P \times Q$ reparameterization matrix $\mathbf{H}$
+(equation \ref{eq:reparameterization}) with $Q \approx 1.7 \, P$.
+Note that, differently from \citet{oliveirajr-etal2013} and \citet{mendonca-2020}, \citet{barnes-lumley2011}
+do not use the reparameterization with the purpose of reducing the number of the parameters.
+Instead, they use a reparameterization scheme that groups distant equivalent sources into blocks by
+using a bisection process. 
+This scheme leads to a quadtree representation of the physical-property distribution on the equivalent layer, 
+so that matrix $\mathbf{G}\mathbf{H}$ (equation \ref{eq:predicted-data-vetor-reparameterized}) is notably sparse.
+\cite{barnes-lumley2011} explore this sparsity in solving the overdetermined problem for $\tilde{\mathbf{q}}$
+(equation \ref{eq:q-tilde-OBU13}) via conjugate-gradient method \cite[e.g.,][sec. 11.3]{golub-vanloan2013}.
+
+It is difficult to predict the exact sparsity obtained from the methods proposed by \citet{li-oldenburg2010} and \citet{barnes-lumley2011} 
+because it depends on several factors, including the observed potential-field data.
+According to \citet{li-oldenburg2010}, their wavelet approach results in a sparse matrix having $\approx 2\%$ 
+of the elements in $\mathbf{G}_{w}$ (equation \ref{eq:matrix-Gw}).
+The reparameterization proposed by \citet{barnes-lumley2011} leads to a sparse matrix $\mathbf{G \, H}$ (equation \ref{eq:predicted-data-vetor-reparameterized})
+with only $\approx 1\%$ of non-zero elements.
+These sparsity patterns can be efficiently explored, for example, in computing the required matrix-vector products
+along the iterations of the CGLS method (Algorithm \ref{alg:CGLS}).
+
 
 \subsection{Iterative methods using the full matrix $\mathbf{G}$}
 
@@ -1217,19 +1226,20 @@ noisy potential-field data $\mathbf{d}$. This is a well-known property of the CG
 The key aspect of Algorithm \ref{alg:TOB20-22} is replacing the matrix-vector products of CGLS (Algorithm \ref{alg:CGLS})
 by fast convolutions (Algorithm \ref{alg:fast-2D-convolution}).
 A fast convolution requires one 2D-DFT, one 2D-IDFT and an entrywise product of matrices.
-We consider that the 2D-DFT/IDFT are computed with 2D-FFT and requires $\kappa \, (4D)\log_{2}(4D)$ flops, where $\kappa = 5$ is compatible with a radix-2 FFT 
+We consider that the 2D-DFT/IDFT are computed with 2D-FFT and requires $\lambda \, (4D)\log_{2}(4D)$ flops, 
+where $\lambda = 5$ is compatible with a radix-2 FFT 
 \citep[][p. 16]{vanloan1992}, and the entrywise product $24D$ flops because it involves two complex matrices having $4D$ elements
 \citep[][p. 36]{golub-vanloan2013}.
-Hence, Algorithm \ref{alg:fast-2D-convolution} requires $\kappa \, (16D)\log_{2}(4D) + 26D$ flops,
+Hence, Algorithm \ref{alg:fast-2D-convolution} requires $\lambda \, (16D)\log_{2}(4D) + 26D$ flops,
 whereas a conventional matrix-vector multiplication involving a $D \times D$ matrix requires $2D^{2}$ (table \ref{tab:standard-flops}).
 Finally, Algorithm \ref{alg:TOB20-22} requires two 2D-FFTs (lines $4$ and $5$), one fast convolution and an inner product (line $8$)
 previously to the while loop.
 Per iteration, there are three saxpys (lines $12$, $15$ and $16$), two inner products (lines $14$ and $17$) and 
 two fast convolutions (lines $13$ and $17$), so that:
 \begin{equation}
-	f_{\mathtt{CGLS}} = \kappa \, (16D)\log_{2}(4D) + 26D + \mathtt{ITMAX} 
+	f_{\mathtt{TOB20}} = \lambda \, (16D)\log_{2}(4D) + 26D + \mathtt{ITMAX} 
 	\left[
-	\kappa \, (16D)\log_{2}(4D) + 58D
+	\lambda \, (16D)\log_{2}(4D) + 58D
 	\right] \: .
 	\label{flops:TOB20}
 \end{equation}
@@ -1275,7 +1285,7 @@ one entrywise division to compute $\breve{\boldsymbol{\mathcal{L}}}$ (equation \
 a fast convolution (Algorithm \ref{alg:fast-2D-convolution}) to evaluate equation \ref{eq:direct-deconvolution},
 which results in:
 \begin{equation}
-	f_{\mathtt{deconv.}} = \kappa \, (12D)\log_{2}(4D) + 72D \: .
+	f_{\mathtt{deconv.}} = \lambda \, (12D)\log_{2}(4D) + 72D \: .
 	\label{flops:direct-deconv}
 \end{equation}
 Differently from the convolutional equivalent-layer method proposed by 

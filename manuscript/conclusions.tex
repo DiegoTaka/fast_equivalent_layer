@@ -23,24 +23,23 @@ Both strategies (column- and row-action updates) have a great advantage  because
 However, to our knowledge, the strategy of the column-action update presents some issues related to convergence, and the strategy of the row-action update can also have issues if the number of equivalent data  is not significantly smaller than the original number of data points.
 
 
-The fourth strategy is the wavelet compression which consists in transforming 
-a large and full sensitivity matrix into a sparse one, with a few nonzero elements, by using a fast wavelet transform.
-By using the sparce sensitivity matrix, the inverse problem is solved in the wavelet domain without an explicit regularization parameter.
-A regularized solution is obtained  by using a conjugate gradient least squares where the number of iterations performed acts as a regularization.
-Computationally, the significant advantage of the wavelet-compression strategy is its ability to handle a sparse sensitivity matrix, which enables a rapid iteration of the conjugate gradient (CG) algorithm.
-However, we understand that this strategy requires computing the full and dense sensitivity matrix, which can be considered a drawback when processing large-scale potential-field data.
-
+The fourth strategy is the sparsity induction of the sensitivity matrix using wavelet compression, which involves transforming a full sensitivity matrix into a sparse one with only a few nonzero elements.
+The developed equivalent-layer methods using this strategy achieve sparsity by setting matrix elements to zero if their values are smaller than a predefined threshold.
+We highlight two methods that employ the sparsity induction strategy.
+The first method, known as wavelet-compression equivalent layer, compresses the coefficients of the original sensitivity matrix using discrete wavelet transform, achieves sparsity in the sensitivity matrix, and solves the inverse problem in the wavelet domain without an explicit regularization parameter.
+The regularized solution in the wavelet domain is estimated using a conjugate gradient (CG) least squares algorithm, where the number of iterations serves as a regularization factor.
+The second equivalent-layer method that uses the sparsity induction strategy applies quadtree discretization of the parameters over the equivalent layer, achieves sparsity in the sensitivity matrix, and solves the inverse problem using CG algorithm.
+In quadtree discretization, equivalent sources located far from the observation point are grouped together to form larger equivalent sources, reducing the number of parameters to be estimated.
+Computationally, the significant advantage of the equivalent-layer methods employing wavelet compression and quadtree discretization is the sparsity induction in the sensitivity matrix, which allows for fast iteration of the CG algorithm.
+However, we acknowledge that this strategy requires computing the full and dense sensitivity matrix, which can be considered a drawback when processing large-scale potential-field data.
 
 The fifth strategy is the reparametrization of the original parameters to be estimated in the equivalent-layer technique.
 In this strategy, the developed equivalent-layer methods reduce 
 the dimension of the linear system of equations to be solved by 
 estimating a lower-dimensional parameter vector.
-We highlight three methods that used the reparametrization strategy:
-i)  the quadtree discretization of the equivalent layer;
-ii) the polynomial equivalent layer (PEL) and; 
+We highlight two methods that used the reparametrization strategy:
+i) the polynomial equivalent layer (PEL) and; 
 ii) the lower-dimensional subspace of the equivalent layer.
-In the quadtree discretization, the equivalent sources located far from the observation point are grouped together to create a larger averaged source
-implying in a reduction in the number of parameters to be estimated.
 In the PEL, there  is an explicit reparametrization of the equivalent layer
 by representing the unknown distribution over the equivalent layer as a set of 
 piecewise-polynomial functions defined on a set of equivalent-source windows.
@@ -75,7 +74,6 @@ The main advantages of this strategy are that the entire sensitivity matrices do
 However, the iterative deconvolutional of the equivalent layer requires 
 observations and equivalent sources aligned on a horizontal and regularly-spaced grid.
 
-
 The eigth strategy is a direct deconvolution method, which is a mathematical process very common in geophysics. 
 However, to our knowledge, direct deconvolution has never been used to solve the inverse problem associated with the equivalent-layer technique. 
 From the mathematical expressions in the iterative deconvolutional equivalent layer with BTTB matrices, direct deconvolution arises naturally since it is an operation inverse to convolution. 
@@ -84,47 +82,83 @@ However, the direct deconvolution is known to be an unstable operation.
 To mitigate this instability, the Wiener deconvolution method can be adopted.
 
 
+We show in this work that the computational cost of the equivalent layer can vary from up to $10^{9}$ flops depending on the method without compromising the linear system stability. 
+The moving data-window scheme and direct deconvolution are the fastest methods; however, they both have drawbacks.
+To be computationally efficient, the moving data-window scheme and 
+the direct deconvolution require data and equivalent sources that are distributed on planar and regularly spaced grids.
+Moreover, they both requires choosing an optimun parameter of stabilization. 
+We stress that the direct deconvolution has an aditional disadvantage in terms of a higher data residual and border effects over the equivalent layer after processing.
+These effects can be seen from the upward continuation of the real data from Carajás.
 
 
-***** PAREI AQUI *****
 
-***** O TEXTO ABAIXO PERTENCE A VERSAO ANTERIOR DA CONCLUSAO ****
-
-From the above-mentioned strategies, further classifications may be identified for reducing the computational cost of equivalent-layer technique. 
-For example, taking into account the mathematical bases, we identify four groups:
-i) the reduction of the dimensionality of the linear system of equations to be solved;  
-ii) the  generation of a sparse linear system of  equations to be solved; 
-iii) the explicity iterative method  without solving a linear system of equations and;
-iv) the convolution (deconvolution).
-The first mathematical basis reduces the linear system of equations to be solved for estimating the distribution over the equivalent layer.
-This is achieved by using diferent strategies: 
-a) the moving data-window scheme spanning the data set by setting a small moving-data window;   
-b) the reparametrization of the dataset by selecting a subset of observations much smaller than the original data;
-c) the explicity reparametrization of the model (the equivalent layer) by using quadtree discretization or piecewise-polynomial functions defined on a set of equivalent-source windows and; 
-d) the implicity reparametrization of the model (the equivalent layer) by using the subspace method. 
-The second mathematical basis generates a sparse linear system of equations 
-by transforming the full sensitivity matrix into a sparse one.
-This is achieved by using diferent strategies: 
-a) the compression of the coefficient of the sensitivity matrix via wavelet transforms and;
-b) the grouping of equivalent sources distant from an observation point to form a larger equivalent source via quadtree discretization of the equivalent layer;
-The third mathematical basis does not solve a linear system of equations
-for estimating the distribution over the equivalent layer.
-This is grounded on  gradient method as an optimization algorithm 
-that iteratively updates the parameter without calculating a full Hessian matrix and solving linear systems.
-This is achieved by using diferent strategies: 
-a) the conjugate gradient least-squares regularized by the number of iterations  with the sparse wavelet compression of the coefficient matrix;
-b) the iterative Landweber algorithm with forward modelling of potential-field data with Gauss-FFT;
-c) the gradient-boosting algorithm operating on overlapping windows with the block-averaged sources
-reduncing the number of the sources; and
-d) The explicit iterative method with (or not) physical reasoning without calculating a full Hessian matrix and solving linear systems
-The fourth mathematical basis for estimating the distribution over the equivalent layer is based on FFT convolution with the sensitivity matrices exhibiting BTTB structure when the observations and equivalent sources are aligned on a horizontal and regularly-spaced grid. 
-
-We would like to draw the readers' attention to the possibility of grouping the aforementioned strategies for reducing the computational cost of the equivalent-layer technique according to different mathematical bases.
-An example of the mathematical basis might be the reduction of the processing time spent on the forward modelling accounts. 
+We draw the readers' attention to the possibility of combining more than one aforementioned strategies for reducing the computational cost of the equivalent-layer technique.
 
 
 
 
-%It is certainly impossible to include all references pertinent to
-%a comprehensive review such as this one in just a few pages.
+%***** O TEXTO ABAIXO PERTENCE A VERSAO ANTERIOR DA CONCLUSAO ****
+%From the above-mentioned strategies, further classifications may be identified %for reducing the computational cost of equivalent-layer technique. 
+%For example, taking into account the mathematical bases, we identify five %groups:
+%i)   the reduction of the dimensionality of the linear system of equations to %be solved;  
+%ii)  the  generation of a sparse linear system of  equations to be solved; 
+%iii) the explicity iterative method;
+%iv)  the improvement in the forward modelling an;
+%v) the convolution (deconvolution).
 
+%The first mathematical basis reduces the linear system of equations to be solved for estimating the distribution over the equivalent layer.
+%This is achieved by using diferent strategies: 
+%a) the moving data-window scheme spanning the data by setting a small moving-data window;   
+%b) the reduction of the dataset by selecting a subset of observations much smaller than the original data;
+%c) the explicity reparametrization of the model (the equivalent layer) by using quadtree discretization or piecewise-polynomial functions defined on a set of equivalent-source windows and; 
+%d) the implicity reparametrization of the model (the equivalent layer) by using the subspace method.
+%
+%The second mathematical basis generates a sparse linear system of equations 
+%by transforming the full sensitivity matrix into a sparse one.
+%This is achieved by using diferent strategies: 
+%a) the compression of the coefficient of the sensitivity matrix via wavelet transforms and;
+%b) the grouping of equivalent sources distant from an observation point to form a larger equivalent source via quadtree discretization of the equivalent layer;
+%
+%
+%
+%
+%
+%
+%From the above-mentioned strategies, further classifications may be identified for reducing the computational cost of equivalent-layer technique. 
+%For example, taking into account the mathematical bases, we identify four groups:
+%i) the reduction of the dimensionality of the linear system of equations to be solved;  
+%ii) the  generation of a sparse linear system of  equations to be solved; 
+%iii) the explicity iterative method  without solving a linear system of equations and;
+%iv) the convolution (deconvolution).
+%The first mathematical basis reduces the linear system of equations to be solved for estimating the distribution over the equivalent layer.
+%This is achieved by using diferent strategies: 
+%a) the moving data-window scheme spanning the data set by setting a small moving-data window;   
+%b) the reparametrization of the dataset by selecting a subset of observations much smaller than the original data;
+%c) the explicity reparametrization of the model (the equivalent layer) by using quadtree discretization or piecewise-polynomial functions defined on a set of equivalent-source windows and; 
+%d) the implicity reparametrization of the model (the equivalent layer) by using the subspace method. 
+%The second mathematical basis generates a sparse linear system of equations 
+%by transforming the full sensitivity matrix into a sparse one.
+%This is achieved by using diferent strategies: 
+%a) the compression of the coefficient of the sensitivity matrix via wavelet transforms and;
+%b) the grouping of equivalent sources distant from an observation point to form a larger equivalent source via quadtree discretization of the equivalent layer;
+%The third mathematical basis does not solve a linear system of equations
+%for estimating the distribution over the equivalent layer.
+%This is grounded on  gradient method as an optimization algorithm 
+%that iteratively updates the parameter without calculating a full Hessian matrix and solving linear systems.
+%This is achieved by using diferent strategies: 
+%a) the conjugate gradient least-squares regularized by the number of iterations  with the sparse wavelet compression of the coefficient matrix;
+%b) the iterative Landweber algorithm with forward modelling of potential-field data with Gauss-FFT;
+%c) the gradient-boosting algorithm operating on overlapping windows with the block-averaged sources
+%reduncing the number of the sources; and
+%d) The explicit iterative method with (or not) physical reasoning without calculating a full Hessian matrix and solving linear systems
+%The fourth mathematical basis for estimating the distribution over the equivalent layer is based on FFT convolution with the sensitivity matrices exhibiting BTTB structure when the observations and equivalent sources are aligned on a horizontal and regularly-spaced grid. 
+%
+%We would like to draw the readers' attention to the possibility of grouping the aforementioned strategies for reducing the computational cost of the equivalent-layer technique according to different mathematical bases.
+%An example of the mathematical basis might be the reduction of the processing time spent on the forward modelling accounts. 
+%
+%
+%
+%
+%%It is certainly impossible to include all references pertinent to
+%%a comprehensive review such as this one in just a few pages.
+%
